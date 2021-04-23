@@ -19,7 +19,7 @@ public class RedirectController {
      */
     @GetMapping("/")
     public String index() {
-        return "/index/index";
+        return "index/index";
     }
 
     /**
@@ -27,7 +27,7 @@ public class RedirectController {
      */
     @GetMapping("/resume")
     public String resume() {
-        return "/resume/resume";
+        return "resume/resume";
     }
 
 }
