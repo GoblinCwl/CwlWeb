@@ -11,7 +11,7 @@
 	<groupId>com.goblincwl</groupId>
 	<artifactId>cwl-web</artifactId>
 	<version>1.0</version>
-	<name>CwlWeb</name>
+	<name>Cwl-Web</name>
 	<description>GoblinCwl 个人Web网站</description>
 	<properties>
 		<java.version>1.8</java.version>
