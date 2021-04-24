@@ -10,11 +10,39 @@
     <link th:href="@{/css/style.css}" rel='stylesheet' type='text/css'/>
     <!-- 其他-->
     <link th:href="@{/css/popuo-box.css}" rel="stylesheet" type="text/css" media="all"/>
+    <!--自定义-->
+    <link rel="stylesheet" th:href="@{/css/goblincwl.css}">
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="keywords" content="GoblinCwl,陈威龙"/>
+
+    <!--隐藏滚动条-->
+    <style>
+        ::-webkit-scrollbar {
+            display: none; /* Chrome Safari */
+        }
+
+        html body div {
+            scrollbar-width: none; /* firefox */
+            -ms-overflow-style: none; /* IE 10+ */
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+    </style>
+
+    <!--网页小地图-->
+    <style>
+        #map {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 100%;
+            z-index: 100;
+        }
+    </style>
 
     <!--可扩展块-->
     <th:block th:replace="${links}"/>
@@ -33,6 +61,13 @@
             window.scrollTo(0, 1);
         }, 0);
     }, false);
+    </script>
+
+    <!--网页小地图-->
+    <canvas id="map"></canvas>
+    <script th:src="@{/js/pageMap/pagemap.min.js}"></script>
+    <script>
+        pagemap(document.querySelector('#map'));
     </script>
 
     <script>
@@ -58,41 +93,23 @@
 <!-- 左侧侧边栏 -->
 <div th:fragment="leftSiderBar()" class="col-sm-3 col-md-2 sidebar">
     <div class="sidebar_top">
-        <h1>Cwl</h1>
+        <h1>GoblinCwl</h1>
         <img th:src="@{/images/profile.jpg}" alt=""/>
     </div>
     <div class="details">
-        <h3>
-            联系方式
-        </h3>
-        <p>+86 18673734477</p>
-        <h3>
-            电子邮箱
-        </h3>
-        <p><a href="#">goblincwl@qq.com</a></p>
-        <address>
-            <h3>
-                现居地址
-            </h3>
-            <span>xxxxxxx,</span>
-            <span>xxxxxxx,</span>
-            <span>xxxxxxx.</span>
-        </address>
+        <h3>世事一场大梦，</h3>
+        <h3>人生几度秋凉。</h3>
+
 
     </div>
     <div class="clearfix"></div>
 </div>
 <!-- 顶部导航 -->
-<div th:fragment="topHeader()" class="details_header">
+<div th:fragment="topHeader()" class="details_header" id="topHeader">
     <ul>
         <li>
             <a href="/">
                 <span class="glyphicon glyphicon-file" aria-hidden="true"></span>首页
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <span class="glyphicon glyphicon-print" aria-hidden="true"></span>Print CV
             </a>
         </li>
         <li>
@@ -101,8 +118,18 @@
             </a>
         </li>
         <li>
+            <a href="#">
+                <span class="glyphicon glyphicon-print" aria-hidden="true"></span>博客
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="glyphicon glyphicon-print" aria-hidden="true"></span>功能
+            </a>
+        </li>
+        <li>
             <a class="play-icon popup-with-zoom-anim" href="#small-dialog">
-                <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>View photo
+                <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>照片
             </a>
         </li>
         <div id="small-dialog" class="mfp-hide">

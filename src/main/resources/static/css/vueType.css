@@ -1,0 +1,50 @@
+html .console {
+  margin: 2rem;
+  box-shadow: 0 0 15px 0px rgba(0, 0, 0, 0.35);
+}
+html .console .top {
+  text-align: center;
+  font-size: 12px;
+  padding: 5px;
+  background-color: #6ecadc;
+  color: white
+}
+html .console .top .options {
+  font-size: 16px;
+  float: right;
+}
+
+@font-face {
+  font-family: 'MyHack';
+  src: url('/fonts/hack/Hack-Regular.ttf');
+}
+
+html .console .text {
+  font-family: 'MyHack';
+  color: #000000;
+  font-size: 14px;
+  padding: 0.25rem;
+}
+
+.terminal-console {
+  width: 40%;
+  float: left;
+}
+
+.chat-console {
+  width: 49%;
+  height: 35em;
+  float: left;
+}
+
+@media (max-width: 640px) {
+  .terminal-console {
+    width: 90%;
+    margin: 1rem!important;
+  }
+
+  .chat-console {
+    width: 90%;
+    margin: 1rem!important;
+  }
+}

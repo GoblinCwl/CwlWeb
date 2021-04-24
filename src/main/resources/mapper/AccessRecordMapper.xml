@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goblincwl.cwlweb.index.mapper.AccessRecordMapper">
+	<insert id="insertOne">
+		INSERT INTO ACCESS_RECORD (IP_ADDRESS, NICK_NAME, ACCESS_COUNT)
+		VALUES (#{ipAddress}, #{nickName}, 1)
+	</insert>
+	<update id="updateOne">
+		UPDATE ACCESS_RECORD
+		<set>
+			<if test="accessTime != null">
+				ACCESS_TIME = #{accessTime},
+			</if>
+			<if test="lastAccessTime != null">
+				LAST_ACCESS_TIME = #{lastAccessTime},
+			</if>
+			<if test="accessCount != null">
+				ACCESS_COUNT = #{accessCount}
+			</if>
+		</set>
+		WHERE ID = #{id}
+	</update>
+
+
+	<select id="selectOne" resultType="com.goblincwl.cwlweb.index.entity.AccessRecord">
+		SELECT AR.ID AS "id",
+		AR.IP_ADDRESS AS "ipAddress",
+		AR.NICK_NAME AS "nickName",
+		AR.ACCESS_TIME AS "accessTime",
+		AR.LAST_ACCESS_TIME AS "lastAccessTIme",
+		AR.ACCESS_COUNT AS "accessCount"
+		FROM ACCESS_RECORD AR
+		WHERE 1 = 1
+		<if test="ipAddress != null and ipAddress != ''">
+			AND AR.IP_ADDRESS = #{ipAddress}
+		</if>
+		ORDER BY AR.ID DESC
+	</select>
+	<select id="selectAccessCount" resultType="java.lang.Integer">
+		SELECT SUM(ACCESS_COUNT)
+		FROM ACCESS_RECORD
+	</select>
+	<select id="selectAccessIpCount" resultType="java.lang.Integer">
+		SELECT COUNT(DISTINCT IP_ADDRESS)
+		FROM ACCESS_RECORD
+	</select>
+</mapper>
