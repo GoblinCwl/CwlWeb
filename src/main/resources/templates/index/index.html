@@ -1,8 +1,13 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
-<head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{})">
+<head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
     <title>GoblinCwl - 首页</title>
     <link rel="stylesheet" th:href="@{/css/vueType.css}">
+    <style>
+        .timeStampSHow {
+            color: #929e98;
+        }
+    </style>
 </head>
 <body>
 <!-- 左侧侧边栏 -->
@@ -28,8 +33,9 @@
                 <span id="timeStampShow2" class="timeStampSHow"></span>
                 本次访问: <span th:text="${accessTime}" style="color: dodgerblue"></span>.<br>
                 <span id="timeStampShow3" class="timeStampSHow"></span>
-                您是第<span th:text="${accessIpCount}" style="color: orange;font-weight: bold"></span>个访问本站的地址，总计第<span
-                    th:text="${accessCount}" style="color: #3c763d;font-weight: bold"></span>次访问本站的用户。<br>
+                您是第<span th:text="${accessIpCount}"
+                         style="color: orange;font-weight: bold"></span>个访问本站的地址，站点总计已被访问<span
+                    th:text="${accessCount}" style="color: #3c763d;font-weight: bold"></span>次。<br>
                 <span id="timeStampShow4" class="timeStampSHow"></span>
                 同一地址超过半小时后再次访问才会进行次数记录。<br>
                 <span id="timeStampShow5" class="timeStampSHow"></span>
@@ -42,9 +48,10 @@
                 <span th:text="${nickName}" style="color: #38c0e2;font-weight: bold"></span>，允许访问！<br>
                 <span id="timeStampShow9" class="timeStampSHow"></span>
                 欢迎来到GoblinCwl的个人网站！<br>
-                <p><span style="color: #0bba0b">[GoblinCwl@localhost] # </span><span class="pink"
-                                                                                     id="infoMessage"></span></p>
-                </span>
+                <p>
+                    <span style="color: #0bba0b;font-weight: bold">[GoblinCwl@localhost] # </span>
+                    <span id="infoMessage"></span>
+                </p>
             </div>
         </div>
 
@@ -55,23 +62,18 @@
             </div>
             <div class="tabs"></div>
             <div class="text">
-                [06:24:55]&nbsp;Fin111111111111111111111111111111111111111111111111ished <span class="pink">'warm-up-hands'</span>
-                after 8.81 s
-                <br>[06:24:55] Finished <span class="pink">'warm-up-legs'</span> after 12 s
-                <br>[06:24:55] Starting <span class="pink">'gangnam-style-dance'</span>...
-                <br>[06:25:00] <span class="blue"> Calling PSY to start singing</span>
-                <br> [06:25:02] <span class="orange">Eh, sexy lady 오-오-오-오 오빤 강남스타일</span>
-                <br> [06:25:06] Strange cowboy moves
-                <br>[06:24:55] Finished <span class="pink">'do-the-moves'</span> after 12 s
-                <br> <span class="blue">? </span> Would you like to stop dancing soon as the song is ending? <span
-                    class="orange">Yes</span>
-                <br> [06:25:14] Danced <span class="blue">234</span> steps, <span class="blue">234</span> passes, <span
-                    class="blue">0</span> failures: <span class="pink">SUCCESS </span>
-                <br>
-                <p> [GoblinCwl@localhost] # <span class="pink"></span></p>
-                <input type="text" style="background-color:transparent;border:0;outline:none;width: 100%" name="t2"
-                       value="[小明@localhost] #"/>
-                </span>
+                [12:03:21] 聊天室还没写<br>
+                [12:03:21] 聊天室还没写<br>
+                [12:03:21] 聊天室还没写<br>
+                [12:03:21] 聊天室还没写<br>
+                [12:03:21] 聊天室还没写<br>
+                [12:03:21] 聊天室还没写<br>
+                <label for="chatInput">
+                    [小明@localhost] #
+
+                </label>
+                <input id="chatInput" type="text" style="background-color:transparent;border:0;outline:none;width: 80%;" name="t2"
+                       value=""/>
             </div>
         </div>
         <span style="color: white;-moz-user-select:none;-webkit-user-select:none;user-select:none;">1</span>

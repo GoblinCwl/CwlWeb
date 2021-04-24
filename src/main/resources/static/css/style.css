@@ -110,7 +110,7 @@ address span {
     top: 1px;
 }
 
-.glyphicon-file:before, .glyphicon-print:before, .glyphicon-envelope:before, .glyphicon-picture:before {
+.glyphicon-home:before, .glyphicon-file:before, .glyphicon-list:before, .glyphicon-star:before, .glyphicon-picture:before {
     margin-right: 9px;
     font-size: 14px;
     color: #6ecadc;
@@ -521,7 +521,7 @@ h3.clr3 {
         /*margin-right: 2em;*/
     }
 
-    .glyphicon-save:before, .glyphicon-print:before, .glyphicon-envelope:before, .glyphicon-picture:before {
+    .glyphicon-home:before, .glyphicon-file:before, .glyphicon-list:before, .glyphicon-star:before, .glyphicon-picture:before {
         margin-right: 6px;
         font-size: 12px;
     }
