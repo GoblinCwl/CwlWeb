@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -16,8 +17,9 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccessRecord {
+public class AccessRecord implements Serializable {
 
+    private static final long serialVersionUID = -4090579113660046062L;
     private Integer id;
     private String ipAddress;
     private String nickName;

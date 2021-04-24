@@ -35,3 +35,4 @@ build/
 ### Project ###
 mvnw
 mvnw.cmd
+/src/main/test
