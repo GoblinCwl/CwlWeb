@@ -70,7 +70,7 @@ public class RedirectController {
         //总访问次数
         modelAndView.addObject("accessCount", this.accessRecordService.findAccessCount());
         //总访问IP数
-        modelAndView.addObject("accessIpCount", accessRecord.getId());
+        modelAndView.addObject("accessIpCount", accessRecord.getId() == null ? this.accessRecordService.findAccessIpCount() + 1 : accessRecord.getId());
         //昵称
         modelAndView.addObject("nickName", accessRecord.getNickName());
         return modelAndView;
