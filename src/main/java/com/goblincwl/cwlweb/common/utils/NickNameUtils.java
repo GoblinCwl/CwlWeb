@@ -1,4 +1,4 @@
-package com.goblincwl.cwlweb.utils;
+package com.goblincwl.cwlweb.common.utils;
 
 import java.util.Random;
 

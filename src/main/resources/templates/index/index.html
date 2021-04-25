@@ -21,65 +21,31 @@
         <div th:replace="fragment/globalComponent::topHeader"></div>
 
 
-        <div class="console terminal-console">
-            <div class="top">
-                <span class="options">○ ○ ⦿</span>
-                <span class="title">GoblinCwl - 终端</span>
-            </div>
-            <div class="tabs"></div>
-            <div class="text">
-                <span id="timeStampShow1" class="timeStampSHow"></span>
-                上次访问: <span th:text="${lastAccessTime}" style="color: grey">2021-04-23 12:51:27</span>.<br>
-                <span id="timeStampShow2" class="timeStampSHow"></span>
-                本次访问: <span th:text="${accessTime}" style="color: dodgerblue"></span>.<br>
-                <span id="timeStampShow3" class="timeStampSHow"></span>
-                您是第<span th:text="${accessIpCount}"
-                         style="color: orange;font-weight: bold"></span>个访问本站的地址，站点总计已被访问<span
-                    th:text="${accessCount}" style="color: #3c763d;font-weight: bold"></span>次。<br>
-                <span id="timeStampShow4" class="timeStampSHow"></span>
-                同一地址超过半小时后再次访问才会进行次数记录。<br>
-                <span id="timeStampShow5" class="timeStampSHow"></span>
-                数据仅用于统计，不会对您造成不便。<br>
-                <span id="timeStampShow6" class="timeStampSHow"></span>
-                根据你的环境，我给你取了个名字：<span th:text="${nickName}" style="color: #38c0e2;font-weight: bold"></span>。<br>
-                <span id="timeStampShow7" class="timeStampSHow"></span>
-                认证中...<br>
-                <span id="timeStampShow8" class="timeStampSHow"></span>
-                <span th:text="${nickName}" style="color: #38c0e2;font-weight: bold"></span>，允许访问！<br>
-                <span id="timeStampShow9" class="timeStampSHow"></span>
-                欢迎来到GoblinCwl的个人网站！<br>
-                <p>
-                    <span style="color: #0bba0b;font-weight: bold">[GoblinCwl@localhost] # </span>
-                    <span id="infoMessage"></span>
+        <div class="top">
+            <span class="options">○ ○ ⦿</span>
+            <span class="title">GoblinCwl - 终端</span>
+        </div>
+        <div id="terminal-console" class="console terminal-console">
+            <div id="terminalDiv" class="text">
+                <br><br>
+                <p id="consoleInput">
+                    <label id="chatInputLabel" for="chatInput" style="color: #2bd92b">
+                        [<span id="nickName">unAuth</span>@goblincwl.cn] #
+
+                    </label>
+                    <input id="chatInput" type="text"
+                           style="background-color:transparent;border:0;outline:none;width: 50%;"
+                           name="t2"
+                           value=""/>
                 </p>
             </div>
         </div>
 
-        <div class="console chat-console">
-            <div class="top">
-                <span class="options">○ ○ ⦿</span>
-                <span class="title">Public - 聊天室</span>
-            </div>
-            <div class="tabs"></div>
-            <div class="text">
-                [12:03:21] 聊天室还没写<br>
-                [12:03:21] 聊天室还没写<br>
-                [12:03:21] 聊天室还没写<br>
-                [12:03:21] 聊天室还没写<br>
-                [12:03:21] 聊天室还没写<br>
-                [12:03:21] 聊天室还没写<br>
-                <label for="chatInput">
-                    [小明@localhost] #
-
-                </label>
-                <input id="chatInput" type="text" style="background-color:transparent;border:0;outline:none;width: 80%;" name="t2"
-                       value=""/>
-            </div>
-        </div>
+        <!--版权，备案-->
         <span style="color: white;-moz-user-select:none;-webkit-user-select:none;user-select:none;">1</span>
         <div class="copywrite">
             <p style="text-align: center">
-                ©2021 GoblinCwl
+                © 2021 GoblinCwl
                 <a href="https://beian.miit.gov.cn/" target="_blank">湘ICP备19013886号</a>
             </p>
         </div>
@@ -96,37 +62,137 @@
     <script>
         $(function () {
             $(".timeStampSHow").text("[" + new Date().Format("hh:mm:ss") + "]");
+            terminalDataInit();
         });
-        const infoMessage = new AutoTyping({
 
-            id: 'infoMessage',
+        const $consoleInput = $("#consoleInput");
 
-            typeText: [
-                'Hello，欢迎关顾！',
-                '这是我的个人网站。',
-                '除简单的展示信息外，',
-                '还有小功能，博客等。',
-                '很高兴认识你！',
-            ],
+        //终端信息初始化
+        function terminalDataInit() {
+            $.ajax({
+                type: "GET",
+                url: ctx + "/findTerminalData",
+                beforeSend: function () {
+                    insertMessage("<span style='color: #c0a16b'>数据请求中...</span>", 0);
+                },
+                error: function () {
+                    insertMessage("数据请求失败，有空的话麻烦联系下站长处理~", 50);
+                },
+                success: function (res) {
+                    if (res != null && res.code === 200) {
+                        const data = res.data;
+                        insertMessage("您是第<span style='color: orange;font-weight: bold'>" + data.accessIpCount + "</span>个访问本站的地址，站点总计已被访问<span style='color: #3c763d;font-weight: bold'>" + data.accessCount + "</span>次。", 50);
+                        insertMessage("同一地址超过半小时后再次访问才会进行次数记录。", 100);
+                        insertMessage("认证中...", 200);
+                        insertMessage("上次访问: <span style='color: grey'>" + data.lastAccessTime + "</span>.", 800);
+                        insertMessage("本次访问: <span style='color: dodgerblue'>" + data.accessTime + "</span>.", 800);
+                        if (res.data.lastAccessTime === '首次访问') {
+                            insertMessage("根据你的环境，我给你取了个名字：<span style='color: #38c0e2;font-weight: bold'>" + data.nickName + "</span>。", 850);
+                        } else {
+                            insertMessage("<span style='color: #38c0e2;font-weight: bold'>" + data.nickName + "</span>，允许访问！", 850);
+                        }
+                        setTimeout(function () {
+                            $("#nickName").text(data.nickName)
+                        }, 900);
+                        insertMessage("<span style='color: #E74C3C;font-weight: bold'>欢迎来到GoblinCwl的个人网站！</span>", 950);
 
-            deleteSpeed: 0,
+                        setTimeout(function () {
+                            websocketInit()
+                        }, 1000)
+                    } else {
+                        insertMessage(res.msg, 50);
+                        insertMessage("数据请求失败，有空的话麻烦联系下站长处理~", 100);
+                    }
+                },
+                complete: function () {
+                }
+            });
+        }
 
-        }).init();
-
-        Date.prototype.Format = function (fmt) { //author: meizz
-            var o = {
-                "M+": this.getMonth() + 1, //月份
-                "d+": this.getDate(), //日
-                "h+": this.getHours(), //小时
-                "m+": this.getMinutes(), //分
-                "s+": this.getSeconds(), //秒
-                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-                "S": this.getMilliseconds() //毫秒
+        //websocket初始化
+        function websocketInit() {
+            const webSocket = new WebSocket(url.replace('https', 'ws').replace('http', 'ws') + '/websocket');
+            webSocket.onerror = function (event) {
+                insertMessage("<span style='color: red'>连接发生异常，信息如下：</span>");
+                insertMessage("<span style='color: red'>" + event.data + "</span>");
+                insertMessage("<span style='color: red'>尝试刷新或联系站长处理！</span>");
             };
-            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-            for (var k in o)
-                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-            return fmt;
+            //与WebSocket建立连接
+            webSocket.onopen = function (event) {
+                insertMessage("<span style='color: #c0a16b'>正在连接到聊天室...</span>");
+            };
+            //处理服务器返回的信息
+            webSocket.onmessage = function (event) {
+                let nowMessage = event.data;
+                if (nowMessage.indexOf("{") === 0) {
+                    const msgJson = JSON.parse(nowMessage);
+                    const time = "<span style='color: #929e98'>[" + msgJson.sendTime + "]</span>";
+                    let contentColor = msgJson.color;
+                    if (contentColor == null) {
+                        contentColor = randomColor();
+                    }
+                    const message = "<span style='color: " + contentColor + "'>" + msgJson.content + "</span>";
+                    $consoleInput.before(time + " " + message + "<br>");
+                } else {
+                    insertMessage(nowMessage);
+                }
+                $('#terminal-console').scrollTop($('#terminal-console')[0].scrollHeight);
+            };
+
+            function sendMessage(message) {
+                //向服务器发送消息
+                webSocket.send(message);
+            }
+
+            //监听回车
+            var time = 0;
+            const $chatInput = $("#chatInput");
+            $chatInput.keydown(function (event) {
+                //判断计时器是否处于关闭状态
+
+                const code = event.keyCode;
+                if (code === 13) {
+                    if (time === 0) {
+                        time = 10; //设定间隔时间（秒）
+
+                        //启动计时器，倒计时time秒后自动关闭计时器。
+                        var index = setInterval(function () {
+                            time--;
+                            if (time === 0) {
+                                clearInterval(index);
+                            }
+                        }, 1000);
+
+                        //发送消息
+                        sendMessage('' + $("#nickName").text() + ': ' + $chatInput.val());
+                        $chatInput.val('');
+                    } else {
+                        insertMessage("<span style='color: red'>请勿刷频，等待" + time + "秒后再发送信息吧！</span>")
+                    }
+                }
+            })
+        }
+
+        //追加终端信息
+        function insertMessage(message, time) {
+            const $terminalConsole = $('#terminal-console');
+            if (time != null) {
+                setTimeout(function () {
+                    $consoleInput.before(getMessageTimestamp() + message + "<br>");
+                }, time);
+            } else {
+                $consoleInput.before(getMessageTimestamp() + message + "<br>");
+            }
+            $terminalConsole.scrollTop($terminalConsole[0].scrollHeight);
+        }
+
+        //获取时间轴
+        function getMessageTimestamp() {
+            return "<span class='timeStampSHow'>"
+                + "["
+                + new Date().Format("HH:mm:ss")
+                + "] "
+                + "</span>";
         }
     </script>
 </div>
