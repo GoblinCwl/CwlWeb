@@ -34,7 +34,7 @@
 
                     </label>
                     <input id="chatInput" type="text"
-                           style="background-color:transparent;border:0;outline:none;width: 50%;"
+                           style="background-color:transparent;border:0;outline:none;"
                            name="t2"
                            value=""/>
                 </p>
@@ -149,9 +149,18 @@
                 webSocket.send(message);
             }
 
+            const $chatInput = $("#chatInput");
+
+            //动态设置输入框的宽度
+            $chatInput.width(($("#terminalDiv").width() - $("#chatInputLabel").width())*0.9)
+
+            //监听终端点击
+            $("#terminal-console").click(function () {
+                $chatInput.focus();
+            });
+
             //监听回车
             var time = 0;
-            const $chatInput = $("#chatInput");
             $chatInput.keydown(function (event) {
                 //判断计时器是否处于关闭状态
 
