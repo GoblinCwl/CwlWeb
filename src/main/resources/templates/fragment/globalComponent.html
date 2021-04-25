@@ -60,7 +60,11 @@
     <!--变量集-->
     <script>
         ctx = '[[@{/}]]' == '/' ? '' : '[[@{/}]]';
+        isHttps = 'https:' === document.location.protocol;
         url = '[[ ${#httpServletRequest.getRequestURL()}]]';
+        if(isHttps){
+            url = url.replace('http','https');
+        }
     </script>
 
     <!--页面加载后返回顶部-->
