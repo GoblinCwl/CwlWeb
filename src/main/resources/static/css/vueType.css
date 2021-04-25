@@ -5,7 +5,7 @@ html .console {
 
 .top {
     text-align: center;
-    font-size: 12px;
+    font-size: 16px;
     padding: 5px;
     background-color: #6ecadc;
     color: white;
@@ -43,5 +43,10 @@ html .console .text {
     .terminal-console {
         width: 90%;
         margin: 1rem !important;
+    }
+    .top {
+        width: 90%;
+        margin-left: 1rem;
+        margin-top: 1rem;
     }
 }
