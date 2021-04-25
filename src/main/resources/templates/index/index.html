@@ -61,7 +61,6 @@
     <script th:src="@{/js/autoTyping/AutoTyping.min.js}"></script>
     <script>
         $(function () {
-            $(".timeStampSHow").text("[" + new Date().Format("hh:mm:ss") + "]");
             terminalDataInit();
         });
 
@@ -111,7 +110,13 @@
 
         //websocket初始化
         function websocketInit() {
-            const webSocket = new WebSocket(url.replace('https', 'ws').replace('http', 'ws') + '/websocket');
+            var socketUrl;
+            if (url.indexOf("https") !== -1) {
+                socketUrl = url.replace('https', 'wss') + '/websocket';
+            } else {
+                socketUrl = url.replace('http', 'ws') + '/websocket';
+            }
+            const webSocket = new WebSocket(socketUrl);
             webSocket.onerror = function (event) {
                 insertMessage("<span style='color: red'>连接发生异常，信息如下：</span>");
                 insertMessage("<span style='color: red'>" + event.data + "</span>");
@@ -186,7 +191,7 @@
             $terminalConsole.scrollTop($terminalConsole[0].scrollHeight);
         }
 
-        //获取时间轴
+        //获取当前时间轴
         function getMessageTimestamp() {
             return "<span class='timeStampSHow'>"
                 + "["
