@@ -73,6 +73,8 @@ mybatis-plus:
   # 驼峰
   configuration:
     map-underscore-to-camel-case: true
+  global-config:
+    banner: false
 
 logging:
   level:
