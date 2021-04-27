@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.goblincwl.cwlweb.index.mapper.ChatMessageMapper">
-	<insert id="insertOne">
-		INSERT CHAT_MESSAGE(CONTENT) VALUE (#{content})
-	</insert>
 	<select id="selectListLimit" resultType="com.goblincwl.cwlweb.index.entity.ChatMessage">
 		SELECT TB.ID AS "id",
 			TB.SEND_TIME AS "sendTime",

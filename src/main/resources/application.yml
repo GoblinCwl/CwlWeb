@@ -67,8 +67,12 @@ spring:
         login-username: ${DRUID-USER:root}
         login-password: ${DRUID-PWD:root}
 
-mybatis:
+mybatis-plus:
   mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.goblincwl.cwlweb
+  # 驼峰
+  configuration:
+    map-underscore-to-camel-case: true
 
 logging:
   level:

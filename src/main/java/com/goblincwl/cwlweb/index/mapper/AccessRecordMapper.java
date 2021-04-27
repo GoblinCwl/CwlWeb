@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.index.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.goblincwl.cwlweb.index.entity.AccessRecord;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,13 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2021-04-24 18:35
  */
 @Mapper
-public interface AccessRecordMapper {
-    AccessRecord selectOne(AccessRecord accessRecord);
-
-    Integer insertOne(AccessRecord accessRecord);
-
-    Integer updateOne(AccessRecord accessRecord);
-
+public interface AccessRecordMapper extends BaseMapper<AccessRecord> {
     Integer selectAccessCount();
 
     Integer selectAccessIpCount();

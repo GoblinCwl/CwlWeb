@@ -3,7 +3,6 @@ package com.goblincwl.cwlweb.common.utils;
 import com.goblincwl.cwlweb.index.entity.BadWords;
 import com.goblincwl.cwlweb.index.service.BadWordsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -28,7 +27,7 @@ public class BadWordUtil {
 
     @PostConstruct
     public void init() {
-        List<BadWords> badWordsList = this.badWordsService.findList();
+        List<BadWords> badWordsList = this.badWordsService.list();
         BadWordUtil.words = new HashSet<>();
         badWordsList.forEach(badWords -> BadWordUtil.words.add(badWords.getWord()));
         addBadWordToHashMap(BadWordUtil.words);
@@ -81,7 +80,7 @@ public class BadWordUtil {
      * @param txt
      * @param beginIndex
      * @param matchType
-     * @return，如果存在，则返回敏感词字符的长度，不存在返回0
+     * @return 如果存在，则返回敏感词字符的长度，不存在返回0
      * @version 1.0
      */
     @SuppressWarnings({"rawtypes"})

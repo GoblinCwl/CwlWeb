@@ -92,7 +92,7 @@ public class WebSocketServer {
         }
         ChatMessageService chatMessageService = BeanUtil.getBean(ChatMessageService.class);
         ChatMessage chatMessage = new ChatMessage(message);
-        chatMessageService.saveOne(chatMessage);
+        chatMessageService.save(chatMessage);
         broadCastInfo(chatMessage.toJson());
     }
 

@@ -15,7 +15,7 @@
 	<description>GoblinCwl 个人Web网站</description>
 	<properties>
 		<java.version>1.8</java.version>
-		<mybatis.version>2.1.4</mybatis.version>
+		<mybatis-plus.version>3.4.2</mybatis-plus.version>
 		<druid.version>1.1.10</druid.version>
 	</properties>
 	<dependencies>
@@ -39,12 +39,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!--Mybatis 持久层框架-->
+		<!--Mybatis-Plus 持久层框架-->
 		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>${mybatis.version}</version>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+			<version>${mybatis-plus.version}</version>
 		</dependency>
+
 
 		<!--Druid 连接池-->
 		<dependency>

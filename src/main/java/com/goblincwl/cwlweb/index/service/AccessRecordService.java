@@ -1,6 +1,7 @@
 package com.goblincwl.cwlweb.index.service;
 
-import com.goblincwl.cwlweb.common.exception.GoblinCwlException;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.goblincwl.cwlweb.common.utils.NickNameUtils;
 import com.goblincwl.cwlweb.index.entity.AccessRecord;
 import com.goblincwl.cwlweb.index.mapper.AccessRecordMapper;
@@ -23,9 +24,9 @@ import java.util.concurrent.TimeUnit;
  * @date 2021-04-24 18:34
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
-public class AccessRecordService {
+public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessRecord> {
 
     @Resource(name = "customRedisTemplate")
     private RedisTemplate<String, Object> redisTemplate;
@@ -49,12 +50,12 @@ public class AccessRecordService {
             accessRecord = new AccessRecord();
             accessRecord.setIpAddress(ipAddress);
 
-            AccessRecord accessRecordResult = this.accessRecordMapper.selectOne(accessRecord);
+            AccessRecord accessRecordResult = this.accessRecordMapper.selectOne(new QueryWrapper<>(accessRecord));
             if (accessRecordResult == null) {
                 //保存访客信息
                 accessRecord.setNickName(NickNameUtils.randomName(2));
                 accessRecord.setAccessTime(new Date());
-                Integer saveOneResult = this.accessRecordMapper.insertOne(accessRecord);
+                int saveOneResult = this.accessRecordMapper.insert(accessRecord);
                 if (saveOneResult < 1) {
                     //TODO
                     throw new RuntimeException("新增失败");
@@ -66,7 +67,7 @@ public class AccessRecordService {
                 accessRecord.setAccessTime(new Date());
                 //累加访问次数
                 accessRecord.setAccessCount(accessRecord.getAccessCount() + 1);
-                Integer updateOneResult = this.accessRecordMapper.updateOne(accessRecord);
+                int updateOneResult = this.accessRecordMapper.updateById(accessRecord);
                 if (updateOneResult < 1) {
                     //TODO
                     throw new RuntimeException("修改失败");

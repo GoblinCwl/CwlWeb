@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.index.service;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.goblincwl.cwlweb.index.entity.ChatMessage;
 import com.goblincwl.cwlweb.index.mapper.ChatMessageMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,17 +16,21 @@ import java.util.List;
  * @date 2021-04-25 14:46
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
-public class ChatMessageService {
+public class ChatMessageService extends ServiceImpl<ChatMessageMapper, ChatMessage> {
 
     private final ChatMessageMapper chatMessageMapper;
 
+    /**
+     * 查询消息历史记录
+     *
+     * @param num 要查询的 消息历史记录 条数
+     * @return 消息历史记录集合
+     * @date 2021-04-27 23:01:05
+     * @author ☪wl
+     */
     public List<ChatMessage> findHistoryList(int num) {
         return this.chatMessageMapper.selectListLimit(num);
-    }
-
-    public Integer saveOne(ChatMessage chatMessage) {
-        return this.chatMessageMapper.insertOne(chatMessage);
     }
 }
