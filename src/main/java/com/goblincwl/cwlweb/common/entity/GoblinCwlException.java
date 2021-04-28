@@ -1,21 +1,32 @@
-package com.goblincwl.cwlweb.common.exception;
+package com.goblincwl.cwlweb.common.entity;
 
 import com.goblincwl.cwlweb.common.enums.ResultCode;
-import lombok.Getter;
+import lombok.*;
 
 /**
- * 统一异常处理自定义异常.
+ * 自定义异常
  *
  * @author ☪wl
- * @date 2020-12-18 17:18
+ * @date 2021-04-28 22:12
  */
 @Getter
+@Setter
 public class GoblinCwlException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
-     * 错误代码
+     * 错误码
      */
-    private final Integer code;
+    protected Integer code;
+    /**
+     * 错误信息
+     */
+    protected String msg;
+
+    public GoblinCwlException() {
+        super();
+    }
 
     /**
      * 使用枚举异常.
@@ -53,5 +64,4 @@ public class GoblinCwlException extends RuntimeException {
         super(msg);
         this.code = ResultCode.SERVICE_FAIL.code();
     }
-
 }

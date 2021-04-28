@@ -1,10 +1,7 @@
 package com.goblincwl.cwlweb.common.entity;
 
 import com.goblincwl.cwlweb.common.enums.ResultCode;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -19,6 +16,7 @@ import java.io.Serializable;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 public class Result<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -38,7 +36,9 @@ public class Result<T> implements Serializable {
      */
     private T data;
 
-    public Result() {
+    public Result(ResultCode resultCode) {
+        this.setCode(resultCode.code());
+        this.setMsg(resultCode.message());
     }
 
     public Result<T> success() {
@@ -62,6 +62,13 @@ public class Result<T> implements Serializable {
     public Result<T> success(T data, String msg) {
         Result<T> result = this.success(msg);
         result.setData(data);
+        return result;
+    }
+
+    public static Result<Object> genResult(ResultCode resultCode) {
+        Result<Object> result = new Result<>();
+        result.setCode(resultCode.code());
+        result.setMsg(resultCode.message());
         return result;
     }
 

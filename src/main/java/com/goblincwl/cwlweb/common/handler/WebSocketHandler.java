@@ -1,4 +1,4 @@
-package com.goblincwl.cwlweb.common.websocket;
+package com.goblincwl.cwlweb.common.handler;
 
 import com.goblincwl.cwlweb.common.utils.BadWordUtil;
 import com.goblincwl.cwlweb.common.utils.BeanUtil;
@@ -50,7 +50,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         SESSION_SET.add(session);
         // 在线数加1
         int cnt = ONLINE_COUNT.incrementAndGet();
-        sendMessage(session, new ChatMessage("连接成功，每次将只会加载10条历史记录。", "#2BD92B").toJson());
+        sendMessage(session, new ChatMessage("连接成功，每次将只会加载10条历史记录。👌", "#2BD92B").toJson());
         ChatMessageService chatMessageService = BeanUtil.getBean(ChatMessageService.class);
         List<ChatMessage> chatMessageList = chatMessageService.findHistoryList(15);
         for (ChatMessage chatMessage : chatMessageList) {
@@ -80,19 +80,23 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
-        String message = textMessage.getPayload();
-        if (message.length() > 50) {
-            message = message.substring(0, MAX_MESSAGE_LENGTH + 1) + "...";
+        try {
+            String message = textMessage.getPayload();
+            if (message.length() > 50) {
+                message = message.substring(0, MAX_MESSAGE_LENGTH + 1) + "...";
+            }
+            //敏感词处理
+            Set<String> badWords = BadWordUtil.getBadWord(message, 2);
+            for (String badWord : badWords) {
+                message = message.replaceAll(badWord, "**");
+            }
+            ChatMessageService chatMessageService = BeanUtil.getBean(ChatMessageService.class);
+            ChatMessage chatMessage = new ChatMessage(message);
+            chatMessageService.save(chatMessage);
+            broadCastInfo(chatMessage.toJson());
+        } catch (Exception e) {
+            exceptionHandler(session, e);
         }
-        //敏感词处理
-        Set<String> badWords = BadWordUtil.getBadWord(message, 2);
-        for (String badWord : badWords) {
-            message = message.replaceAll(badWord, "**");
-        }
-        ChatMessageService chatMessageService = BeanUtil.getBean(ChatMessageService.class);
-        ChatMessage chatMessage = new ChatMessage(message);
-        chatMessageService.save(chatMessage);
-        broadCastInfo(chatMessage.toJson());
     }
 
     /**
@@ -104,9 +108,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public static void sendMessage(WebSocketSession session, String message) {
         try {
             session.sendMessage(new TextMessage(message));
-        } catch (IOException e) {
-            LOG.error("Send Message Error: {}", e.getMessage());
-            e.printStackTrace();
+        } catch (Exception e) {
+            exceptionHandler(session, e);
         }
     }
 
@@ -142,5 +145,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
         } else {
             LOG.warn("没有找到你指定ID的会话：{}", sessionId);
         }
+    }
+
+    /**
+     * 异常处理
+     *
+     * @param session 会话
+     * @param e       异常
+     * @date 2021-04-28 22:27:50
+     * @author ☪wl
+     */
+    private static void exceptionHandler(WebSocketSession session, Exception exception) {
+        LOG.error("WebSocket出现异常: ", exception);
+        sendMessage(session, new ChatMessage("发电失败，建议联系站长！⚡", "red").toJson());
     }
 }

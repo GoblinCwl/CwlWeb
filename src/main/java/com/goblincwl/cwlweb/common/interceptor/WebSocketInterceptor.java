@@ -1,45 +1,26 @@
-package com.goblincwl.cwlweb.common.websocket;
+package com.goblincwl.cwlweb.common.interceptor;
 
 import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
- * WebSocket配置
+ * WebSocket 拦截器
  *
  * @author ☪wl
- * @date 2020-12-20 20:00
+ * @date 2021-04-28 22:06
  */
-
-@Configuration
-@EnableWebSocket
 @RequiredArgsConstructor
-public class WebSocketConfig implements WebSocketConfigurer, HandshakeInterceptor {
+public class WebSocketInterceptor implements HandshakeInterceptor {
 
     private final GoblinCwlConfig goblinCwlConfig;
-
-    /**
-     * 注册处理器，拦截器
-     *
-     * @date 2021-04-28 17:34:15
-     * @author ☪wl
-     */
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(), this.goblinCwlConfig.getEndPoint())
-                .addInterceptors(this)
-                .setAllowedOrigins("*");
-    }
 
     /**
      * 握手前

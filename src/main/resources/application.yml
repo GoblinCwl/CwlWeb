@@ -80,6 +80,7 @@ mybatis-plus:
 
 logging:
   level:
-    root: error
+#    root: error
+    com.goblincwl.cwlweb: debug
   file:
     name: goblincw-web.log
