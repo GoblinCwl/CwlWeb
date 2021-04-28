@@ -55,6 +55,7 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
                 //保存访客信息
                 accessRecord.setNickName(NickNameUtils.randomName(2));
                 accessRecord.setAccessTime(new Date());
+                accessRecord.setAccessCount(1);
                 int saveOneResult = this.accessRecordMapper.insert(accessRecord);
                 if (saveOneResult < 1) {
                     //TODO
