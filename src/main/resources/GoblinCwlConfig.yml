@@ -1,0 +1,6 @@
+websocket:
+  endPoint: websocket
+  origin-white-list:
+    - "http://localhost:8500"
+    - "https://goblincwl.cn"
+    - "https://www.goblincwl.cn"

@@ -1,5 +1,7 @@
 package com.goblincwl.cwlweb.common.websocket;
 
+import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -18,11 +20,13 @@ import java.util.Map;
  * @author ☪wl
  * @date 2020-12-20 20:00
  */
+
 @Configuration
 @EnableWebSocket
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketConfigurer, HandshakeInterceptor {
 
-    private final String endPoint = "websocket";
+    private final GoblinCwlConfig goblinCwlConfig;
 
     /**
      * 注册处理器，拦截器
@@ -32,8 +36,8 @@ public class WebSocketConfig implements WebSocketConfigurer, HandshakeIntercepto
      */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(), endPoint)
-                .addInterceptors(new WebSocketConfig())
+        registry.addHandler(new WebSocketHandler(), this.goblinCwlConfig.getEndPoint())
+                .addInterceptors(this)
                 .setAllowedOrigins("*");
     }
 
@@ -52,11 +56,8 @@ public class WebSocketConfig implements WebSocketConfigurer, HandshakeIntercepto
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, org.springframework.web.socket.WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
         //验证请求的Origin
         HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
-        String requestUrl = request.getRequestURL().toString().replaceAll(endPoint, "");
-        System.out.println("requestUrl: " + requestUrl);
         String origin = request.getHeader("Origin");
-        System.out.println("origin: " + origin);
-        return (origin + "/").equals(requestUrl);
+        return this.goblinCwlConfig.getOriginWhiteList().contains(origin);
     }
 
     /**
