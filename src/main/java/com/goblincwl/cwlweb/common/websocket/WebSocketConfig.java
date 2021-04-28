@@ -52,12 +52,11 @@ public class WebSocketConfig implements WebSocketConfigurer, HandshakeIntercepto
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, org.springframework.web.socket.WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
         //验证请求的Origin
         HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
+        System.out.println("request: " + request);
         String requestUrl = request.getRequestURL().toString().replaceAll(endPoint, "");
         String origin = request.getHeader("Origin");
-        if (!(origin + "/").equals(requestUrl)) {
-            return false;
-        }
-        return true;
+        System.out.println("origin: " + origin);
+        return (origin + "/").equals(requestUrl);
     }
 
     /**
