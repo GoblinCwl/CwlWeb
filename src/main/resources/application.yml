@@ -75,9 +75,11 @@ mybatis-plus:
     map-underscore-to-camel-case: true
   global-config:
     banner: false
+    db-config:
+      id-type: auto
 
 logging:
   level:
-    com.goblincwl.cwlweb: error
+    root: error
   file:
     name: goblincw-web.log

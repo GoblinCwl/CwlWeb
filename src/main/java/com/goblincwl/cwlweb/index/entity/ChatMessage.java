@@ -1,10 +1,6 @@
 package com.goblincwl.cwlweb.index.entity;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +20,6 @@ import java.util.Date;
 public class ChatMessage implements Serializable {
 
     private static final long serialVersionUID = 4927482340963579808L;
-    @TableId(type = IdType.AUTO)
     private Integer id;
     private String content;
     private Date sendTime;
