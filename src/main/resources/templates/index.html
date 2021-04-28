@@ -68,11 +68,11 @@
 
         //终端信息初始化
         function terminalDataInit() {
-            $.ajax({
+            ajaxHttp({
                 type: "GET",
                 url: ctx + "/findTerminalData",
                 beforeSend: function (request) {
-                    request.setRequestHeader("GoblinCwlRequestType", "api");
+                    // request.setRequestHeader("GoblinCwlRequestType", "api");
                     insertMessage("<span style='color: #c0a16b'>数据请求中...</span>", 0);
                 },
                 error: function () {
@@ -113,9 +113,9 @@
         function websocketInit() {
             var socketUrl;
             if (url.indexOf("https") !== -1) {
-                socketUrl = url.replace('https', 'wss') + '/websocket';
+                socketUrl = url.replace('https', 'wss') + 'websocket';
             } else {
-                socketUrl = url.replace('http', 'ws') + '/websocket';
+                socketUrl = url.replace('http', 'ws') + 'websocket';
             }
             const webSocket = new WebSocket(socketUrl);
             webSocket.onerror = function (event) {
@@ -163,26 +163,32 @@
             //监听回车
             var time = 0;
             $chatInput.keydown(function (event) {
-                //判断计时器是否处于关闭状态
-
                 const code = event.keyCode;
+                //按下回车时
                 if (code === 13) {
-                    if (time === 0) {
-                        time = 10; //设定间隔时间（秒）
-
-                        //启动计时器，倒计时time秒后自动关闭计时器。
-                        var index = setInterval(function () {
-                            time--;
-                            if (time === 0) {
-                                clearInterval(index);
-                            }
-                        }, 1000);
-
-                        //发送消息
-                        sendMessage('' + $("#nickName").text() + ': ' + $chatInput.val());
-                        $chatInput.val('');
+                    const message = $("#nickName").text() + ': ' + $chatInput.val();
+                    //校验信息长度
+                    if (message.length > 50) {
+                        insertMessage("<span style='color: red'>太多啦，我们还是长话短说吧！</span>")
                     } else {
-                        insertMessage("<span style='color: red'>请勿刷频，等待" + time + "秒后再发送信息吧！</span>")
+                        //判断计时器是否处于关闭状态
+                        if (time === 0) {
+                            time = 10; //设定间隔时间（秒）
+
+                            //启动计时器，倒计时time秒后自动关闭计时器。
+                            var index = setInterval(function () {
+                                time--;
+                                if (time === 0) {
+                                    clearInterval(index);
+                                }
+                            }, 1000);
+
+                            //发送消息
+                            sendMessage(message);
+                            $chatInput.val('');
+                        } else {
+                            insertMessage("<span style='color: red'>喝口茶歇歇吧，" + time + "秒就好！</span>")
+                        }
                     }
                 }
             })

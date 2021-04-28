@@ -1,6 +1,6 @@
 //日期格式化
 Date.prototype.Format = function (fmt) {
-    var o = {
+    const o = {
         "M+": this.getMonth() + 1, //月份
         "d+": this.getDate(), //日
         "H+": this.getHours(), //小时
@@ -17,9 +17,9 @@ Date.prototype.Format = function (fmt) {
 
 //随机颜色
 function randomColor() {
-    var r = Math.floor(Math.random() * 256);
-    var g = Math.floor(Math.random() * 256);
-    var b = Math.floor(Math.random() * 256);
+    let r = Math.floor(Math.random() * 256);
+    let g = Math.floor(Math.random() * 256);
+    let b = Math.floor(Math.random() * 256);
     if (r < 16) {
         r = "0" + r.toString(16);
     } else {
@@ -37,3 +37,46 @@ function randomColor() {
     }
     return "#" + r + g + b;
 }
+
+//Ajax封装
+const HttpRequest = function (options) {
+    const defaults = {
+        type: 'get',
+        headers: {},
+        data: {},
+        dataType: 'json',
+        async: true,
+        cache: false,
+        beforeSend: null,
+        success: null,
+        complete: null
+    };
+    const o = $.extend({}, defaults, options);
+    $.ajax({
+        url: o.url,
+        type: o.type,
+        headers: {
+            'Content-Type': o.contentType,
+            'Authorization': o.token,
+            'GoblinCwlRequestType': 'api'
+        },
+        data: o.data,
+        dataType: o.dataType,
+        async: o.async,
+        beforeSend: function () {
+            o.beforeSend && o.beforeSend();
+        },
+        success: function (res) {
+            o.success && o.success(res);
+        },
+        complete: function () {
+            o.complete && o.complete();
+        }
+    });
+};
+
+const ajaxHttp = function (options) {
+    // 每次请求携带token
+    options.token = localStorage.getItem('access_token');
+    HttpRequest(options);
+};

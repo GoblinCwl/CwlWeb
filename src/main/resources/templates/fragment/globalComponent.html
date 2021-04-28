@@ -4,6 +4,9 @@
 <!--公共依赖头-->
 <head th:fragment="commonHead(title,links,styles)">
     <title th:replace="${title}">GoblinCwl</title>
+    <!--网站图标-->
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon"/>
+
     <link th:href="@{/css/bootstrap.css}" rel='stylesheet' type='text/css'/>
     <!-- 自定义主题文件 -->
     <link th:href="@{/css/dashboard.css}" rel="stylesheet">
@@ -17,7 +20,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="keywords" content="GoblinCwl,陈威龙"/>
-    <meta name="baidu-site-verification" content="code-tpkakEwQWN" />
+    <meta name="baidu-site-verification" content="code-tpkakEwQWN"/>
 
     <!--隐藏滚动条-->
     <style>
@@ -63,8 +66,8 @@
         ctx = '[[@{/}]]' == '/' ? '' : '[[@{/}]]';
         isHttps = 'https:' === document.location.protocol;
         url = '[[ ${#httpServletRequest.getRequestURL()}]]';
-        if(isHttps){
-            url = url.replace('http','https');
+        if (isHttps) {
+            url = url.replace('http', 'https');
         }
     </script>
 
@@ -140,13 +143,18 @@
                 <span class="glyphicon glyphicon-star" aria-hidden="true"></span>功能
             </a>
         </li>
+<!--        <li>-->
+<!--            <a href="manager">-->
+<!--                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>管理-->
+<!--            </a>-->
+<!--        </li>-->
         <!--        <li>-->
         <!--            <a class="play-icon popup-with-zoom-anim" href="#small-dialog">-->
         <!--                <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>照片-->
         <!--            </a>-->
         <!--        </li>-->
-        <div id="small-dialog" class="mfp-hide">
-            <img th:src="@{/images/g4.jpg}" alt=""/>
-        </div>
+<!--        <div id="small-dialog" class="mfp-hide">-->
+<!--            <img th:src="@{/images/g4.jpg}" alt=""/>-->
+<!--        </div>-->
     </ul>
 </div>

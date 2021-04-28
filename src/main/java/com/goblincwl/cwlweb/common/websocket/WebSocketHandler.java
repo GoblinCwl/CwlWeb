@@ -1,4 +1,4 @@
-package com.goblincwl.cwlweb.common;
+package com.goblincwl.cwlweb.common.websocket;
 
 import com.goblincwl.cwlweb.common.utils.BadWordUtil;
 import com.goblincwl.cwlweb.common.utils.BeanUtil;
@@ -6,11 +6,11 @@ import com.goblincwl.cwlweb.index.entity.ChatMessage;
 import com.goblincwl.cwlweb.index.service.ChatMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import javax.annotation.PostConstruct;
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -18,40 +18,35 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * WebSocket消息推送服务
+ * WebSocket处理器
  *
  * @author ☪wl
  * @date 2020-12-20 20:00
  */
-@Component
-@ServerEndpoint(value = "/websocket")
-public class WebSocketServer {
+public class WebSocketHandler extends TextWebSocketHandler {
 
-    @PostConstruct
-    public void init() {
-        LOG.info("Init WebSocket");
-    }
-
-    private static final Logger LOG = LoggerFactory.getLogger(WebSocketServer.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(WebSocketHandler.class);
     /**
      * 在线人数
      */
     private static final AtomicInteger ONLINE_COUNT = new AtomicInteger(0);
-
     /**
      * concurrent包的线程安全Set
      * 用来存放每个客户端对应的Session对象
      */
-    private static final CopyOnWriteArraySet<Session> SESSION_SET = new CopyOnWriteArraySet<>();
+    private static final CopyOnWriteArraySet<WebSocketSession> SESSION_SET = new CopyOnWriteArraySet<>();
+    /**
+     * 消息最大值
+     */
+    private static final Integer MAX_MESSAGE_LENGTH = 50;
 
     /**
      * 连接建立成功调用的方法
      *
-     * @param session 会话对象
+     * @param session 会话
      */
-    @OnOpen
-    public void onOpen(Session session) {
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) {
         SESSION_SET.add(session);
         // 在线数加1
         int cnt = ONLINE_COUNT.incrementAndGet();
@@ -67,10 +62,11 @@ public class WebSocketServer {
     /**
      * 连接关闭调用的方法
      *
-     * @param session 会话对象
+     * @param session 会话
+     * @param status  状态
      */
-    @OnClose
-    public void onClose(Session session) {
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         SESSION_SET.remove(session);
         int cnt = ONLINE_COUNT.decrementAndGet();
         LOG.info("There are connections closed，current connections: {}", cnt);
@@ -79,12 +75,15 @@ public class WebSocketServer {
     /**
      * 收到客户端消息后调用的方法
      *
-     * @param message 客户端发送过来的消息
-     * @param session 会话对象
+     * @param session     会话
+     * @param textMessage 消息
      */
-    @OnMessage
-    public void onMessage(String message, Session session) {
-        LOG.info("来自客户端的消息：{}", message);
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+        String message = textMessage.getPayload();
+        if (message.length() > 50) {
+            message = message.substring(0, MAX_MESSAGE_LENGTH + 1) + "...";
+        }
         //敏感词处理
         Set<String> badWords = BadWordUtil.getBadWord(message, 2);
         for (String badWord : badWords) {
@@ -97,34 +96,19 @@ public class WebSocketServer {
     }
 
     /**
-     * 出现错误
-     *
-     * @param session 会话对象
-     * @param error   异常对象
-     */
-    @OnError
-    public void onError(Session session, Throwable error) {
-
-        sendMessage(session, new ChatMessage("发生错误，信息如下，请联系站长！", "red").toJson());
-        sendMessage(session, new ChatMessage(error.getMessage(), "red").toJson());
-        error.printStackTrace();
-    }
-
-    /**
      * 发送消息，实践表明，每次浏览器刷新，session会发生变化.
      *
      * @param session 会话
      * @param message 发送的消息
      */
-    public static void sendMessage(Session session, String message) {
+    public static void sendMessage(WebSocketSession session, String message) {
         try {
-            session.getBasicRemote().sendText(message);
+            session.sendMessage(new TextMessage(message));
         } catch (IOException e) {
             LOG.error("Send Message Error: {}", e.getMessage());
             e.printStackTrace();
         }
     }
-
 
     /**
      * 群发消息
@@ -132,13 +116,12 @@ public class WebSocketServer {
      * @param message 发送的消息
      */
     public static void broadCastInfo(String message) {
-        for (Session session : SESSION_SET) {
+        for (WebSocketSession session : SESSION_SET) {
             if (session.isOpen()) {
                 sendMessage(session, message);
             }
         }
     }
-
 
     /**
      * 指定Session发送消息
@@ -147,8 +130,8 @@ public class WebSocketServer {
      * @param message   发送的消息
      */
     public static void sendMessage(String message, String sessionId) {
-        Session session = null;
-        for (Session s : SESSION_SET) {
+        WebSocketSession session = null;
+        for (WebSocketSession s : SESSION_SET) {
             if (s.getId().equals(sessionId)) {
                 session = s;
                 break;

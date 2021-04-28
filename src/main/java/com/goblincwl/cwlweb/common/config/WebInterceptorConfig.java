@@ -25,7 +25,8 @@ public class WebInterceptorConfig implements HandlerInterceptor, WebMvcConfigure
                 .excludePathPatterns("/",
                         "/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg",
                         "/**/*.jpeg", "/**/*.gif", "/**/fonts/**", "/**/*.svg",
-                        "/error", "/redirect/**", "/favicon.ico "
+                        "/**/*.ico",
+                        "/error", "/redirect/**"
                 );
     }
 
