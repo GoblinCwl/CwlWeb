@@ -25,6 +25,10 @@ public class TokenService {
      * 默认Token有效期：5小时
      */
     private final static long EXPIRE_TIME = 300 * 60;
+    /**
+     * redis中Token的key前缀
+     */
+    private final static String KEY_PREFIX = "managerAccessToken:";
 
     @Resource(name = "redisStringTemplate")
     private final RedisTemplate<String, Object> redisTemplate;
@@ -41,11 +45,11 @@ public class TokenService {
     public String genToken(String ipAddr) {
         String token = UUID.randomUUID().toString();
         this.redisTemplate.opsForValue().set(
-                token,
+                KEY_PREFIX + token,
                 ipAddr,
                 EXPIRE_TIME,
                 TimeUnit.SECONDS);
-        return UUID.randomUUID().toString();
+        return token;
     }
 
     /**
@@ -62,11 +66,11 @@ public class TokenService {
     public String genToken(String ipAddr, Long expireTime) {
         String token = UUID.randomUUID().toString();
         this.redisTemplate.opsForValue().set(
-                token,
+                KEY_PREFIX + token,
                 ipAddr,
                 expireTime == null ? EXPIRE_TIME : expireTime,
                 TimeUnit.SECONDS);
-        return UUID.randomUUID().toString();
+        return token;
     }
 
     /**
@@ -81,7 +85,7 @@ public class TokenService {
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(ipAddr)) {
             return false;
         }
-        String redisIpAddr = (String) this.redisTemplate.opsForValue().get(token);
+        String redisIpAddr = (String) this.redisTemplate.opsForValue().get(KEY_PREFIX + token);
         return ipAddr.equals(redisIpAddr);
     }
 

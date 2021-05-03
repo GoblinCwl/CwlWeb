@@ -36,7 +36,7 @@ public class IndexController {
     private Result<Object> findTerminalData(HttpServletRequest request) {
         Map<String, Object> resultMap;
         resultMap = this.accessRecordService.findTerminalData(IpUtils.getIpAddress(request));
-        return Result.genSuccess(resultMap);
+        return Result.genSuccess(resultMap, "成功");
     }
 
 }

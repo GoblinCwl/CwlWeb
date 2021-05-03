@@ -1,6 +1,7 @@
 package com.goblincwl.cwlweb.common.config;
 
 import com.goblincwl.cwlweb.common.interceptor.WebMvcInterceptor;
+import com.goblincwl.cwlweb.common.interceptor.WebRedirectInterceptor;
 import com.goblincwl.cwlweb.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +23,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new WebMvcInterceptor(this.tokenService))
-                .addPathPatterns("/manager/**")
-                .excludePathPatterns("/",
+        //重定向拦截器
+        registry.addInterceptor(new WebRedirectInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        //首页
+                        "/",
                         //静态资源
                         "/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg",
                         "/**/*.jpeg", "/**/*.gif", "/**/fonts/**", "/**/*.svg",
@@ -33,6 +37,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/error",
                         //页面重定向
                         "/redirect/**",
+                        //manger模块
+                        "/manager/**"
+                );
+        //mvc拦截器
+        registry.addInterceptor(new WebMvcInterceptor(this.tokenService))
+                .addPathPatterns("/manager/**")
+                .excludePathPatterns(
                         //管理员登陆
                         "/manager/login"
                 );

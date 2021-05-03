@@ -62,9 +62,11 @@ public class BaseErrorController extends AbstractErrorController {
     @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView errorHtml(HttpServletRequest request, HttpServletResponse response) {
         HttpStatus status = getStatus(request);
+
         Map<String, Object> model = new HashMap<>(Collections
                 .unmodifiableMap(getErrorAttributes(request, getErrorAttributeOptions(request, MediaType.TEXT_HTML))));
         response.setStatus(status.value());
+
         //如果是模板找不到，转为404
         String message = (String) model.get("message");
         if (message.contains("template might not exist")) {
@@ -73,28 +75,47 @@ public class BaseErrorController extends AbstractErrorController {
             model.put("error", HttpStatus.NOT_FOUND.getReasonPhrase());
         }
 
+        //返回枚举
         ResultCode resultCode = (ResultCode) request.getAttribute("resultCode");
-        resultCode = resultCode == null ? ResultCode.FAIL : resultCode;
-
-        //类型消息
-        model.put("typeMessage", status == HttpStatus.NOT_FOUND
-                ? ResultCode.NOT_FOUND.type()
-                : resultCode.type());
-        //消息图标
-        model.put("messageIcon", status == HttpStatus.NOT_FOUND
-                ? ResultCode.NOT_FOUND.icon()
-                : resultCode.icon());
-        //不为逻辑异常
-        if (!resultCode.code().equals(ResultCode.SERVICE_FAIL.code())) {
-            //消息
-            model.put("message", status == HttpStatus.NOT_FOUND
-                    ? ResultCode.NOT_FOUND.message()
-                    : resultCode.message());
-        } else {
-            //如果是逻辑异常,处理error
-            model.put("error", "Logical processing failed");
+        //如果为空，赋值
+        if (resultCode == null) {
+            //拦截器抛出的认证异常不会被ControllerAdvice处理，此处通过消息判断
+            if (message.equals(ResultCode.AUTH_FAIL.message())) {
+                //处理认证失败异常
+                resultCode = ResultCode.AUTH_FAIL;
+                model.put("status", ResultCode.AUTH_FAIL.code());
+            } else {
+                resultCode = ResultCode.FAIL;
+            }
         }
 
+        //类型消息
+        model.put("typeMessage", resultCode.type());
+        //消息图标
+        model.put("messageIcon", resultCode.icon());
+        //消息
+        model.put("message", resultCode.message());
+
+        //需要处理的状态码
+        switch (String.valueOf(model.get("status"))) {
+            case "404":
+                //找不到异常
+                model.put("typeMessage", ResultCode.NOT_FOUND.type());
+                model.put("messageIcon", ResultCode.NOT_FOUND.icon());
+                model.put("message", ResultCode.NOT_FOUND.message());
+                break;
+            case "501":
+                //逻辑异常
+                model.put("error", "Logical processing failed");
+                break;
+            case "503":
+                //认证异常
+                model.put("error", "Authentication failed");
+                break;
+            default:
+                break;
+
+        }
 
         ModelAndView modelAndView = resolveErrorView(request, response, status, model);
         return (modelAndView != null) ? modelAndView : new ModelAndView("error", model);
@@ -113,23 +134,40 @@ public class BaseErrorController extends AbstractErrorController {
     public Result<Object> error(HttpServletRequest request) {
         Map<String, Object> body = getErrorAttributes(request, getErrorAttributeOptions(request, MediaType.ALL));
         String status = String.valueOf(body.get("status"));
+
         String message = StringUtils.isEmpty((String) request.getAttribute("message"))
                 ? (String) body.get("message") : (String) request.getAttribute("message");
+
         //如果是模板找不到，或者无请求映射，转为404
         if (message.contains("template might not exist")
                 || message.contains("Could not find acceptable representation")) {
             return Result.genResult(ResultCode.NOT_FOUND);
         }
 
+        //返回枚举
         ResultCode resultCode = (ResultCode) request.getAttribute("resultCode");
-        resultCode = resultCode == null ? ResultCode.FAIL : resultCode;
+        //如果为空，赋值
+        if (resultCode == null) {
+            //拦截器抛出的认证异常不会被ControllerAdvice处理，此处通过消息判断
+            if (message.equals(ResultCode.AUTH_FAIL.message())) {
+                //处理认证失败异常
+                resultCode = ResultCode.AUTH_FAIL;
+                status = ResultCode.AUTH_FAIL.code().toString();
+            } else {
+                resultCode = ResultCode.FAIL;
+            }
+        }
 
-        //不为逻辑异常
-        if (!resultCode.code().equals(ResultCode.SERVICE_FAIL.code())) {
-            //消息
-            message = status.equals(String.valueOf(HttpStatus.NOT_FOUND.value()))
-                    ? ResultCode.NOT_FOUND.message()
-                    : resultCode.message();
+        //需要处理的状态码
+        switch (status) {
+            case "404":
+                message = ResultCode.NOT_FOUND.message();
+                break;
+            case "501":
+                break;
+            default:
+                message = resultCode.message();
+                break;
         }
 
         return Result.genFail(message,

@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head th:replace="fragment/globalComponent::commonHead(~{::title},~{},~{})">
+    <title>GoblinCwl - 简历</title>
+</head>
+<body>
+<!-- 左侧侧边栏 -->
+<div class="col-sm-3 col-md-2 sidebar">
+    <div class="sidebar_top">
+        <h1>Cwl</h1>
+        <img th:src="@{/images/profile.jpg}" alt=""/>
+    </div>
+    <div class="details">
+        <h3>
+            联系方式
+        </h3>
+        <p>+86 18673734477</p>
+        <h3>
+            电子邮箱
+        </h3>
+        <p><a href="#">goblincwl@qq.com</a></p>
+        <address>
+            <h3>
+                现居地址
+            </h3>
+            <span>xxxxxxx,</span>
+            <span>xxxxxxx,</span>
+            <span>xxxxxxx.</span>
+        </address>
+
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+<!-- 页面内容 -->
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <div class="content">
+        <!-- 顶部导航 -->
+        <div th:replace="fragment/globalComponent::topHeader"></div>
+        Manager测试
+    </div>
+</div>
+</body>
+<div th:replace="fragment/globalComponent::commonFoot(~{})">
+</div>
+</html>

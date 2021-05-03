@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.manager.controller;
 
+import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.IpUtils;
 import com.goblincwl.cwlweb.manager.entity.KeyValueOptions;
@@ -44,16 +45,16 @@ public class ManagerController {
             if (password.equals(loginPassword.getOptValue())) {
                 //使用UUID作为token
                 String token = this.tokenService.genToken(IpUtils.getIpAddress(request));
-                return Result.genSuccess(token);
+                return Result.genSuccess(token, "登陆成功");
             } else {
-                return Result.genFail("登陆失败，密码错误。");
+                throw new GoblinCwlException("登陆失败，密码错误。");
             }
         }
-        return Result.genFail("登陆失败，密码不能为空。");
+        throw new GoblinCwlException("登陆失败，密码不能为空。");
     }
 
     @GetMapping("/test")
     public Result<Object> test() {
-        return Result.genSuccess("成功");
+        return Result.genSuccess("test", "成功");
     }
 }
