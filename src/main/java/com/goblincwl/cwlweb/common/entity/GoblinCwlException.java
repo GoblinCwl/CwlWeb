@@ -25,7 +25,9 @@ public class GoblinCwlException extends RuntimeException {
     protected String msg;
 
     public GoblinCwlException() {
-        super();
+        super(ResultCode.SERVICE_FAIL.message());
+        this.code = ResultCode.SERVICE_FAIL.code();
+        this.msg = ResultCode.SERVICE_FAIL.message();
     }
 
     /**

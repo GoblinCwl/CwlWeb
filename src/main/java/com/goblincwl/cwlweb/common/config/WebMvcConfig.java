@@ -2,12 +2,8 @@ package com.goblincwl.cwlweb.common.config;
 
 import com.goblincwl.cwlweb.common.interceptor.WebMvcInterceptor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * web拦截器
@@ -30,6 +26,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/error", "/redirect/**"
                 );
     }
+
+//    @Bean("error")
+//    public View defaultErrorView() {
+//        return new TemplateNotFoundView();
+//    }
 
 
 }

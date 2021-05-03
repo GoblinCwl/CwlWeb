@@ -17,7 +17,7 @@ public class WebMvcInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String goblinCwlRequestType = request.getHeader("GoblinCwlRequestType");
         if (!"api".equals(goblinCwlRequestType)) {
-            response.sendRedirect(request.getContextPath() + "/redirect" + request.getRequestURI());
+            request.getRequestDispatcher(request.getContextPath() + "/redirect" + request.getRequestURI()).forward(request, response);
             return false;
         }
         return true;
