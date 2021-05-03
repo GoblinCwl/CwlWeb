@@ -21,8 +21,7 @@ public class BaseRedirectController {
      */
     @GetMapping(value = "/")
     public String index() {
-        throw new GoblinCwlException();
-//        return "index";
+        return "index";
     }
 
     /**
