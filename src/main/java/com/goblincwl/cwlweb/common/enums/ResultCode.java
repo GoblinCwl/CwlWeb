@@ -11,13 +11,15 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ResultCode {
     //成功
-    SUCCESS(200, "成功", "Success"),
+    SUCCESS(200, "成功", "Success", ""),
     //请求地址不存在
-    NOT_FOUND(404, "很抱歉，你请求的地址不存在！", "我是否和它一样，像过客般匆匆消失..."),
+    NOT_FOUND(404, "很抱歉，你请求的地址不存在！", "我是否和它一样，像过客般匆匆消失...", "⛔"),
     //未处理异常
-    FAIL(500, "不好了，内部服务器出错！", "人生的错误可以弥补吗，就像这错误留给你的印象..."),
+    FAIL(500, "不好了，内部服务器出错！", "人生的错误可以弥补吗，就像这错误留给你的印象...", "❌"),
     //业务错误
-    SERVICE_FAIL(501, "不要慌，逻辑处理失败。", "一定是你的打开方式不对~");
+    SERVICE_FAIL(501, "不要慌，逻辑处理失败。", "一定是你的打开方式不对~", "💥"),
+    //认证失败
+    AUTH_FAIL(503, "这可不行，你没有权限！", "一道不那么厚实的门挡在了你的面前，或许你无法解开它...", "🔒");
 
     /**
      * 错误代码
@@ -34,6 +36,11 @@ public enum ResultCode {
      */
     private final String message;
 
+    /**
+     * 错误页面的图标
+     */
+    private final String icon;
+
 
     public Integer code() {
         return this.code;
@@ -45,6 +52,10 @@ public enum ResultCode {
 
     public String message() {
         return this.message;
+    }
+
+    public String icon() {
+        return this.icon;
     }
 
     public static ResultCode getByCode(Integer code) {

@@ -22,7 +22,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class IndexController {
 
-
     private final AccessRecordService accessRecordService;
 
     /**

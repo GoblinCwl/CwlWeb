@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeAttribute.*;
@@ -61,16 +62,42 @@ public class BaseErrorController extends AbstractErrorController {
     @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView errorHtml(HttpServletRequest request, HttpServletResponse response) {
         HttpStatus status = getStatus(request);
-        Map<String, Object> model = Collections
-                .unmodifiableMap(getErrorAttributes(request, getErrorAttributeOptions(request, MediaType.TEXT_HTML)));
+        Map<String, Object> model = new HashMap<>(Collections
+                .unmodifiableMap(getErrorAttributes(request, getErrorAttributeOptions(request, MediaType.TEXT_HTML))));
         response.setStatus(status.value());
         //如果是模板找不到，转为404
         String message = (String) model.get("message");
         if (message.contains("template might not exist")) {
             status = HttpStatus.NOT_FOUND;
+            model.put("status", HttpStatus.NOT_FOUND.value());
+            model.put("error", HttpStatus.NOT_FOUND.getReasonPhrase());
         }
+
+        ResultCode resultCode = (ResultCode) request.getAttribute("resultCode");
+        resultCode = resultCode == null ? ResultCode.FAIL : resultCode;
+
+        //类型消息
+        model.put("typeMessage", status == HttpStatus.NOT_FOUND
+                ? ResultCode.NOT_FOUND.type()
+                : resultCode.type());
+        //消息图标
+        model.put("messageIcon", status == HttpStatus.NOT_FOUND
+                ? ResultCode.NOT_FOUND.icon()
+                : resultCode.icon());
+        //不为逻辑异常
+        if (!resultCode.code().equals(ResultCode.SERVICE_FAIL.code())) {
+            //消息
+            model.put("message", status == HttpStatus.NOT_FOUND
+                    ? ResultCode.NOT_FOUND.message()
+                    : resultCode.message());
+        } else {
+            //如果是逻辑异常,处理error
+            model.put("error", "Logical processing failed");
+        }
+
+
         ModelAndView modelAndView = resolveErrorView(request, response, status, model);
-        return (modelAndView != null) ? modelAndView : new ModelAndView("errorPage/" + status.value(), model);
+        return (modelAndView != null) ? modelAndView : new ModelAndView("error", model);
     }
 
     /**
@@ -83,7 +110,7 @@ public class BaseErrorController extends AbstractErrorController {
      */
     @ResponseBody
     @RequestMapping
-    public Result<String> error(HttpServletRequest request) {
+    public Result<Object> error(HttpServletRequest request) {
         Map<String, Object> body = getErrorAttributes(request, getErrorAttributeOptions(request, MediaType.ALL));
         String status = String.valueOf(body.get("status"));
         String message = StringUtils.isEmpty((String) request.getAttribute("message"))
@@ -93,6 +120,18 @@ public class BaseErrorController extends AbstractErrorController {
                 || message.contains("Could not find acceptable representation")) {
             return Result.genResult(ResultCode.NOT_FOUND);
         }
+
+        ResultCode resultCode = (ResultCode) request.getAttribute("resultCode");
+        resultCode = resultCode == null ? ResultCode.FAIL : resultCode;
+
+        //不为逻辑异常
+        if (!resultCode.code().equals(ResultCode.SERVICE_FAIL.code())) {
+            //消息
+            message = status.equals(String.valueOf(HttpStatus.NOT_FOUND.value()))
+                    ? ResultCode.NOT_FOUND.message()
+                    : resultCode.message();
+        }
+
         return Result.genFail(message,
                 StringUtils.isEmpty(status) || "null".equals(status)
                         ? ResultCode.FAIL.code() : Integer.parseInt(status));

@@ -65,8 +65,8 @@ public class Result<T> implements Serializable {
         return result;
     }
 
-    public static Result<String> genResult(ResultCode resultCode) {
-        Result<String> result = new Result<>();
+    public static Result<Object> genResult(ResultCode resultCode) {
+        Result<Object> result = new Result<>();
         result.setCode(resultCode.code());
         result.setMsg(resultCode.message());
         result.setData(resultCode.type());
@@ -116,22 +116,22 @@ public class Result<T> implements Serializable {
         return result;
     }
 
-    public static Result<String> genFail() {
-        Result<String> result = new Result<>();
+    public static Result<Object> genFail() {
+        Result<Object> result = new Result<>();
         result.setCode(ResultCode.FAIL.code());
         result.setMsg(ResultCode.FAIL.message());
         result.setData(ResultCode.FAIL.type());
         return result;
     }
 
-    public static Result<String> genFail(String msg) {
-        Result<String> result = genFail();
+    public static Result<Object> genFail(String msg) {
+        Result<Object> result = genFail();
         result.setMsg(msg);
         return result;
     }
 
-    public static Result<String> genFail(String msg, Integer code) {
-        Result<String> result = genFail(msg);
+    public static Result<Object> genFail(String msg, Integer code) {
+        Result<Object> result = genFail(msg);
         result.setCode(code);
         result.setData(ResultCode.getByCode(code).type());
         return result;

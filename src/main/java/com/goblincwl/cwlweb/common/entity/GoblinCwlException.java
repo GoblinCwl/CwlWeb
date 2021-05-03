@@ -40,6 +40,7 @@ public class GoblinCwlException extends RuntimeException {
     public GoblinCwlException(ResultCode resultCode) {
         super(resultCode.message());
         this.code = resultCode.code();
+        this.msg = resultCode.message();
     }
 
     /**
@@ -53,6 +54,7 @@ public class GoblinCwlException extends RuntimeException {
     public GoblinCwlException(Integer code, String msg) {
         super(msg);
         this.code = code;
+        this.msg = msg;
     }
 
     /**
@@ -65,5 +67,6 @@ public class GoblinCwlException extends RuntimeException {
     public GoblinCwlException(String msg) {
         super(msg);
         this.code = ResultCode.SERVICE_FAIL.code();
+        this.msg = msg;
     }
 }

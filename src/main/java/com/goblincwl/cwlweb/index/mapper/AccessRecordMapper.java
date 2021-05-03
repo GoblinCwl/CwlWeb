@@ -12,7 +12,21 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AccessRecordMapper extends BaseMapper<AccessRecord> {
+    /**
+     * 查询访问总数
+     *
+     * @return 访问总数
+     * @date 2021-05-03 14:22:23
+     * @author ☪wl
+     */
     Integer selectAccessCount();
 
+    /**
+     * 查询IP访问总数
+     *
+     * @return IP访问总数
+     * @date 2021-05-03 14:22:34
+     * @author ☪wl
+     */
     Integer selectAccessIpCount();
 }

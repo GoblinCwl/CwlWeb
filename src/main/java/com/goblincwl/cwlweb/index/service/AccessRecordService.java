@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessRecord> {
 
-    @Resource(name = "customRedisTemplate")
+    @Resource(name = "redisStringTemplate")
     private RedisTemplate<String, Object> redisTemplate;
     private final AccessRecordMapper accessRecordMapper;
 
