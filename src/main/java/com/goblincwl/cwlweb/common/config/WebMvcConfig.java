@@ -27,10 +27,4 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 );
     }
 
-//    @Bean("error")
-//    public View defaultErrorView() {
-//        return new TemplateNotFoundView();
-//    }
-
-
 }
