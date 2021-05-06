@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.manager.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.index.entity.AccessRecord;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2021-05-05 19:36
  */
 @RestController
-@RequestMapping("/manager/accessRecord")
+@RequestMapping(ManagerController.MODULE_PREFIX + "/accessRecord")
 @RequiredArgsConstructor
 public class AccessRecordController extends BaseController<AccessRecord> {
 
@@ -31,8 +32,12 @@ public class AccessRecordController extends BaseController<AccessRecord> {
      * @author ☪wl
      */
     @GetMapping("/list")
-    public Result<Object> list(AccessRecord accessRecord) {
-        return Result.genSuccess(this.accessRecordService.page(createPage(), createQueryWrapper(accessRecord)), "成功");
+    public Result<Page<AccessRecord>> list(AccessRecord accessRecord) {
+        return new Result<Page<AccessRecord>>().success(
+                this.accessRecordService.page(
+                        createPage(),
+                        createQueryWrapper(accessRecord)),
+                "成功");
     }
 
 }

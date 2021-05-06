@@ -19,10 +19,11 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2021-05-03 14:22
  */
 @RestController
-@RequestMapping("/manager")
+@RequestMapping(ManagerController.MODULE_PREFIX)
 @RequiredArgsConstructor
 public class ManagerController {
 
+    public final static String MODULE_PREFIX = "/manager";
     private final KeyValueOptionsService keyValueOptionsService;
     private final TokenService tokenService;
 
@@ -38,6 +39,7 @@ public class ManagerController {
     public Result<Object> login(HttpServletRequest request,
                                 String password) {
         if (StringUtils.isNotEmpty(password)) {
+
             KeyValueOptions loginPassword = keyValueOptionsService.getById("loginPassword");
             //匹配密码
             if (password.equals(loginPassword.getOptValue())) {

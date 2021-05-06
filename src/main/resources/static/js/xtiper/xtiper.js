@@ -1437,21 +1437,7 @@ Xclass.pt.key = function(){
     if(e){
       if(e.keyCode==27){ //按 Esc
         that.close();
-      }else if(e.keyCode==13) { //按 Enter
-        if(c.model=='win'){
-          //多按钮取消回车事件
-          if(c.btn2 || c.btn3){
-            return false;
-          }
-          that.close();
-          if(c.btn1 && typeof(c.btn1)=='function'){
-            c.btn1();
-            c.btn1 = null;
-          }
-          return false;
-        }
-      }
-      else{
+      } else{
         return e;
       }
     }

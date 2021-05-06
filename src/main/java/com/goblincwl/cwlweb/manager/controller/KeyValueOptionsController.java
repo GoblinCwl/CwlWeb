@@ -1,5 +1,7 @@
 package com.goblincwl.cwlweb.manager.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.manager.entity.KeyValueOptions;
@@ -17,7 +19,7 @@ import java.util.Arrays;
  * @date 2021-05-05 0:26
  */
 @RestController
-@RequestMapping("/manager/keyValueOptions")
+@RequestMapping(ManagerController.MODULE_PREFIX + "/keyValueOptions")
 @RequiredArgsConstructor
 public class KeyValueOptionsController extends BaseController<KeyValueOptions> {
 
@@ -32,9 +34,22 @@ public class KeyValueOptionsController extends BaseController<KeyValueOptions> {
      * @author ☪wl
      */
     @GetMapping("/list")
-    public Result<Object> list(KeyValueOptions keyValueOptions) {
-        keyValueOptions.setOptKey(StringUtils.isEmpty(keyValueOptions.getOptKey()) ? null : keyValueOptions.getOptKey());
-        return Result.genSuccess(this.keyValueOptionsService.page(createPage(), createQueryWrapper(keyValueOptions)), "成功");
+    public Result<Page<KeyValueOptions>> list(KeyValueOptions keyValueOptions) {
+        QueryWrapper<KeyValueOptions> queryWrapper;
+        if (StringUtils.isNotEmpty(keyValueOptions.getOptKey())) {
+            String optKey = keyValueOptions.getOptKey();
+            keyValueOptions.setOptKey(null);
+            queryWrapper = createQueryWrapper(keyValueOptions);
+            queryWrapper.like("opt_key", optKey);
+        } else {
+            keyValueOptions.setOptKey(null);
+            queryWrapper = createQueryWrapper(keyValueOptions);
+        }
+        return new Result<Page<KeyValueOptions>>().success(
+                this.keyValueOptionsService.page(
+                        createPage(),
+                        queryWrapper),
+                "成功");
     }
 
     /**

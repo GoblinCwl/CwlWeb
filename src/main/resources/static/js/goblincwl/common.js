@@ -51,7 +51,7 @@ function ajaxHeaders() {
 }
 
 //Ajax封装
-const HttpRequest = function (options) {
+const ajaxHttp = function (options) {
     const defaults = {
         type: 'get',
         headers: {},
@@ -81,8 +81,4 @@ const HttpRequest = function (options) {
             o.complete && o.complete();
         }
     });
-};
-
-const ajaxHttp = function (options) {
-    HttpRequest(options);
 };

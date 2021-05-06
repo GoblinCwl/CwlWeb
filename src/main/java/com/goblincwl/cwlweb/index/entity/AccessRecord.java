@@ -1,6 +1,8 @@
 package com.goblincwl.cwlweb.index.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,10 +30,12 @@ public class AccessRecord implements Serializable {
     /**
      * 记录IP地址
      */
+    @TableField(whereStrategy = FieldStrategy.NOT_EMPTY, condition = SqlCondition.LIKE)
     private String ipAddress;
     /**
      * 记录用户昵称
      */
+    @TableField(whereStrategy = FieldStrategy.NOT_EMPTY, condition = SqlCondition.LIKE)
     private String nickName;
     /**
      * 访问时间

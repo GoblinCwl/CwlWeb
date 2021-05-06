@@ -7,6 +7,10 @@
     box-shadow: none;
 }
 
+.toolbarBtn {
+    border-radius: 0;
+}
+
 /*按钮上的图标颜色*/
 .toolbarBtn i:before {
     color: white;
@@ -40,7 +44,7 @@
 
 .checkbox-custom {
     position: relative;
-    padding: 0 15px 0 25px;
+    padding: 0 0 0 20px;
     margin-bottom: 7px;
     margin-top: 0;
     display: inline-block;
@@ -67,7 +71,6 @@
     width: 19px;
     height: 18px;
     display: inline-block;
-    border-radius: 2px;
     border: 1px solid #bbb;
     background: #fff;
 }
@@ -96,121 +99,6 @@
     text-align: left;
 }
 
-
-/*加载动画*/
-.loader {
-    position: relative;
-    width: 50px;
-    height: 50px;
-    margin: 10px;
-}
-
-.loader-container {
-    display: inline-block;
-    height: 150px;
-    width: 200px;
-}
-
-.container-of-loaders {
-    width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-@media screen and (max-width: 810px) {
-    .container-of-loaders {
-        width: 600px;
-    }
-
-    .no-7 {
-        margin-left: 100px;
-    }
-}
-
-@media screen and (max-width: 623px) {
-    .container-of-loaders {
-        width: 400px;
-    }
-
-    .no-7 {
-        margin-left: 0px;
-    }
-}
-
-@media screen and (max-width: 423px) {
-    .container-of-loaders {
-        width: 200px;
-    }
-}
-
-.three {
-    height: 100px;
-    width: 100px;
-    border-radius: 50%;
-    border: solid transparent 10px;
-    border-top: solid #31b0d5 10px;
-    border-left: solid #31b0d5 10px;
-    animation: loader3Animation 2s linear infinite;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 15px;
-}
-
-.three:before {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    content: "";
-    width: 40px;
-    height: 40px;
-    border: solid transparent 10px;
-    border-top: solid #31b0d5 10px;
-    border-left: solid #31b0d5 10px;
-    border-radius: 50%;
-    animation: loader3AnimationBefore 1.5s linear infinite;
-}
-
-.three:after {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    content: "";
-    width: 70px;
-    height: 70px;
-    border: solid transparent 10px;
-    border-top: solid #31b0d5 10px;
-    border-left: solid #31b0d5 10px;
-    border-radius: 50%;
-    animation: loader3AnimationAfter 1.5s linear infinite;
-}
-
-@keyframes loader3Animation {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes loader3AnimationBefore {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes loader3AnimationAfter {
-    0% {
-        transform: rotate(360deg);
-    }
-    100% {
-        transform: rotate(-360deg);
-    }
-}
-
 /*表单*/
 .form-group {
     margin-bottom: 0;
@@ -229,19 +117,96 @@
     padding: 0.3em;
 }
 
-/*xtiper自定义*/
-/*.xtiper_tit{*/
-/*    background-color: #5bc0de;*/
-/*    color: white;*/
-/*}*/
-
-/*.xtiper_close:before, .xtiper_close:after {*/
-/*    background-color: white;*/
-/*}*/
 
 /*模态框*/
-.xtip-input, .xtip-label{
-    padding: 0.5em;
+.xtip-input {
+    padding-bottom: 0.5em;
 }
 
+.xtip-input input {
+    padding-bottom: 0.5em;
+    width: 100%;
+}
 
+/*去掉遮罩*/
+.loading-wrap {
+    display: none;
+}
+
+.fixed-table-loading {
+    background: 0 !important;
+    border: 0;
+}
+
+/*操作列*/
+.table-options {
+    cursor: pointer;
+}
+
+.table-options i:before {
+    font-size: 5px;
+    margin-right: 0;
+}
+
+.table-options i.glyphicon-remove:before {
+    color: #d9534f;
+}
+
+.table-options i.glyphicon-pencil:before {
+    color: #5bc0de;
+}
+
+/*移动端去边框*/
+@media screen and (max-width: 767px) {
+    .table-responsive {
+        border: 0;
+    }
+}
+
+/*条件输入框*/
+.table-search {
+    margin-top: 0.5em;
+}
+
+.table-search input {
+    border-radius: 0;
+}
+
+/*弹出框输入框*/
+.table-modal-input {
+    border-radius: 0;
+}
+
+/*换表导航*/
+.nav-tabs > li > a {
+    font-size: 5px;
+    border-radius: 0;
+    padding: 5px 5px;
+    color: #b3b3b3;
+}
+
+/*页码*/
+.pagination li a {
+    border-radius: 0 !important;
+}
+
+/*表头蓝线边框*/
+.my-table thead {
+    border: 1px solid #46b8da;
+}
+
+/*弹出框按钮*/
+.xactive button {
+    border-radius: 0;
+}
+
+/*选择框*/
+.dropdown-menu {
+    padding: 0;
+    border-radius: 0;
+}
+
+/*按钮禁用*/
+.button-disabled {
+    pointer-events: none;
+}
