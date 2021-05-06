@@ -80,6 +80,12 @@ public class Result<T> implements Serializable {
         return result;
     }
 
+    public static Result<Object> genSuccess(String msg) {
+        Result<Object> result = genSuccess();
+        result.setMsg(msg);
+        return result;
+    }
+
     public static Result<Object> genSuccess(Object data, String msg) {
         Result<Object> result = genSuccess();
         result.setData(data);

@@ -5,8 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -43,13 +45,7 @@ public class TokenService {
      * @author ☪wl
      */
     public String genToken(String ipAddr) {
-        String token = UUID.randomUUID().toString();
-        this.redisTemplate.opsForValue().set(
-                KEY_PREFIX + token,
-                ipAddr,
-                EXPIRE_TIME,
-                TimeUnit.SECONDS);
-        return token;
+        return genToken(ipAddr, EXPIRE_TIME);
     }
 
     /**
@@ -64,6 +60,11 @@ public class TokenService {
      * @author ☪wl
      */
     public String genToken(String ipAddr, Long expireTime) {
+        //删除旧Token
+        Set<String> keys = this.redisTemplate.keys(KEY_PREFIX + "*");
+        if (!CollectionUtils.isEmpty(keys)) {
+            this.redisTemplate.delete(keys);
+        }
         String token = UUID.randomUUID().toString();
         this.redisTemplate.opsForValue().set(
                 KEY_PREFIX + token,
@@ -87,6 +88,19 @@ public class TokenService {
         }
         String redisIpAddr = (String) this.redisTemplate.opsForValue().get(KEY_PREFIX + token);
         return ipAddr.equals(redisIpAddr);
+    }
+
+    /**
+     * 清除Token
+     *
+     * @param token token
+     * @date 2021-05-04 23:33:32
+     * @author ☪wl
+     */
+    public void clearToken(String token) {
+        if (StringUtils.isNotEmpty(token)) {
+            this.redisTemplate.delete(KEY_PREFIX + token);
+        }
     }
 
 }

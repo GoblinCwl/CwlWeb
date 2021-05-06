@@ -6,15 +6,17 @@
     <title th:replace="${title}">GoblinCwl</title>
     <!--网站图标-->
     <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon"/>
-
-    <link th:href="@{/css/bootstrap.css}" rel='stylesheet' type='text/css'/>
+    <!--BootStrap-->
+    <link th:href="@{/webjars/bootstrap/3.4.1/css/bootstrap.min.css}" rel='stylesheet' type='text/css'/>
+    <link th:href="@{/webjars/bootstrap-table/1.16.0/bootstrap-table.css}" rel='stylesheet' type='text/css'/>
     <!-- 自定义主题文件 -->
     <link th:href="@{/css/dashboard.css}" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel='stylesheet' type='text/css'/>
     <!-- 其他-->
     <link th:href="@{/css/popuo-box.css}" rel="stylesheet" type="text/css" media="all"/>
+    <link th:href="@{/css/xtiper/xtiper.css}" rel="stylesheet" type="text/css" media="all"/>
     <!--自定义-->
-    <link rel="stylesheet" th:href="@{/css/goblincwl.css}">
+    <link rel="stylesheet" th:href="@{/css/goblincwl/common.css}">
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,8 +33,6 @@
         html body div {
             scrollbar-width: none; /* firefox */
             -ms-overflow-style: none; /* IE 10+ */
-            overflow-x: hidden;
-            overflow-y: auto;
         }
     </style>
 
@@ -55,11 +55,17 @@
 <!--公共依赖尾-->
 <div th:fragment="commonFoot(scripts)">
     <!-- jQuery (必要的JavaScript插件) -->
-    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/jquery-cookie/1.4.1-1/jquery.cookie.js}"></script>
+    <!-- Bootstrap -->
+    <script th:src="@{/webjars/bootstrap/3.4.1/js/bootstrap.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap-table/1.16.0/bootstrap-table.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap-table/1.16.0/locale/bootstrap-table-zh-CN.min.js}"></script>
     <!-- 其他 -->
     <script th:src="@{/js/jquery.magnific-popup.js}" type="text/javascript"></script>
+    <script th:src="@{/js/xtiper/xtiper.min.js}" type="text/javascript"></script>
     <!--自定义-->
-    <script th:src="@{/js/goblincwl.js}" type="text/javascript"></script>
+    <script th:src="@{/js/goblincwl/common.js}" type="text/javascript"></script>
 
     <!--变量集-->
     <script>
@@ -68,6 +74,37 @@
         url = '[[ ${#httpServletRequest.getRequestURL()}]]';
         if (isHttps) {
             url = url.replace('http', 'https');
+        }
+    </script>
+
+    <!--管理模块自动显示-->
+    <script>
+        $(function () {
+            addManagerUl();
+        })
+
+        //管理模块头部菜单
+        const managerLi =
+            "<li id='managerLi'>" +
+            "    <a href='/manager'>" +
+            "        <span class='glyphicon glyphicon-cog'></span>管理" +
+            "    </a>" +
+            "</li>";
+
+        //追加ManagerUl
+        function addManagerUl() {
+            let token = localStorage.getItem("access_token");
+            if (token != null && token != "") {
+                let $managerLi = $('#managerLi');
+                if ($managerLi.length && $managerLi.length > 0) {
+                } else {
+                    //不存在则添加
+                    $("#topHeaderUl").append(managerLi)
+
+                }
+            }
+            //全站cookie
+            $.cookie("Authorization", token, {path: '/'});
         }
     </script>
 
@@ -85,7 +122,6 @@
     <script>
         pagemap(document.querySelector('#map'));
     </script>
-
     <script>
         $(document).ready(function () {
             $('.popup-with-zoom-anim').magnificPopup({
@@ -122,39 +158,34 @@
 </div>
 <!-- 顶部导航 -->
 <div th:fragment="topHeader()" class="details_header" id="topHeader">
-    <ul>
+    <ul id="topHeaderUl">
         <li>
             <a href="/">
                 <span class="glyphicon glyphicon-home" aria-hidden="true"></span>首页
             </a>
         </li>
         <li>
-            <a href="resume">
+            <a href="/resume">
                 <span class="glyphicon glyphicon-file" aria-hidden="true"></span>简历(未公开)
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="/blog">
                 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>博客
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="/service">
                 <span class="glyphicon glyphicon-star" aria-hidden="true"></span>功能
             </a>
         </li>
-<!--        <li>-->
-<!--            <a href="manager">-->
-<!--                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>管理-->
-<!--            </a>-->
-<!--        </li>-->
         <!--        <li>-->
         <!--            <a class="play-icon popup-with-zoom-anim" href="#small-dialog">-->
         <!--                <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>照片-->
         <!--            </a>-->
         <!--        </li>-->
-<!--        <div id="small-dialog" class="mfp-hide">-->
-<!--            <img th:src="@{/images/g4.jpg}" alt=""/>-->
-<!--        </div>-->
+        <!--        <div id="small-dialog" class="mfp-hide">-->
+        <!--            <img th:src="@{/images/g4.jpg}" alt=""/>-->
+        <!--        </div>-->
     </ul>
 </div>

@@ -19,5 +19,4 @@ import org.springframework.transaction.annotation.Transactional;
 public class KeyValueOptionsService extends ServiceImpl<KeyValueOptionsMapper, KeyValueOptions> {
 
     private final KeyValueOptionsMapper keyValueOptionsMapper;
-
 }

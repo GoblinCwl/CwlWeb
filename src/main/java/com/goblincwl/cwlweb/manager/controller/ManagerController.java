@@ -4,7 +4,6 @@ import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.IpUtils;
 import com.goblincwl.cwlweb.manager.entity.KeyValueOptions;
-import com.goblincwl.cwlweb.manager.entity.LoginBody;
 import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
 import com.goblincwl.cwlweb.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * Manager 管理模块 Controller
@@ -31,14 +29,14 @@ public class ManagerController {
     /**
      * 管理员登陆，获取token
      *
-     * @param loginBody 登录信息
+     * @param password 登录密码
      * @return 认证Token
      * @date 2021-05-03 14:49:59
      * @author ☪wl
      */
     @PostMapping("/login")
-    public Result<Object> login(HttpServletRequest request, @RequestBody LoginBody loginBody) {
-        String password = loginBody.getPassword();
+    public Result<Object> login(HttpServletRequest request,
+                                String password) {
         if (StringUtils.isNotEmpty(password)) {
             KeyValueOptions loginPassword = keyValueOptionsService.getById("loginPassword");
             //匹配密码
@@ -53,8 +51,18 @@ public class ManagerController {
         throw new GoblinCwlException("登陆失败，密码不能为空。");
     }
 
-    @GetMapping("/test")
-    public Result<Object> test() {
-        return Result.genSuccess("test", "成功");
+    /**
+     * 登出
+     *
+     * @param request 请求对象
+     * @return 反馈
+     * @date 2021-05-04 23:35:24
+     * @author ☪wl
+     */
+    @GetMapping("/logout")
+    public Result<Object> logout(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        this.tokenService.clearToken(token);
+        return Result.genSuccess();
     }
 }

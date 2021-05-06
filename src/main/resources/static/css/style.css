@@ -25,11 +25,11 @@ html, body {
 }
 
 body a {
-    transition: 0.5s all;
-    -webkit-transition: 0.5s all;
-    -moz-transition: 0.5s all;
-    -o-transition: 0.5s all;
-    -ms-transition: 0.5s all;
+    transition: 0.2s all;
+    -webkit-transition: 0.2s all;
+    -moz-transition: 0.2s all;
+    -o-transition: 0.2s all;
+    -ms-transition: 0.2s all;
 }
 
 body {
@@ -110,7 +110,7 @@ address span {
     top: 1px;
 }
 
-.glyphicon-home:before, .glyphicon-file:before, .glyphicon-list:before, .glyphicon-star:before, .glyphicon-picture:before, .glyphicon-cog:before {
+.glyphicon:before {
     margin-right: 9px;
     font-size: 14px;
     color: #6ecadc;
@@ -521,7 +521,7 @@ h3.clr3 {
         /*margin-right: 2em;*/
     }
 
-    .glyphicon-home:before, .glyphicon-file:before, .glyphicon-list:before, .glyphicon-star:before, .glyphicon-picture:before, .glyphicon-cog-before {
+    .glyphicon:before {
         margin-right: 6px;
         font-size: 12px;
     }

@@ -10,6 +10,9 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
   # thymeleaf
   thymeleaf:
     cache: false
@@ -85,4 +88,4 @@ logging:
 #    root: error
     com.goblincwl.cwlweb: debug
   file:
-    name: goblincw-web.log
+    name: logs/goblincw-web.log

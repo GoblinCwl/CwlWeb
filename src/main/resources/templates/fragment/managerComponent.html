@@ -4,52 +4,49 @@
 <!-- 左侧侧边栏 -->
 <div th:fragment="leftSiderBar()" class="col-sm-3 col-md-2 sidebar">
     <div class="sidebar_top">
-        <h1>GoblinCwl</h1>
+        <h1>网站管理</h1>
         <img th:src="@{/images/profile.jpg}" alt=""/>
     </div>
     <div class="details">
-        <h3>世事一场大梦，</h3>
-        <h3>人生几度秋凉。</h3>
-
-
+        <h3 class="managerMenu"><span class='glyphicon glyphicon-dashboard'></span><a class="managerMenuSelected"
+                                                                                      href="/manager">数据面板</a></h3>
+        <h3 class="managerMenu"><span class='glyphicon glyphicon-cog'></span><a href="/manager/base">基础设置</a></h3>
+        <h3 class="managerMenu"><span class='glyphicon glyphicon-file'></span><a href="/manager/resume">简历管理</a></h3>
+        <h3 class="managerMenu"><span class='glyphicon glyphicon-list'></span><a href="/manager/blog">博客管理</a></h3>
+        <h3 class="managerMenu"><span class='glyphicon glyphicon-star'></span><a href="/manager/service">功能管理</a></h3>
     </div>
     <div class="clearfix"></div>
 </div>
 <!-- 顶部导航 -->
 <div th:fragment="topHeader()" class="details_header" id="topHeader">
-    <ul>
+    <ul id="topHeaderUl">
         <li>
             <a href="/">
                 <span class="glyphicon glyphicon-home" aria-hidden="true"></span>首页
             </a>
         </li>
         <li>
-            <a href="resume">
+            <a href="/resume">
                 <span class="glyphicon glyphicon-file" aria-hidden="true"></span>简历(未公开)
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="/blog">
                 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>博客
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="/service">
                 <span class="glyphicon glyphicon-star" aria-hidden="true"></span>功能
             </a>
         </li>
-<!--        <li>-->
-<!--            <a href="manager">-->
-<!--                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>管理-->
-<!--            </a>-->
-<!--        </li>-->
         <!--        <li>-->
         <!--            <a class="play-icon popup-with-zoom-anim" href="#small-dialog">-->
         <!--                <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>照片-->
         <!--            </a>-->
         <!--        </li>-->
-<!--        <div id="small-dialog" class="mfp-hide">-->
-<!--            <img th:src="@{/images/g4.jpg}" alt=""/>-->
-<!--        </div>-->
+        <!--        <div id="small-dialog" class="mfp-hide">-->
+        <!--            <img th:src="@{/images/g4.jpg}" alt=""/>-->
+        <!--        </div>-->
     </ul>
 </div>

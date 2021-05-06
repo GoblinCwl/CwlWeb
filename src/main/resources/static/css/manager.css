@@ -1,0 +1,20 @@
+.managerMenu {
+    padding-bottom: 3%;
+}
+
+.managerMenu span:before {
+    color: #395c5c;
+}
+
+.managerMenu a {
+    color: white;
+}
+
+.managerMenu a:hover {
+    color: #395c5c;
+    text-decoration: none;
+}
+
+.managerMenuSelected {
+    color: #395c5c !important;
+}

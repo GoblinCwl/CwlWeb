@@ -1,0 +1,332 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
+    <title>GoblinCwl - 基础设置</title>
+    <link th:href="@{/css/manager.css}" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/goblincwl/tablePage.css}">
+    <style>
+    </style>
+</head>
+<body>
+<!-- 左侧侧边栏 -->
+<div th:replace="fragment/managerComponent::leftSiderBar"></div>
+
+<!-- 页面内容 -->
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <div class="content">
+        <!-- 顶部导航 -->
+        <div th:replace="fragment/globalComponent::topHeader"></div>
+
+        <div class="col-sm-12" style="padding: 0 10px;padding-top: 1em">
+            <ul class="nav nav-tabs" id="navList">
+                <li data-name="keyValueOptionsTab" class="active">
+                    <a data-toggle="tab" href="#keyValueOptionsTab" onclick="initData('keyValueOptionsTab')">
+                        键值对设置
+                    </a>
+                </li>
+                <li data-name="accessRecordTab" class="">
+                    <a data-toggle="tab" href="#accessRecordTab" onclick="initData('accessRecordTab')">
+                        订购信息
+                    </a>
+                </li>
+                <li data-name="socketInputTab" class="">
+                    <a data-toggle="tab" href="#socketInputTab" onclick="initData('socketInputTab')">
+                        反馈信息
+                    </a>
+                </li>
+                <li data-name="socketOutputTab" class="">
+                    <a data-toggle="tab" href="#socketOutputTab" onclick="initData('socketOutputTab')">
+                        出行信息
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content" id="tabContent">
+                <div id="keyValueOptionsTab" class="tab-pane active">
+                    <div class="table-responsive">
+                        <div id="keyValueOptions-toolbar" class="btn-group">
+                            <button id="btn_add" type="button" class="btn btn-success btn-sm rightSize toolbarBtn"
+                                    onclick="keyValueOptionsAdd()">
+                                <i class="glyphicon glyphicon-plus toolbarIcon" aria-hidden="true"></i>新增
+                            </button>
+                            <button id="btn_edit" type="button" class="btn btn-info btn-sm rightSize toolbarBtn"
+                                    onclick="keyValueOptionsEdit()">
+                                <i class="glyphicon glyphicon-pencil toolbarIcon" aria-hidden="true"></i>修改
+                            </button>
+                            <button id="btn_delete" type="button" class="btn btn-danger btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon glyphicon-remove " aria-hidden="true"></i>删除
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <label for="keyValueOptions-query-optKey"></label>
+                            <input type="text" class="form-control input-sm" id="keyValueOptions-query-optKey"
+                                   placeholder="键">
+                        </div>
+                        <!--                            <button type="submit" class="btn btn-success btn-sm "><i class="glyphicon glyphicon-remove"></i></button>-->
+                        <table id="keyValueOptions-table" class="table table-condensed text-nowrap"></table>
+                    </div>
+                </div>
+
+                <div id="accessRecordTab" class="tab-pane">
+                    <div class="table-responsive">
+                        <div id="accessRecord-toolbar" class="btn-group">
+
+                        </div>
+                        <table id="accessRecord-table" class="table table-condensed text-nowrap"></table>
+                    </div>
+                </div>
+                <div id="socketInputTab" class="tab-pane">
+                    <div class="table-responsive">
+                        <table id="sockctInput-table"></table>
+                    </div>
+                </div>
+                <div id="socketOutputTab" class="tab-pane">
+                    <div class="table-responsive">
+                        <table id="sockctOutput-table"></table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+<div th:replace="fragment/globalComponent::commonFoot(~{::script})">
+    <script th:src="@{/js/goblincwl/tablePage.js}" type="text/javascript"></script>
+
+    <script>
+        $(function () {
+            $(".fixed-table-loading").remove()
+            initData('keyValueOptionsTab')
+        })
+
+        const tableOptions = genTableOptions();
+
+        function initData(name) {
+            let url, columns, uniqueId, $table, $toolbar;
+            switch (name) {
+                case 'keyValueOptionsTab':
+                    url = ctx + "/manager/keyValueOptions/list";
+                    $table = $("#keyValueOptions-table");
+                    $toolbar = $("#keyValueOptions-toolbar");
+                    uniqueId = "optKey";
+                    columns = [
+                        {checkbox: true},
+                        {
+                            formatter: function (value, row, index) {//赋予的参数
+                                return '<a href="#" style="color: #5bc0de" onclick="keyValueOptionsEdit(\'' + row.optKey + '\')"><i class="fa fa-paste"></i> 修改</a>'
+                                    + '<a href="#" style="color: #c9302c"><i class="fa fa-envelope"></i> 删除</a>';
+                            }, //自定义方法，添加操作按钮,
+                            switchable: false,
+                            cardVisible: false,
+                        },
+                        {
+                            field: 'optKey',
+                            title: '键',
+                            sortable: true,
+                            sortName: "opt_key",
+                            cellStyle: function () {
+                                const style = rowStyle(tableOptions);
+                                style.css.color = "#337ab7"
+                                return style;
+                            },
+                        },
+                        {
+                            field: 'optValue',
+                            title: '值',
+                            cellStyle: function () {
+                                const style = rowStyle(tableOptions);
+                                style.css.color = "green"
+                                return style;
+                            }
+                        }
+                    ];
+                    tableOptions.queryParams = function (params) {
+                        const customParams = queryParams(params);
+                        customParams.optKey = $("#keyValueOptions-query-optKey").val();
+                        return customParams;
+                    }
+                    break;
+                case 'accessRecordTab':
+                    url = ctx + "/manager/accessRecord/list";
+                    $table = $("#accessRecord-table");
+                    $toolbar = $("#accessRecord-toolbar");
+                    uniqueId = "id";
+                    columns = [
+                        {
+                            field: 'id',
+                            title: '主键',
+                            sortable: true
+                        },
+                        {
+                            field: 'ipAddress',
+                            title: 'IP地址'
+                        },
+                        {
+                            field: 'nickName',
+                            title: '昵称'
+                        },
+                        {
+                            field: 'accessTime',
+                            title: '访问时间',
+                            sortable: true,
+                            sortName: 'access_time',
+                            // formatter: function (value) {
+                            //     return value.Format("yyyy-MM-dd HH:mm:ss")
+                            // }
+                        },
+                        {
+                            field: 'lastAccessTime',
+                            title: '上次访问时间',
+                            sortable: true,
+                            sortName: 'last_access_time'
+                        },
+                        {
+                            field: 'accessCount',
+                            title: '访问总次数',
+                            sortable: true,
+                            sortName: 'access_count'
+                        },
+                    ];
+                    break;
+                case 'table3':
+                    //省略
+                    break;
+                case 'table4':
+                    //省略
+                    break;
+            }
+
+            //渲染表格
+            pushParamTableOptions(tableOptions, "GET", url, columns, uniqueId, $toolbar, $table);
+            $table.bootstrapTable(tableOptions);
+        }
+
+
+    </script>
+
+    <!--键值对设置-->
+    <script>
+        /*新增*/
+        function keyValueOptionsAdd() {
+            xtip.win({
+                type: 'confirm', //alert 或 confirm
+                btn: ['保存', '取消'],
+                icon: ['', '#5cb85c'],
+                tip:
+                    '    <label for="keyValueOptions-add-optKey" class="col-sm-2 control-label xtip-label">键</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <input type="text" class="form-control input-sm " id="keyValueOptions-add-optKey" placeholder="key">' +
+                    '    </div>' +
+                    '    <label for="keyValueOptions-add-optValue" class="col-sm-2 control-label xtip-label">值</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <input type="text" class="form-control input-sm " id="keyValueOptions-add-optValue" placeholder="value">' +
+                    '    </div>'
+                ,
+                title: "新增键值对",
+                width: '400px',
+                maxWidth: '100%',
+                shade: true,
+                shadeClose: false,
+                btn1: function () {
+                    ajaxHttp({
+                        type: "POST",
+                        url: ctx + "/manager/keyValueOptions/add",
+                        data: {
+                            optKey: $("#keyValueOptions-add-optKey").val(),
+                            optValue: $("#keyValueOptions-add-optValue").val()
+                        },
+                        beforeSend: function (request) {
+                        },
+                        error: function () {
+                        },
+                        success: function (res) {
+                            if (res != null && res.code === 200) {
+                                xtip.msg(res.msg, {icon: 's', type: 'w'})
+                                tableOptions.tableSelect.bootstrapTable('refresh');
+                            } else {
+                                xtip.msg(res.msg, {icon: 'e', type: 'w'})
+                            }
+                        }
+                    })
+                },
+                zindex: 99999,
+            });
+        }
+
+        /*修改*/
+        function keyValueOptionsEdit(optKey) {
+            //获取选择的数据
+            if (optKey == null) {
+                //复选框所选数据
+                const checkIdList = tableOptions.tableSelect.bootstrapTable('getAllSelections');
+                if (checkIdList.length === 1) {
+                    optKey = checkIdList[0].optKey;
+                } else {
+                    xtip.msg("只能选择一行数据", {icon: 'e', type: 'w'})
+                    return;
+                }
+            }
+
+            //回显
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/manager/keyValueOptions/" + optKey,
+                beforeSend: function (request) {
+                },
+                error: function () {
+                },
+                success: function (res) {
+                    if (res != null && res.code === 200) {
+                        xtip.win({
+                            type: 'confirm', //alert 或 confirm
+                            btn: ['保存', '取消'],
+                            icon: ['', '#5bc0de'],
+                            tip:
+                                '    <label for="keyValueOptions-add-optKey" class="col-sm-2 control-label xtip-label">键</label>' +
+                                '    <div class="col-sm-10 xtip-input">' +
+                                '      <input disabled type="text" class="form-control input-sm " id="keyValueOptions-add-optKey" placeholder="key" value="' + res.data.optKey + '">' +
+                                '    </div>' +
+                                '    <label for="keyValueOptions-add-optValue" class="col-sm-2 control-label xtip-label">值</label>' +
+                                '    <div class="col-sm-10 xtip-input">' +
+                                '      <input type="text" class="form-control input-sm " id="keyValueOptions-add-optValue" placeholder="value" value="' + res.data.optValue + '">' +
+                                '    </div>'
+                            ,
+                            title: "修改键值对",
+                            width: '400px',
+                            maxWidth: '100%',
+                            shade: true,
+                            shadeClose: false,
+                            btn1: function () {
+                                ajaxHttp({
+                                    type: "PUT",
+                                    url: ctx + "/manager/keyValueOptions/edit",
+                                    data: {
+                                        optKey: $("#keyValueOptions-add-optKey").val(),
+                                        optValue: $("#keyValueOptions-add-optValue").val()
+                                    },
+                                    beforeSend: function (request) {
+                                    },
+                                    error: function () {
+                                    },
+                                    success: function (res) {
+                                        if (res != null && res.code === 200) {
+                                            xtip.msg(res.msg, {icon: 's', type: 'w'})
+                                            tableOptions.tableSelect.bootstrapTable('refresh');
+                                        } else {
+                                            xtip.msg(res.msg, {icon: 'e', type: 'w'})
+                                        }
+                                    }
+                                })
+                            },
+                            zindex: 99999,
+                        });
+                    } else {
+                        xtip.msg(res.msg, {icon: 'e', type: 'w'})
+                    }
+                }
+            })
+        }
+
+    </script>
+</div>
+</html>

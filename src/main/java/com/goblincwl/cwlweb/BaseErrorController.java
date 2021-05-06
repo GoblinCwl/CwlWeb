@@ -131,13 +131,14 @@ public class BaseErrorController extends AbstractErrorController {
      */
     @ResponseBody
     @RequestMapping
-    public Result<Object> error(HttpServletRequest request) {
+    public Result<Object> error(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> body = getErrorAttributes(request, getErrorAttributeOptions(request, MediaType.ALL));
         String status = String.valueOf(body.get("status"));
 
         String message = StringUtils.isEmpty((String) request.getAttribute("message"))
                 ? (String) body.get("message") : (String) request.getAttribute("message");
 
+        response.reset();
         //如果是模板找不到，或者无请求映射，转为404
         if (message.contains("template might not exist")
                 || message.contains("Could not find acceptable representation")) {

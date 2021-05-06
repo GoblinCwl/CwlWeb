@@ -17,6 +17,10 @@
 		<java.version>1.8</java.version>
 		<mybatis-plus.version>3.4.2</mybatis-plus.version>
 		<druid.version>1.1.10</druid.version>
+		<bootstrap.version>3.4.1</bootstrap.version>
+		<bootstrap-table.version>1.16.0</bootstrap-table.version>
+		<jquery.version>3.6.0</jquery.version>
+		<jquery-cookie.version>1.4.1-1</jquery-cookie.version>
 	</properties>
 	<dependencies>
 		<!--SpringBoot Web-->
@@ -45,7 +49,6 @@
 			<artifactId>mybatis-plus-boot-starter</artifactId>
 			<version>${mybatis-plus.version}</version>
 		</dependency>
-
 
 		<!--Druid 连接池-->
 		<dependency>
@@ -92,6 +95,33 @@
 			<version>1.2.76</version>
 		</dependency>
 
+		<!-- bootstrap -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>${bootstrap.version}</version>
+		</dependency>
+
+		<!-- bootstrap-table -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap-table</artifactId>
+			<version>${bootstrap-table.version}</version>
+		</dependency>
+
+		<!-- jquery -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>${jquery.version}</version>
+		</dependency>
+
+		<!-- jquery-cookie -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery-cookie</artifactId>
+			<version>${jquery-cookie.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

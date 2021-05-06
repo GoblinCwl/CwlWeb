@@ -38,6 +38,18 @@ function randomColor() {
     return "#" + r + g + b;
 }
 
+/*自定义请求头*/
+function ajaxHeaders() {
+    return {
+        //默认请求类型
+        'Content-Type': 'application/x-www-form-urlencoded',
+        // 每次请求携带token
+        'Authorization': localStorage.getItem('access_token'),
+        //(自定义)请求类型为api
+        'GoblinCwlRequestType': 'api'
+    }
+}
+
 //Ajax封装
 const HttpRequest = function (options) {
     const defaults = {
@@ -55,11 +67,7 @@ const HttpRequest = function (options) {
     $.ajax({
         url: o.url,
         type: o.type,
-        headers: {
-            'Content-Type': o.contentType,
-            'Authorization': o.token,
-            'GoblinCwlRequestType': 'api'
-        },
+        headers: ajaxHeaders(),
         data: o.data,
         dataType: o.dataType,
         async: o.async,
@@ -76,7 +84,5 @@ const HttpRequest = function (options) {
 };
 
 const ajaxHttp = function (options) {
-    // 每次请求携带token
-    options.token = localStorage.getItem('access_token');
     HttpRequest(options);
 };

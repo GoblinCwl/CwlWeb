@@ -2,6 +2,8 @@ package com.goblincwl.cwlweb.common.utils;
 
 import com.goblincwl.cwlweb.index.entity.BadWords;
 import com.goblincwl.cwlweb.index.service.BadWordsService;
+import com.goblincwl.cwlweb.manager.entity.KeyValueOptions;
+import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,10 +26,16 @@ import java.util.*;
 public class BadWordUtil {
 
     private final BadWordsService badWordsService;
+    private final KeyValueOptionsService keyValueOptionsService;
 
     @PostConstruct
     public void init() {
         List<BadWords> badWordsList = this.badWordsService.list();
+        //添加网站管理密码也作为违禁词，防止失误泄露
+        KeyValueOptions loginPassword = keyValueOptionsService.getById("loginPassword");
+        BadWords loginPasswordWord = new BadWords();
+        loginPasswordWord.setWord(loginPassword.getOptValue());
+        badWordsList.add(loginPasswordWord);
         BadWordUtil.words = new HashSet<>();
         badWordsList.forEach(badWords -> BadWordUtil.words.add(badWords.getWord()));
         addBadWordToHashMap(BadWordUtil.words);

@@ -1,33 +1,26 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
-<head th:replace="fragment/globalComponent::commonHead(~{::title},~{},~{})">
-    <title>GoblinCwl - 简历</title>
+<head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
+    <title>GoblinCwl - 管理面板</title>
+    <link th:href="@{/css/manager.css}" rel="stylesheet"/>
+    <style></style>
 </head>
 <body>
 <!-- 左侧侧边栏 -->
-<div th:replace="fragment/globalComponent::leftSiderBar"></div>
+<div th:replace="fragment/managerComponent::leftSiderBar"></div>
 
 <!-- 页面内容 -->
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     <div class="content">
         <!-- 顶部导航 -->
         <div th:replace="fragment/globalComponent::topHeader"></div>
-        <div class="company contact-grid">
-            <h3 class="clr1">后台登录</h3>
-            <form>
-                <input type="text" value="GoblinCwl" onFocus="this.value='';"
-                       onBlur="if (this.value == '') {this.value ='Name';}">
-                <input type="text" value="请输入密码" onFocus="this.value='';"
-                       onBlur="if (this.value == '') {this.value ='Email';}">
-                <br>
-                <div class="send">
-                    <input type="submit" value="Send">
-                </div>
-            </form>
-        </div>
+
+
     </div>
 </div>
 </body>
-<div th:replace="fragment/globalComponent::commonFoot(~{})">
+<div th:replace="fragment/globalComponent::commonFoot(~{::script})">
+    <script>
+    </script>
 </div>
 </html>

@@ -147,7 +147,51 @@
 
             function sendMessage(message) {
                 //向服务器发送消息
-                webSocket.send(message);
+                if (message.indexOf("/login") > 0) {
+                    //如果是/login开头，则是管理员登陆
+                    let password = message.substr(message.lastIndexOf(" ") + 1);
+                    ajaxHttp({
+                        type: 'POST',
+                        url: ctx + "/manager/login",
+                        data: {
+                            "password": password
+                        },
+                        error: function () {
+                            insertMessage("<span style='color: red'>登陆异常！❌</span>");
+                        },
+                        success: function (res) {
+                            if (res.code === 200) {
+                                //设置Token
+                                localStorage.setItem("access_token", res.data);
+                                insertMessage("<span style='color: green'>登陆成功！✔</span>");
+                                addManagerUl();
+                            } else {
+                                insertMessage("<span style='color: red'>" + res.msg + "❌</span>");
+                            }
+                        }
+                    })
+                } else if (message.indexOf("/logout") > 0) {
+                    //登出
+                    ajaxHttp({
+                        type: 'GET',
+                        url: ctx + "/manager/logout",
+                        error: function () {
+                            insertMessage("<span style='color: red'>登出异常！❌</span>");
+                        },
+                        success: function (res) {
+                            if (res.code === 200) {
+                                insertMessage("<span style='color: #acac40'>登出成功！✔</span>");
+                                $('#managerLi').remove();
+                                document.cookie = "Authorization=null";
+                                localStorage.setItem("access_token","");
+                            } else {
+                                insertMessage("<span style='color: red'>" + res.msg + "❌</span>");
+                            }
+                        }
+                    })
+                } else {
+                    webSocket.send(message);
+                }
             }
 
             const $chatInput = $("#chatInput");
@@ -169,7 +213,7 @@
                     const message = $("#nickName").text() + ': ' + $chatInput.val();
                     //校验信息长度
                     if ($chatInput.val().length > 50) {
-                        insertMessage("<span style='color: red'>太多啦，我们还是长话短说吧！❌</span>")
+                        insertMessage("<span style='color: red'>太多啦，我们还是长话短说吧！🎤</span>")
                     } else if ($chatInput.val().length > 0) {
                         //判断计时器是否处于关闭状态
                         if (time === 0) {
@@ -187,7 +231,7 @@
                             sendMessage(message);
                             $chatInput.val('');
                         } else {
-                            insertMessage("<span style='color: red'>喝口茶歇歇吧，" + time + "秒就好！❌</span>")
+                            insertMessage("<span style='color: red'>喝口茶歇歇吧，" + time + "秒就好！☕</span>")
                         }
                     }
                 }

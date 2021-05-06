@@ -32,7 +32,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         //静态资源
                         "/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg",
                         "/**/*.jpeg", "/**/*.gif", "/**/fonts/**", "/**/*.svg",
-                        "/**/*.ico",
+                        "/**/*.ico", "/**/*.map",
                         //错误
                         "/error",
                         //页面重定向
@@ -45,7 +45,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/manager/**")
                 .excludePathPatterns(
                         //管理员登陆
-                        "/manager/login"
+                        "/manager/login", "/manager/logout"
                 );
     }
 
