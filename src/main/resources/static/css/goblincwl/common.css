@@ -1,0 +1,39 @@
+#sideNav {
+    border-bottom: 0;
+}
+
+#sideNav > li > a {
+    font-size: 5px;
+    border-radius: 0;
+    padding: 5px 5px;
+    border: 0;
+    color: white;
+}
+
+#sideNav > li.active > a {
+    color: #6ecadc;
+    pointer-events: none;
+}
+
+#sideNav > li.active :hover {
+    background-color: white;
+}
+
+#sideNav > li :hover {
+    background-color: #6ebddc;
+}
+
+
+#sideNav > li + li {
+    margin-top: 0;
+}
+
+#sideNav > li > a > i.glyphicon:before {
+    margin-right: 2px;
+    font-size: 5px;
+    color: white;
+}
+
+#sideNav > li.active > a > i.glyphicon:before {
+    color: #6ecadc;
+}

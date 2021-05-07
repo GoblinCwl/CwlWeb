@@ -32,4 +32,9 @@ public class KeyValueOptions implements Serializable {
      */
     @TableField(whereStrategy = FieldStrategy.NOT_EMPTY)
     private String optValue;
+
+    /**
+     * 备注
+     */
+    private String remark;
 }

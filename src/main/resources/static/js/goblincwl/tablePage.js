@@ -214,3 +214,9 @@ function genTableOptionA(color, text, icon, onclick) {
         '   <i class="glyphicon ' + icon + '"></i>' + text + ' ' +
         '</a>'
 }
+
+function refreshTable(tableId) {
+    const $table = $("#" + tableId);
+    $table.bootstrapTable('refresh')
+    $table.bootstrapTable('getOptions').onUncheckAll();
+}

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
 <head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
-    <title>GoblinCwl - 管理</title>
+    <title>GoblinCwl - 简历管理</title>
     <link th:href="@{/css/manager.css}" rel="stylesheet"/>
     <style></style>
 </head>
@@ -22,7 +22,7 @@
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
     <script>
         $(function () {
-            $("#managerHomeLi").addClass("active")
+            $("#managerResumeLi").addClass("active")
         })
     </script>
 </div>

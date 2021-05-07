@@ -8,45 +8,44 @@
         <img th:src="@{/images/profile.jpg}" alt=""/>
     </div>
     <div class="details">
-        <h3 class="managerMenu"><span class='glyphicon glyphicon-dashboard'></span><a class="managerMenuSelected"
-                                                                                      href="/manager">数据面板</a></h3>
-        <h3 class="managerMenu"><span class='glyphicon glyphicon-cog'></span><a href="/manager/base">基础设置</a></h3>
-        <h3 class="managerMenu"><span class='glyphicon glyphicon-file'></span><a href="/manager/resume">简历管理</a></h3>
-        <h3 class="managerMenu"><span class='glyphicon glyphicon-list'></span><a href="/manager/blog">博客管理</a></h3>
-        <h3 class="managerMenu"><span class='glyphicon glyphicon-star'></span><a href="/manager/service">功能管理</a></h3>
+        <div class="container">
+            <div class="row">
+                <div class="span8">
+                    <ul class="nav nav-tabs nav-stacked" id="sideNav">
+                        <li id="managerHomeLi">
+                            <a href="/manager">
+                                <i class='glyphicon glyphicon-dashboard'></i>
+                                管理首页
+                            </a>
+                        </li>
+                        <li id="managerBaseLi" class="">
+                            <a href="/manager/base">
+                                <i class="glyphicon glyphicon-cog"></i>
+                                基础设置
+                            </a>
+                        </li>
+                        <li id="managerResumeLi">
+                            <a href="/manager/resume">
+                                <i class="glyphicon glyphicon-file"></i>
+                                简历管理
+                            </a>
+                        </li>
+                        <li id="managerBlogLi">
+                            <a href="/manager/blog">
+                                <i class="glyphicon glyphicon-list"></i>
+                                博客管理
+                            </a>
+                        </li>
+                        <li id="managerServiceLi">
+                            <a href="/manager/service">
+                                <i class="glyphicon glyphicon-star"></i>
+                                功能管理
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="clearfix"></div>
-</div>
-<!-- 顶部导航 -->
-<div th:fragment="topHeader()" class="details_header" id="topHeader">
-    <ul id="topHeaderUl">
-        <li>
-            <a href="/">
-                <span class="glyphicon glyphicon-home" aria-hidden="true"></span>首页
-            </a>
-        </li>
-        <li>
-            <a href="/resume">
-                <span class="glyphicon glyphicon-file" aria-hidden="true"></span>简历(未公开)
-            </a>
-        </li>
-        <li>
-            <a href="/blog">
-                <span class="glyphicon glyphicon-list" aria-hidden="true"></span>博客
-            </a>
-        </li>
-        <li>
-            <a href="/service">
-                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>功能
-            </a>
-        </li>
-        <!--        <li>-->
-        <!--            <a class="play-icon popup-with-zoom-anim" href="#small-dialog">-->
-        <!--                <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>照片-->
-        <!--            </a>-->
-        <!--        </li>-->
-        <!--        <div id="small-dialog" class="mfp-hide">-->
-        <!--            <img th:src="@{/images/g4.jpg}" alt=""/>-->
-        <!--        </div>-->
-    </ul>
 </div>

@@ -7,6 +7,11 @@
         .timeStampSHow {
             color: #929e98;
         }
+
+        div {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -183,7 +188,7 @@
                                 insertMessage("<span style='color: #acac40'>登出成功！✔</span>");
                                 $('#managerLi').remove();
                                 document.cookie = "Authorization=null";
-                                localStorage.setItem("access_token","");
+                                localStorage.setItem("access_token", "");
                             } else {
                                 insertMessage("<span style='color: red'>" + res.msg + "❌</span>");
                             }

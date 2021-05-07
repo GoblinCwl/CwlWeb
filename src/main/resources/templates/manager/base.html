@@ -20,17 +20,17 @@
         <div class="col-sm-12" style="padding: 0 10px;padding-top: 1em">
             <ul class="nav nav-tabs" id="navList">
                 <li data-name="keyValueOptionsTab" class="active">
-                    <a data-toggle="tab" href="#keyValueOptionsTab" onclick="initData('keyValueOptionsTab')">
+                    <a data-toggle="tab" href="#keyValueOptionsTab" onclick="refreshTable('keyValueOptions-table')">
                         键值配置
                     </a>
                 </li>
                 <li data-name="accessRecordTab" class="">
-                    <a data-toggle="tab" href="#accessRecordTab" onclick="initData('accessRecordTab')">
+                    <a data-toggle="tab" href="#accessRecordTab" onclick="refreshTable('accessRecord-table')">
                         访问记录
                     </a>
                 </li>
                 <li data-name="chatMessageTab" class="">
-                    <a data-toggle="tab" href="#chatMessageTab" onclick="initData('chatMessageTab')">
+                    <a data-toggle="tab" href="#chatMessageTab" onclick="refreshTable('chatMessage-table')">
                         聊天消息
                     </a>
                 </li>
@@ -88,8 +88,7 @@
                     <div class="table-responsive">
                         <div id="chatMessage-toolbar" class="btn-group">
                             <button id="chatMessage-toolbar-remove" type="button"
-                                    class="btn btn-danger btn-sm rightSize toolbarBtn"
-                                    onclick="chatMessageRemove()">
+                                    class="btn btn-danger btn-sm rightSize toolbarBtn">
                                 <i class="glyphicon glyphicon-remove " aria-hidden="true"></i>删除
                             </button>
                         </div>
@@ -115,7 +114,11 @@
 
     <script>
         $(function () {
+            //左侧导航
+            $("#managerBaseLi").addClass("active")
             initData('keyValueOptionsTab')
+            initData('accessRecordTab')
+            initData('chatMessageTab')
         })
 
         //初始化表格
@@ -182,7 +185,7 @@
                             sortable: true,
                             sortName: "opt_key",
                             align: 'center',
-                            width: 500,
+                            width: 300,
                             cellStyle: function () {
                                 const style = rowStyle(tableOptions);
                                 style.css.color = "#337ab7"
@@ -193,11 +196,15 @@
                             field: 'optValue',
                             title: '值',
                             align: 'center',
+                            width: 300,
                             cellStyle: function () {
                                 const style = rowStyle(tableOptions);
                                 style.css.color = "green"
                                 return style;
                             }
+                        }, {
+                            field: 'remark',
+                            title: '备注'
                         }
                     ];
                     break;
@@ -361,10 +368,16 @@
                     '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optValue" placeholder="value">' +
                     '    </div>' +
                     '  </div>\n' +
+                    '  <div class="form-group">\n' +
+                    '    <label for="keyValueOptions-add-remark" class="col-sm-2 control-label xtip-label">备注</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-remark" placeholder="...">' +
+                    '    </div>' +
+                    '  </div>\n' +
                     '</form>'
                 ,
                 title: "新增键值对",
-                width: '350px',
+                width: '400px',
                 maxWidth: '100%',
                 shadeClose: false,
                 btn1: function () {
@@ -373,7 +386,8 @@
                         url: ctx + "/manager/keyValueOptions/add",
                         data: {
                             optKey: $("#keyValueOptions-add-optKey").val(),
-                            optValue: $("#keyValueOptions-add-optValue").val()
+                            optValue: $("#keyValueOptions-add-optValue").val(),
+                            remark: $("#keyValueOptions-add-remark").val()
                         },
                         beforeSend: function () {
                             this.loadId = xtip.load();
@@ -424,6 +438,7 @@
                             type: 'confirm', //alert 或 confirm
                             btn: ['保存', '取消'],
                             icon: ['', '#5bc0de'],
+                            width: '400px',
                             tip:
                                 '<form class="form-horizontal">\n' +
                                 '  <div class="form-group">\n' +
@@ -438,6 +453,12 @@
                                 '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optValue" placeholder="value" value="' + res.data.optValue + '">' +
                                 '    </div>' +
                                 '  </div>\n' +
+                                '  <div class="form-group">\n' +
+                                '    <label for="keyValueOptions-add-remark" class="col-sm-2 control-label xtip-label">备注</label>' +
+                                '    <div class="col-sm-10 xtip-input">' +
+                                '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-remark" placeholder="..." value="' + res.data.remark + '">' +
+                                '    </div>' +
+                                '  </div>\n' +
                                 '</form>'
                             ,
                             title: "修改键值对",
@@ -448,7 +469,8 @@
                                     url: ctx + "/manager/keyValueOptions/edit",
                                     data: {
                                         optKey: $("#keyValueOptions-add-optKey").val(),
-                                        optValue: $("#keyValueOptions-add-optValue").val()
+                                        optValue: $("#keyValueOptions-add-optValue").val(),
+                                        remark: $("#keyValueOptions-add-remark").val()
                                     },
                                     beforeSend: function () {
                                         this.loadId = xtip.load();

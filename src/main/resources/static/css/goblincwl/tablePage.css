@@ -14,6 +14,7 @@
 /*按钮上的图标颜色*/
 .toolbarBtn i:before {
     color: white;
+    margin-right: 0;
 }
 
 /*页码颜色*/
@@ -104,8 +105,12 @@
     margin-bottom: 0;
 }
 
-.form-group input {
-    width: auto
+.table-search .form-group input {
+    margin-bottom: 1em;
+}
+
+.table-search .form-group label{
+    display: none;
 }
 
 /*表格字体以及间距*/
@@ -178,7 +183,7 @@
 }
 
 /*换表导航*/
-.nav-tabs > li > a {
+#navList > li > a {
     font-size: 5px;
     border-radius: 0;
     padding: 5px 5px;
