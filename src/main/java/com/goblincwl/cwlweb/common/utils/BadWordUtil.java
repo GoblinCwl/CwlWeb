@@ -1,7 +1,7 @@
 package com.goblincwl.cwlweb.common.utils;
 
-import com.goblincwl.cwlweb.index.entity.BadWords;
-import com.goblincwl.cwlweb.index.service.BadWordsService;
+import com.goblincwl.cwlweb.manager.entity.BadWords;
+import com.goblincwl.cwlweb.manager.service.BadWordsService;
 import com.goblincwl.cwlweb.manager.entity.KeyValueOptions;
 import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
 import lombok.RequiredArgsConstructor;

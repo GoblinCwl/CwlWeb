@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'MyHack';
+    src: url('../../fonts/hack/Hack-Regular.ttf');
+}
+
 #sideNav {
     border-bottom: 0;
 }
@@ -38,14 +43,18 @@
     color: #6ecadc;
 }
 
-.web-record{
-    font-size: 0.8em;
-    color: gray;
-    margin-top: 4em;
+/*去除按钮点下后的边框*/
+.btn:focus, .btn:active:focus,
+.btn.active:focus, .btn.focus,
+.btn:active.focus, .btn.active.focus,
+.dropdown-toggle:focus{
+    outline: none!important;
+    border-color: transparent;
+    box-shadow: none!important;
 }
-.web-record p{
-    text-align: center;font-family: MyHack
-}
-.web-record a{
-    color: gray;
+
+input:focus {
+    outline: none;
+    border-color: #31b0d5;
+    box-shadow: 0 0 5px #269abc;
 }

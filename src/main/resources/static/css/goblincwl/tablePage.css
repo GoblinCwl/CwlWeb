@@ -1,12 +1,3 @@
-/*去除按钮点下后的边框*/
-.btn:focus, .btn:active:focus,
-.btn.active:focus, .btn.focus,
-.btn:active.focus, .btn.active.focus {
-    outline: none;
-    border-color: transparent;
-    box-shadow: none;
-}
-
 .toolbarBtn {
     border-radius: 0;
 }

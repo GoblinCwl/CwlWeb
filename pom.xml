@@ -19,6 +19,8 @@
 		<druid.version>1.1.10</druid.version>
 		<bootstrap.version>3.4.1</bootstrap.version>
 		<bootstrap-table.version>1.16.0</bootstrap-table.version>
+		<bootstrap-paginator.version>1.0.2</bootstrap-paginator.version>
+		<bootstrap-select.version>1.13.18</bootstrap-select.version>
 		<jquery.version>3.6.0</jquery.version>
 		<jquery-cookie.version>1.4.1-1</jquery-cookie.version>
 	</properties>
@@ -107,6 +109,20 @@
 			<groupId>org.webjars</groupId>
 			<artifactId>bootstrap-table</artifactId>
 			<version>${bootstrap-table.version}</version>
+		</dependency>
+
+		<!-- bootstrap-paginator -->
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>bootstrap-paginator</artifactId>
+			<version>${bootstrap-paginator.version}</version>
+		</dependency>
+
+		<!-- bootstrap-select -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap-select</artifactId>
+			<version>${bootstrap-select.version}</version>
 		</dependency>
 
 		<!-- jquery -->

@@ -30,9 +30,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         //首页
                         "/",
                         //静态资源
-                        "/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg",
-                        "/**/*.jpeg", "/**/*.gif", "/**/fonts/**", "/**/*.svg",
-                        "/**/*.ico", "/**/*.map",
+                        "/css/**", "/fonts/**", "/images/**", "/js/**", "/plugins/**", "/webjars/**",
                         //错误
                         "/error",
                         //页面重定向

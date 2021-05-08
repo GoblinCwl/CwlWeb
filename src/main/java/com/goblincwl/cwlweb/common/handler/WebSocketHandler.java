@@ -2,8 +2,8 @@ package com.goblincwl.cwlweb.common.handler;
 
 import com.goblincwl.cwlweb.common.utils.BadWordUtil;
 import com.goblincwl.cwlweb.common.utils.BeanUtil;
-import com.goblincwl.cwlweb.index.entity.ChatMessage;
-import com.goblincwl.cwlweb.index.service.ChatMessageService;
+import com.goblincwl.cwlweb.manager.entity.ChatMessage;
+import com.goblincwl.cwlweb.manager.service.ChatMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
@@ -11,7 +11,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;

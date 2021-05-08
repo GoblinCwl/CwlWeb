@@ -2,7 +2,7 @@ package com.goblincwl.cwlweb.index.controller;
 
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.IpUtils;
-import com.goblincwl.cwlweb.index.service.AccessRecordService;
+import com.goblincwl.cwlweb.manager.service.AccessRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

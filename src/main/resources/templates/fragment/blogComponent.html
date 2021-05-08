@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="https://www.thymeleaf.org/">
+
+<!-- 左侧侧边栏 -->
+<div th:fragment="leftSiderBar()" class="col-sm-3 col-md-2 sidebar">
+    <div class="sidebar_top">
+        <h1>博客</h1>
+        <img th:src="@{/images/profile.jpg}" alt=""/>
+    </div>
+    <div class="details">
+        <div class="container">
+            <div class="row">
+                <div class="span8">
+                    <ul class="nav nav-tabs nav-stacked" id="sideNav">
+                        <li id="blogHomeLi">
+                            <a href="/blog">
+                                <i class='glyphicon glyphicon-dashboard'></i>
+                                首页
+                            </a>
+                        </li>
+                        <li id="blogTabsLi" class="">
+                            <a href="/blog/tabs">
+                                <i class="glyphicon glyphicon-cog"></i>
+                                标签
+                            </a>
+                        </li>
+                        <li id="blogFilesLi">
+                            <a href="/blog/files">
+                                <i class="glyphicon glyphicon-file"></i>
+                                归档
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>

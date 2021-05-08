@@ -12,6 +12,36 @@
             overflow-x: hidden;
             overflow-y: auto;
         }
+
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        .web-record {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .web-record{
+            font-size: 0.8em;
+            color: gray;
+            margin-top: 4em;
+        }
+        .web-record p{
+            text-align: center;font-family: MyHack;
+            margin-left: 25em;
+        }
+        .web-record a{
+            color: gray;
+        }
+        @media (max-width: 768px) {
+            .web-record p{
+                margin: 0;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -55,23 +85,18 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-xs-12">
-                    <!--版权，备案-->
-                    <div class="web-record">
-                        <p>
-                            © 2021 GoblinCwl
-                            <a href="https://beian.miit.gov.cn/" target="_blank">湘ICP备19013886号</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
 
     </div>
 </div>
-
+<div class="web-record">
+    <p>
+        © 2021 GoblinCwl 🐉
+        <a href="https://beian.miit.gov.cn/" target="_blank">湘ICP备19013886号</a>
+    </p>
+</div>
 </body>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
     <script th:src="@{/js/vueTypeJs/vue.min.js}"></script>

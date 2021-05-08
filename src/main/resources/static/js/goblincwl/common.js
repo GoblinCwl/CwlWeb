@@ -79,6 +79,16 @@ const ajaxHttp = function (options) {
         },
         complete: function () {
             o.complete && o.complete();
+        },
+        error:function (){
+            xtip.msg("前端发生未知错误，请联系站长！", {icon: 'e', type: 'w'});
         }
     });
 };
+
+/*获取url参数*/
+$.getUrlParam = function (name) {
+    const reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    const r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+}

@@ -1,20 +1,179 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
-<head th:replace="fragment/globalComponent::commonHead(~{::title},~{},~{})">
+<head th:replace="fragment/globalComponent::commonHead(~{::title},~{::style},~{})">
     <title>GoblinCwl - 博客</title>
+    <!--博客列表样式-->
+    <style>
+        .blog {
+            height: 10em;
+            border: 3px solid black;
+            margin: 2em 1em 0 2em;
+            padding: 0.8em;
+            position: relative;
+            cursor: pointer;
+
+            /*禁止选中文本*/
+            -moz-user-select: none; /*火狐*/
+            -webkit-user-select: none; /*webkit浏览器*/
+            -ms-user-select: none; /*IE10*/
+            -khtml-user-select: none; /*早期浏览器*/
+            user-select: none;
+        }
+
+        .blog:hover {
+            border: 3px solid #6ecadc;
+        }
+
+        .blog:hover > h2 {
+            color: #6ecadc;
+        }
+
+        .blog h2 {
+            padding-bottom: 0.5em;
+            font-weight: bold;
+        }
+
+        .blog .blog-tabs {
+            position: absolute;
+            bottom: 0.8em;
+            left: 0.8em;
+        }
+
+        .blog .blog-tabs span {
+            background-color: #6ecadc;
+            padding: 0.2em;
+            border: 1px solid black;
+            font-size: 10px;
+            font-family: MyHack;
+        }
+
+        .blog .blog-time {
+            position: absolute;
+            bottom: 0.8em;
+            right: 0.8em;
+            color: #ddd;
+        }
+
+        #pageRow {
+            text-align: center;
+        }
+
+        #pageRow ul li a {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 <!-- 左侧侧边栏 -->
-<div th:replace="fragment/globalComponent::leftSiderBar"></div>
+<div th:replace="fragment/blogComponent::leftSiderBar"></div>
 
 <!-- 页面内容 -->
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     <div class="content">
         <!-- 顶部导航 -->
         <div th:replace="fragment/globalComponent::topHeader"></div>
+        <!--博客首页-->
+        <div class="container-fluid">
+            <div class="row">
+                <div id="blogDiv" class="col-lg-8">
+                    <!--文章列表-->
+                    <div id="blogHtml"></div>
+                    <div id="pageRow" class="col-lg-12">
+                        <ul id="pageUl"></ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div style="
+                        border: 1px solid black;
+                        height: 35em;
+                        margin-top: 2em;">
+                        TODO 搜索框
+                        TODO 热门等？
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>
-<div th:replace="fragment/globalComponent::commonFoot(~{})">
+<div th:replace="fragment/globalComponent::commonFoot(~{::script})">
+    <script>
+        $(function () {
+            $("#blogHomeLi").addClass("active");
+            initBlogList(1)
+        })
+
+        function initBlogList(pageNumber) {
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/blog/list",
+                data: {
+                    pageNumber: pageNumber,
+                    pageSize: 10,
+                    sortName: "update_time",
+                    sortOrder: "desc"
+                },
+                beforeSend: function (request) {
+                    this.loadId = xtip.load();
+                },
+                success: function (res) {
+                    if (res != null && res.code === 200) {
+                        const dataList = res.data.records;
+                        const $blogHtml = $("#blogHtml");
+                        let html = '';
+                        //渲染列表
+                        for (let i = 0; i < dataList.length; i++) {
+                            const rowData = dataList[i];
+                            html += '' +
+                                '<div class="row">' +
+                                '    <div class="blog" onclick="location.href=\'blog/content?id=' + rowData.id + '\'">' +
+                                '        <h2>' + rowData.title + '</h2>' +
+                                '        <p>' + rowData.shortContent + '</p>' +
+                                '        <div class="blog-tabs">' +
+                                '            <span>Java</span>' +
+                                '            <span>Springboot</span>' +
+                                '        </div>' +
+                                '        <span class="blog-time">' + rowData.releaseTime + '</span>' +
+                                '    </div>' +
+                                '</div>';
+                            $blogHtml.html(html)
+                        }
+                        //渲染分页
+                        const $pageUl = $("#pageUl");
+                        const paginatorOptions = {
+                            bootstrapMajorVersion: 3,
+                            currentPage: res.data.current, // 当前页数
+                            numberOfPages: 3, // 显示按钮的数量
+                            totalPages: res.data.pages, // 总页数
+                            itemTexts: function (type, page, current) {
+                                switch (type) {
+                                    case "first":
+                                        return "首页";
+                                    case "prev":
+                                        return "<";
+                                    case "next":
+                                        return ">";
+                                    case "last":
+                                        return "末页";
+                                    case "page":
+                                        return page;
+                                }
+                            },
+                            // 点击事件，用于通过Ajax来刷新整个list列表
+                            onPageClicked: function (event, originalEvent, type, page) {
+                                initBlogList(page);
+                            }
+                        };
+                        $pageUl.bootstrapPaginator(paginatorOptions);
+                    } else {
+                        xtip.msg(res.msg, {icon: 'e', type: 'w'});
+                    }
+                },
+                complete: function () {
+                    xtip.close(this.loadId);
+                }
+            });
+        }
+    </script>
 </div>
 </html>

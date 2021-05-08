@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
+    <title>GoblinCwl - 编辑文章</title>
+    <link th:href="@{/css/manager.css}" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/plugins/editormd/css/editormd.css}">
+    <style>
+        /*隐藏小地图*/
+        #map {
+            display: none;
+        }
+
+        /*隐藏editor源码框*/
+        #article {
+            display: none;
+        }
+
+        /*多选框选项徽章样式*/
+        .badge {
+            border-radius: 0;
+        }
+
+        /*标题样式*/
+        #blogTitle {
+            border: solid 2px #666;
+            border-radius: 0;
+            padding: 0.05rem;
+        }
+
+        /*多选框样式*/
+        .editBlog-select-btn {
+            border-radius: 0;
+            border: 2px solid #666666;
+            padding-top: 0.1rem;
+            padding-bottom: 0.1rem;
+        }
+
+        /*多选框搜索输入框样式*/
+        input.form-control {
+            border-radius: 0;
+            border: 2px solid #666;
+            padding: 0;
+            height: 1.5rem;
+        }
+
+        /*多选框focus*/
+        .bootstrap-select > select.mobile-device:focus + .dropdown-toggle, .bootstrap-select .dropdown-toggle:focus {
+            outline: none !important;
+            border: 2px solid #666666;
+            box-shadow: none !important;
+        }
+
+        /*多选框导致的下移*/
+        .CodeMirror-wrap {
+            margin-top: 2.5rem !important;
+        }
+
+        /*多选框导致的下移*/
+        .editormd-preview {
+            top: 2.5rem !important;;
+        }
+
+        /*未选择元素的时候是文本，对其*/
+        .filter-option-inner-inner{
+            font-size: 0.94rem;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- 页面内容 -->
+<div id="editormd">
+    <label for="article"></label>
+    <textarea id="article" name="article"></textarea>
+</div>
+
+</body>
+<div th:replace="fragment/globalComponent::commonFoot(~{::script})">
+    <script th:src="@{/js/goblincwl/tablePage.js}" type="text/javascript"></script>
+    <script th:src="@{/plugins/editormd/editormd.min.js}"></script>
+    <script>
+        var editorMd;
+
+        $(function () {
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/blog/" + $.getUrlParam("id"),
+                beforeSend: function () {
+                    this.loadId = xtip.load();
+                },
+                success: function (res) {
+                    if (res != null && res.code === 200) {
+                        $("#article").html(res.data.content);
+                    }
+                    initEditorMd(res.data.title);
+                },
+                complete: function () {
+                    xtip.close(this.loadId);
+                }
+            })
+
+
+        })
+
+        function initEditorMd(title) {
+            editorMd = editormd("editormd", {
+                width: "100%",                  //宽度
+                autoHeight: true,               //高度（自动）
+                syncScrolling: "single",
+                path: "/plugins/editormd/lib/", //依赖库
+                tex: true,                      // 开启科学公式TeX语言支持，默认关闭
+                flowChart: true,                // 开启流程图支持，默认关闭
+                sequenceDiagram: true,          // 开启时序/序列图支持，默认关闭,
+                emoji: true,                    //emoji表情
+                toolbarIcons: function () {     //自定义工具栏
+                    return [
+                        "undo", "redo",
+                        "|", "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase",
+                        "|", "list-ul", "list-ol", "hr",
+                        "|", "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime", "emoji",
+                        "|", "watch", "preview",
+                        "||", "tabs", "title", "submit"
+                    ]
+                },
+                toolbarIconsClass: {            //自定义按钮图标
+                    submit: "fa-check"
+                },
+                toolbarCustomIcons: {
+                    title: "<input id='blogTitle' type='text' value='123'/>",
+                    tabs: "" +
+                        "<select class='editorSelect' " +
+                        "   multiple " +
+                        "   data-live-search='true' " +
+                        "   data-width='fit'" +
+                        "   data-size='5' " +
+                        "   data-style='editBlog-select-btn'" +
+                        "   title='选择标签'" +
+                        "   data-selected-text-format='count > 3'" +
+                        ">" +
+                        "   <option data-content=\"<span class='badge badge-danger'>Java</span>\">Java</option>" +
+                        "   <option data-content=\"<span class='badge badge-success'>Spring</span>\">Spring</option>" +
+                        "   <option data-content=\"<span class='badge badge-warning'>MySql</span>\">MySql</option>" +
+                        "   <option data-content=\"<span class='badge badge-info'>Oracle</span>\">Oracle</option>" +
+                        "   <option data-content=\"<span class='badge badge-info'>Oracle</span>\">Oracle</option>" +
+                        "   <option data-content=\"<span class='badge badge-info'>Oracle</span>\">Oracle</option>" +
+                        "</select>",
+                },
+                toolbarHandlers: {              //自定义按钮事件
+                    submit: function (cm, icon, cursor, selection) {
+                        alert(editorMd.getMarkdown())
+                    }
+                },
+                onload: function () {           //加载完毕时
+                    //自动全屏
+                    editorMd.fullscreen()
+                    $("#blogTitle").val(title)
+                    $(".editorSelect").selectpicker()
+                }
+            });
+
+        }
+    </script>
+</div>
+</html>

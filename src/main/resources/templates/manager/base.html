@@ -392,8 +392,6 @@
                         beforeSend: function () {
                             this.loadId = xtip.load();
                         },
-                        error: function () {
-                        },
                         success: function (res) {
                             if (res != null && res.code === 200) {
                                 xtip.msg(res.msg, {icon: 's', type: 'w'})
@@ -429,8 +427,7 @@
                 type: "GET",
                 url: ctx + "/manager/keyValueOptions/" + optKey,
                 beforeSend: function (request) {
-                },
-                error: function () {
+                    this.loadId = xtip.load();
                 },
                 success: function (res) {
                     if (res != null && res.code === 200) {
@@ -475,8 +472,6 @@
                                     beforeSend: function () {
                                         this.loadId = xtip.load();
                                     },
-                                    error: function () {
-                                    },
                                     success: function (res) {
                                         if (res != null && res.code === 200) {
                                             xtip.msg(res.msg, {icon: 's', type: 'w'})
@@ -495,6 +490,9 @@
                     } else {
                         xtip.msg(res.msg, {icon: 'e', type: 'w'})
                     }
+                },
+                complete: function () {
+                    xtip.close(this.loadId);
                 }
             })
         }
@@ -524,8 +522,6 @@
                     },
                     beforeSend: function () {
                         this.loadId = xtip.load();
-                    },
-                    error: function () {
                     },
                     success: function (res) {
                         if (res != null && res.code === 200) {
@@ -571,8 +567,6 @@
                     },
                     beforeSend: function () {
                         this.loadId = xtip.load();
-                    },
-                    error: function () {
                     },
                     success: function (res) {
                         if (res != null && res.code === 200) {

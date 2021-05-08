@@ -13,7 +13,6 @@ function genTableOptions() {
         pageList: [10, 25, 50, 100],                                        //可供选择的每页的行数
         queryParamsType: "",                                                //查询条件类型，留空为pageNumber,pageSize,sortName,sortOrder
         clickToSelect: true,                                                //是否启用点击选中行
-        multipleSelectRow: true,                                            //是否启用shift/ctrl选中行
         buttonsPrefix: 'btn btn-sm btn-info toolbarBtn',                    //所有按钮class前缀
         undefinedText: '<span style="color: #c9c9c9">&lt;null&gt;</span>',  //数据为空时的占位符
         //自定义工具栏图标

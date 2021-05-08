@@ -26,11 +26,6 @@ html .console {
     float: right;
 }
 
-@font-face {
-    font-family: 'MyHack';
-    src: url('../fonts/hack/Hack-Regular.ttf');
-}
-
 html .console .text {
     font-family: 'MyHack';
     color: #000000;
