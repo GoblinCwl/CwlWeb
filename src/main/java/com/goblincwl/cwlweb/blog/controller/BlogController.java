@@ -10,12 +10,10 @@ import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 
 /**
