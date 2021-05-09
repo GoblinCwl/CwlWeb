@@ -1,8 +1,18 @@
 ﻿<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
-<head th:replace="fragment/globalComponent::commonHead(~{::title},~{},~{::link})">
-    <link rel="stylesheet" th:href="@{/plugins/editormd/css/editormd.preview.css}">
+<head th:replace="fragment/globalComponent::commonHead(~{::title},~{::style},~{::link})">
     <title>GoblinCwl - 博客</title>
+    <link rel="stylesheet" th:href="@{/plugins/editormd/css/editormd.preview.css}">
+    <style>
+        #tabsRow .badge {
+            margin-right: 0.2rem;
+        }
+
+        #blogTime {
+            color: #8d8c8c;
+            padding: 0.2rem 0 0.1rem 0.1rem;
+        }
+    </style>
 </head>
 <body>
 <!-- 左侧侧边栏 -->
@@ -15,8 +25,14 @@
 
         <div class="container" style="margin-top: 2em;margin-left: 2em;width: 100%;padding-right: 4em">
             <div class="header">
-                <h2 id="contentTitle"></h2>
+                <div class="row">
+                    <h1 style="font-weight: bold" id="contentTitle"></h1>
+                    <h5 id="blogTime"></h5>
+                </div>
+                <div id="tabsRow" class="row">
+                </div>
             </div>
+            <br>
             <div class="footer">
                 <div id="view-editormd"></div>
             </div>
@@ -42,31 +58,43 @@
                 type: "GET",
                 url: ctx + "/blog/" + $.getUrlParam("id"),
                 success: function (res) {
-                    if (res != null && res.code === 200) {
-                        $("title").html(res.data.title);
-                        $("#contentTitle").text(res.data.title)
-                        if (res.data.content == null) {
-                            res.data.content = '';
+                    let content = '';
+                    if (res.data != null) {
+                        const data = res.data;
+
+                        //网页标签标题
+                        $("title").html(data.title);
+                        //文章标题
+                        $("#contentTitle").text(data.title)
+                        //文章时间
+                        $("#blogTime").text('发布: ' + data.releaseTime + '\t更新: ' + data.updateTime)
+                        //文章标签
+                        if (data.blogTabsList != null) {
+                            var tabsHtml = '';
+                            for (let j = 0; j < data.blogTabsList.length; j++) {
+                                const tabs = data.blogTabsList[j];
+                                tabsHtml += '' +
+                                    '<span class="badge" style="background-color: ' + tabs.color + '">' + tabs.name + '</span>';
+                            }
+                            $("#tabsRow").html(tabsHtml);
                         }
-                        editorMdView = editormd.markdownToHTML("view-editormd", {
-                            markdown: res.data.content,
-                            //htmlDecode      : true,       // 开启 HTML 标签解析，为了安全性，默认不开启
-                            htmlDecode: "style,script,iframe", // you can filter tags decode
-                            //toc             : false,
-                            tocm: true, // Using [TOCM]
-                            //tocContainer    : "#custom-toc-container", // 自定义 ToC 容器层
-                            //gfm             : false,
-                            //tocDropdown     : true,
-                            // markdownSourceCode : true, // 是否保留 Markdown 源码，即是否删除保存源码的 Textarea 标签
-                            emoji: true,
-                            taskList: true,
-                            tex: true, // 默认不解析
-                            flowChart: true, // 默认不解析
-                            sequenceDiagram: true, // 默认不解析
-                        })
-                    } else {
-                        xtip.msg(res.msg, {icon: 'e', type: 'w'});
+
+                        //文章内容
+                        if (data.content == null) {
+                            data.content = '';
+                        }
+                        content = data.content;
                     }
+                    editorMdView = editormd.markdownToHTML("view-editormd", {
+                        markdown: content,
+                        htmlDecode: "style,script,iframe", // you can filter tags decode
+                        tocm: true, // Using [TOCM]
+                        emoji: true,
+                        taskList: true,
+                        tex: true, // 默认不解析
+                        flowChart: true, // 默认不解析
+                        sequenceDiagram: true, // 默认不解析
+                    })
                 },
             });
         });

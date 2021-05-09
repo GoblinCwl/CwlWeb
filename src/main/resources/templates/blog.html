@@ -115,7 +115,7 @@
                     sortOrder: "desc"
                 },
                 success: function (res) {
-                    if (res != null && res.code === 200) {
+                    if (res.data != null) {
                         const dataList = res.data.records;
                         const $blogHtml = $("#blogHtml");
                         let html = '';
@@ -130,7 +130,7 @@
                                 '        <div class="blog-tabs">';
 
                             //拼接标签
-                            if (rowData.tabsArray != null) {
+                            if (rowData.blogTabsList != null) {
                                 for (let j = 0; j < rowData.blogTabsList.length; j++) {
                                     const tabs = rowData.blogTabsList[j];
                                     html += '<span class="badge" style="background-color: ' + tabs.color + '">' + tabs.name + '</span>';
@@ -143,6 +143,7 @@
                                 '</div>';
                             $blogHtml.html(html)
                         }
+
                         //渲染分页
                         const $pageUl = $("#pageUl");
                         const paginatorOptions = {
@@ -170,8 +171,6 @@
                             }
                         };
                         $pageUl.bootstrapPaginator(paginatorOptions);
-                    } else {
-                        xtip.msg(res.msg, {icon: 'e', type: 'w'});
                     }
                 },
             });
