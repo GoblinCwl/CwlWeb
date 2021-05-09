@@ -1,6 +1,5 @@
 package com.goblincwl.cwlweb;
 
-import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

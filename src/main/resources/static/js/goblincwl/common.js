@@ -45,8 +45,6 @@ function ajaxHeaders() {
         'Content-Type': 'application/x-www-form-urlencoded',
         // 每次请求携带token
         'Authorization': localStorage.getItem('access_token'),
-        //(自定义)请求类型为api
-        'GoblinCwlRequestType': 'api'
     }
 }
 

@@ -1,8 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
-<head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
+<head th:replace="fragment/globalComponent::commonHead(~{::title},~{},~{::style})">
     <title>GoblinCwl - 首页</title>
-    <link rel="stylesheet" th:href="@{/css/vueType.css}">
     <style>
         .timeStampSHow {
             color: #929e98;
@@ -50,6 +49,62 @@
             outline: none;
             border: 0;
             box-shadow: 0 0 0;
+        }
+
+        html .console {
+            margin-left: 0.5rem;
+            /*box-shadow: 0 0 15px 0px rgba(0, 0, 0, 0.35);*/
+            box-shadow: -5px 5px 10px -6px rgba(0, 0, 0, 0.35), 5px 0 10px -6px rgba(0, 0, 0, 0.35);
+            border: 1px solid black;
+            border-top: 0;
+        }
+
+        .top {
+            text-align: center;
+            font-size: 16px;
+            padding: 5px;
+            background-color: #6ecadc;
+            color: white;
+            width: 98%;
+            float: left;
+            margin-left: 0.5rem;
+            margin-top: 2rem;
+            /*box-shadow: -5px -5px 10px -6px rgba(0, 0, 0, 0.35), 5px 0 10px -6px rgba(0, 0, 0, 0.35);*/
+            border: 1px solid #5396a3;
+        }
+
+        .top .options {
+            font-size: 16px;
+            float: right;
+        }
+
+        html .console .text {
+            font-family: 'MyHack';
+            color: #000000;
+            font-size: 14px;
+            padding: 0.25rem;
+        }
+
+        .terminal-console {
+            width: 98%;
+            float: left;
+            height: 33em;
+        }
+
+        @media (max-width: 640px) {
+            html .console {
+                margin-left: 0;
+            }
+
+            .terminal-console {
+                width: 100%;
+            }
+
+            .top {
+                width: 100%;
+                margin-top: 1rem;
+                margin-left: 0;
+            }
         }
 
     </style>
@@ -109,9 +164,6 @@
 </div>
 </body>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
-    <script th:src="@{/js/vueTypeJs/vue.min.js}"></script>
-    <script th:src="@{/js/vueTypeJs/typed.min.js}"></script>
-    <script th:src="@{/js/autoTyping/AutoTyping.min.js}"></script>
     <script>
         $(function () {
             terminalDataInit();

@@ -1,6 +1,7 @@
 package com.goblincwl.cwlweb.common.interceptor;
 
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
+import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.enums.ResultCode;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Web重定向 拦截器
@@ -27,9 +29,9 @@ public class WebRedirectInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //注解认证
-        boolean isTokenCheck = handler.getClass().isAssignableFrom(HandlerMethod.class);
-        if (isTokenCheck) {
+        //请求目标是否存在注解
+        boolean isAnnotation = handler.getClass().isAssignableFrom(HandlerMethod.class);
+        if (isAnnotation) {
             TokenCheck tokenCheck = ((HandlerMethod) handler).getMethodAnnotation(TokenCheck.class);
             if (tokenCheck != null && tokenCheck.value()) {
                 //需要认证身份
@@ -39,11 +41,8 @@ public class WebRedirectInterceptor implements HandlerInterceptor {
                     throw new GoblinCwlException(ResultCode.AUTH_FAIL);
                 }
             }
-        }
-
-        String goblinCwlRequestType = request.getHeader("GoblinCwlRequestType");
-        //请求头中[不]带有GoblinCwlRequestType=api时，转发至重定向
-        if (!"api".equals(goblinCwlRequestType)) {
+        } else {
+            //没有注解时，无目标，做转发
             request.getRequestDispatcher(request.getContextPath() + "/redirect" + request.getRequestURI()).forward(request, response);
             return false;
         }

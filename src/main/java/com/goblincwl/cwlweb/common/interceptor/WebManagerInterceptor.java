@@ -9,6 +9,7 @@ import com.goblincwl.cwlweb.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.Cookie;
@@ -24,36 +25,24 @@ import java.util.List;
  */
 @Component
 @RequiredArgsConstructor
-public class WebMvcInterceptor implements HandlerInterceptor {
+public class WebManagerInterceptor implements HandlerInterceptor {
 
     private final TokenService tokenService;
-    private final GoblinCwlConfig goblinCwlConfig;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String goblinCwlRequestType = request.getHeader("GoblinCwlRequestType");
-        //验证Token
-        if (!ServletUtils.checkToken(request, this.tokenService)) {
-            //验证不通过
-            throw new GoblinCwlException(ResultCode.AUTH_FAIL);
-        }
-
-        //API请求白名单
-        boolean checkApi = true;
-        List<String> apiRequestWhiteList = this.goblinCwlConfig.getApiRequestWhiteList();
-        String requestUri = request.getRequestURI();
-        for (String whiteUri : apiRequestWhiteList) {
-            if (requestUri.startsWith(whiteUri)) {
-                checkApi = false;
-                break;
+        //请求目标是否存在注解
+        boolean isAnnotation = handler.getClass().isAssignableFrom(HandlerMethod.class);
+        if (isAnnotation) {
+            //验证Token
+            if (!ServletUtils.checkToken(request, this.tokenService)) {
+                //验证不通过
+                throw new GoblinCwlException(ResultCode.AUTH_FAIL);
             }
-        }
-        if (checkApi) {
-            //请求头中[不]带有GoblinCwlRequestType=api时，转发至重定向
-            if (!"api".equals(goblinCwlRequestType)) {
-                request.getRequestDispatcher(request.getContextPath() + "/redirect" + requestUri).forward(request, response);
-                return false;
-            }
+        } else {
+            //没有注解时，转发
+            request.getRequestDispatcher(request.getContextPath() + "/redirect" + request.getRequestURI()).forward(request, response);
+            return false;
         }
         return true;
     }

@@ -27,13 +27,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoblinCwlConfig {
-
-    /**
-     * 请求不校验GoblinCwlRequestType的地址白名单
-     * 某些请求无法给请求头，设置白名单处理
-     */
-    private List<String> apiRequestWhiteList;
-
     /**
      * webSocket访问节点
      */

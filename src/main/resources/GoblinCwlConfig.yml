@@ -1,8 +1,4 @@
 goblin-cwl-config:
-  # API请求白名单
-  api-request-white-list:
-    - "/manager/ossFile/uploadFile"
-
   # webSocket
   websocket-endpoint: websocket
   websocket-origin-white-list:

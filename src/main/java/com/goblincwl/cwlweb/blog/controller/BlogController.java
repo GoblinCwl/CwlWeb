@@ -11,8 +11,12 @@ import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletException;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 
@@ -73,6 +77,21 @@ public class BlogController extends BaseController<Blog> {
             }
         }
         return new Result<Blog>().success(blog, "成功");
+    }
+
+    /**
+     * 实现RestFull风格页面
+     * 主要是因为页面跳转全部由/redirect转发
+     * 此处在拦截器内配置了白名单了
+     *
+     * @param id 文章ID
+     * @return modelAndView
+     * @date 2021-05-10 06:59:09
+     * @author ☪wl
+     */
+    @GetMapping("/content/{id}")
+    public ModelAndView content(@PathVariable("id") String id) throws ServletException, IOException {
+        return new ModelAndView("blog/content", Collections.singletonMap("id", id));
     }
 
     /**
