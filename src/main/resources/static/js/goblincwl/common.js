@@ -112,8 +112,8 @@ const ajaxHttp = function (options) {
 };
 
 /*获取表格Jquery对象*/
-function getTable(tableId){
-    return $("#"+tableId);
+function getTable(tableId) {
+    return $("#" + tableId);
 }
 
 /*获取url参数*/
@@ -156,10 +156,10 @@ function fromValidate($from) {
 function inputValidate($input) {
     if ($input.is("input")) {
         if (!($.isEmpty($input.val()))) {
-            $input.css("border-color", "red")
+            $input.css("cssText", "border-color:red!important")
             return false;
         } else {
-            $input.css("border-color", "green")
+            $input.css("cssText", "border-color:green!important")
         }
     }
     return true;

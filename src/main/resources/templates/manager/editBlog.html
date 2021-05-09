@@ -56,16 +56,6 @@
             -ms-overflow-style: auto; /* IE 10+ */
         }
 
-        /*!*多选框导致的下移*!*/
-        /*.CodeMirror-wrap {*/
-        /*    margin-top: 2.5rem !important;*/
-        /*}*/
-
-        /*!*多选框导致的下移*!*/
-        /*.editormd-preview {*/
-        /*    top: 2.5rem !important;;*/
-        /*}*/
-
         /*未选择元素的时候是文本，对其*/
         .filter-option-inner-inner {
             font-size: 0.94rem;
@@ -95,7 +85,7 @@
                 success: function (res) {
                     let title = '';
                     let tabsArray;
-                    if (res != null && res.code === 200 && res.data != null) {
+                    if (res.data != null) {
                         $("#article").html(res.data.content);
                         title = res.data.title;
                         tabsArray = res.data.tabsArray;
@@ -110,7 +100,7 @@
                             pageSize: 100
                         },
                         success: function (resTabs) {
-                            if (resTabs != null && resTabs.code === 200) {
+                            if (resTabs.data != null) {
                                 for (let i = 0; i < resTabs.data.records.length; i++) {
                                     const row = resTabs.data.records[i];
                                     let html = "" +
@@ -123,8 +113,6 @@
                                         " value='" + row.id + "'>" + row.name + "</option>";
                                     optionsHtml += html;
                                 }
-                            } else {
-                                xtip.msg(res.msg, {icon: 'e', type: 'w'})
                             }
                             //加载editorMd
                             initEditorMd(title, optionsHtml);
@@ -161,7 +149,8 @@
                     submit: "fa-check"
                 },
                 toolbarCustomIcons: {
-                    title: "<input id='blogTitle' type='text' placeholder='请输入文章标题'/>",
+                    title: "<input id='blogTitle' class='required' type='text'" +
+                        "   placeholder='请输入文章标题' oninput='inputValidate($(this))'/>",
                     tabs: "" +
                         "<select id='editorSelect' " +
                         "   multiple " +
@@ -177,32 +166,34 @@
                 },
                 toolbarHandlers: {              //自定义按钮事件
                     submit: function (cm, icon, cursor, selection) {
+                        //校验标题
+                        const $title = $("#blogTitle");
+                        if (inputValidate($title)) {
+                            const winId = xtip.confirm('确认保存文章？', function () {
+                                const id = $.getUrlParam("id");
+                                let url;
+                                let method;
+                                if (id == null || id === "") {
+                                    url = "/blog/add";
+                                    method = 'POST';
+                                } else {
+                                    url = "/blog/edit";
+                                    method = 'PUT';
+                                }
 
-                        xtip.confirm('确认保存文章？', function () {
-                            const id = $.getUrlParam("id");
-                            let url;
-                            let method;
-                            if (id == null || id === "") {
-                                url = "/blog/add";
-                                method = 'POST';
-                            } else {
-                                url = "/blog/edit";
-                                method = 'PUT';
-                            }
-
-                            //发布文章
-                            ajaxHttp({
-                                type: method,
-                                url: ctx + url,
-                                data: {
-                                    id: id,
-                                    title: $("#blogTitle").val(),
-                                    content: editorMd.getMarkdown(),
-                                    shortContent: getSimpleText(editorMd.getPreviewedHTML()).substr(0, 130) + ' ...',
-                                    tabsArray: $("#editorSelect").val()
-                                },
-                                success: function (res) {
-                                    if (res != null && res.code === 200) {
+                                //发布文章
+                                ajaxHttp({
+                                    type: method,
+                                    url: ctx + url,
+                                    data: {
+                                        id: id,
+                                        title: $title.val(),
+                                        content: editorMd.getMarkdown(),
+                                        shortContent: getSimpleText(editorMd.getPreviewedHTML()).substr(0, 130) + ' ...',
+                                        tabsArray: $("#editorSelect").val()
+                                    },
+                                    winId: winId,
+                                    success: function (res) {
                                         const selfId = self.frameElement.getAttribute('parentid');
                                         //关闭窗口
                                         parent.xtip.close(selfId);
@@ -210,13 +201,10 @@
                                         parent.xtip.msg(res.msg, {icon: 's', type: 'w'})
                                         //刷新表格
                                         parent.$("#" + $.getUrlParam("tableId")).bootstrapTable('refresh');
-
-                                    } else {
-                                        xtip.msg(res.msg, {icon: 'e', type: 'w'})
                                     }
-                                }
-                            })
-                        }, {icon: ['', '#62c462']});
+                                })
+                            }, {icon: ['', '#62c462']});
+                        }
                     }
                 },
                 onload: function () {           //加载完毕时

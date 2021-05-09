@@ -339,11 +339,12 @@
 
         /*删除*/
         function blogRemove(tableId, id) {
+            const $table = getTable(tableId);
             //获取选择的数据
             if (id == null) {
                 id = '';
                 //复选框所选数据
-                const checkIdList = $("#" + tableId).bootstrapTable('getAllSelections');
+                const checkIdList = $table.bootstrapTable('getAllSelections');
                 if (checkIdList.length <= 0) {
                     xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
                     return;
@@ -353,24 +354,19 @@
                     id += checkIdListElement.id += ",";
                 }
             }
-            xtip.confirm('确认删除所选数据？', function () {
+            const winId = xtip.confirm('确认删除所选数据？', function () {
                 ajaxHttp({
                     type: "DELETE",
                     url: ctx + "/blog/remove",
                     data: {
                         ids: id
                     },
+                    winId: winId,
                     success: function (res) {
-                        if (res != null && res.code === 200) {
-                            xtip.msg(res.msg, {icon: 's', type: 'w'})
-                            $("#" + tableId).bootstrapTable('refresh');
-                        } else {
-                            xtip.msg(res.msg, {icon: 'e', type: 'w'})
-                        }
+                        xtip.msg(res.msg, {icon: 's', type: 'w'})
+                        $table.bootstrapTable('refresh');
+                        $table.bootstrapTable('getOptions').onUncheckAll();
                     },
-                    complete: function () {
-                        $("#" + tableId).bootstrapTable('getOptions').onUncheckAll();
-                    }
                 })
             }, {icon: ['', '#d9534f']});
         }

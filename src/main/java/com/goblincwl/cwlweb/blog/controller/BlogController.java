@@ -65,10 +65,12 @@ public class BlogController extends BaseController<Blog> {
     @GetMapping("/{id}")
     public Result<Blog> one(@PathVariable("id") String id) {
         Blog blog = this.blogService.getById(id);
-        //标签赋值
-        Integer[] tabsArray = blog.getTabsArray();
-        if (tabsArray != null) {
-            blog.setBlogTabsList(this.blogTabsService.listByIds(Arrays.asList(tabsArray)));
+        if (blog != null) {
+            //标签赋值
+            Integer[] tabsArray = blog.getTabsArray();
+            if (tabsArray != null) {
+                blog.setBlogTabsList(this.blogTabsService.listByIds(Arrays.asList(tabsArray)));
+            }
         }
         return new Result<Blog>().success(blog, "成功");
     }

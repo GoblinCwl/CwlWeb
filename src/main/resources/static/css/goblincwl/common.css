@@ -60,5 +60,5 @@ input:focus {
 }
 
 input.required {
-    border-color: orange;
+    border-color: orange!important;
 }
