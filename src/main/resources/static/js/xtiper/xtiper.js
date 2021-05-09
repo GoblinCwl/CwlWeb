@@ -1176,8 +1176,10 @@ Xclass.pt.bclick = function(btn, fun, ifclose){
   if(btn){
     if(fun && typeof(fun)=='function'){
       btn.addEventListener('click', function() {
-        fun();
-        that.close();
+        let result = fun();
+        if (result){
+            that.close();
+        }
       });
     }else{
       if(ifclose===true){

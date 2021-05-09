@@ -350,22 +350,25 @@
     <script>
         /*新增*/
         function keyValueOptionsAdd(tableId) {
-            xtip.win({
+            const $table = getTable(tableId);
+            const winId = xtip.win({
                 type: 'confirm',
                 btn: ['保存', '取消'],
                 icon: ['', '#5cb85c'],
                 tip:
-                    '<form class="form-horizontal">\n' +
+                    '<form class="form-horizontal validateForm">\n' +
                     '  <div class="form-group">\n' +
                     '    <label for="keyValueOptions-add-optKey" class="col-sm-2 control-label xtip-label">键</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
-                    '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optKey" placeholder="optKey">' +
+                    '      <input type="text" class="form-control input-sm table-modal-input required" ' +
+                    '       id="keyValueOptions-add-optKey" placeholder="optKey" oninput="inputValidate($(this))">' +
                     '    </div>' +
                     '  </div>\n' +
                     '  <div class="form-group">\n' +
                     '    <label for="keyValueOptions-add-optValue" class="col-sm-2 control-label xtip-label">值</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
-                    '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optValue" placeholder="optValue">' +
+                    '      <input type="text" class="form-control input-sm table-modal-input" ' +
+                    '       id="keyValueOptions-add-optValue" placeholder="optValue">' +
                     '    </div>' +
                     '  </div>\n' +
                     '  <div class="form-group">\n' +
@@ -389,13 +392,10 @@
                             optValue: $("#keyValueOptions-add-optValue").val(),
                             remark: $("#keyValueOptions-add-remark").val()
                         },
+                        winId: winId,
                         success: function (res) {
-                            if (res != null && res.code === 200) {
-                                xtip.msg(res.msg, {icon: 's', type: 'w'})
-                                $("#" + tableId).bootstrapTable('refresh');
-                            } else {
-                                xtip.msg(res.msg, {icon: 'e', type: 'w'})
-                            }
+                            xtip.msg(res.msg, {icon: 's', type: 'w'})
+                            $table.bootstrapTable('refresh');
                         },
                     })
                 }
@@ -404,10 +404,11 @@
 
         /*修改*/
         function keyValueOptionsEdit(tableId, row) {
+            const $table = getTable(tableId);
             //获取选择的数据
             if (row == null) {
                 //复选框所选数据
-                const checkIdList = $("#" + tableId).bootstrapTable('getAllSelections');
+                const checkIdList = $table.bootstrapTable('getAllSelections');
                 if (checkIdList.length === 1) {
                     row = checkIdList[0];
                 } else {
@@ -421,68 +422,63 @@
                 type: "GET",
                 url: ctx + "/manager/keyValueOptions/" + row.optKey,
                 success: function (res) {
-                    if (res != null && res.code === 200) {
-                        xtip.win({
-                            type: 'confirm', //alert 或 confirm
-                            btn: ['保存', '取消'],
-                            icon: ['', '#5bc0de'],
-                            width: '400px',
-                            tip:
-                                '<form class="form-horizontal">\n' +
-                                '  <div class="form-group">\n' +
-                                '    <label for="keyValueOptions-add-optKey" class="col-sm-2 control-label xtip-label">键</label>' +
-                                '    <div class="col-sm-10 xtip-input">' +
-                                '      <input disabled type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optKey" placeholder="optKey" value="' + res.data.optKey + '">' +
-                                '    </div>' +
-                                '  </div>\n' +
-                                '  <div class="form-group">\n' +
-                                '    <label for="keyValueOptions-add-optValue" class="col-sm-2 control-label xtip-label">值</label>' +
-                                '    <div class="col-sm-10 xtip-input">' +
-                                '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optValue" placeholder="optValue" value="' + res.data.optValue + '">' +
-                                '    </div>' +
-                                '  </div>\n' +
-                                '  <div class="form-group">\n' +
-                                '    <label for="keyValueOptions-add-remark" class="col-sm-2 control-label xtip-label">备注</label>' +
-                                '    <div class="col-sm-10 xtip-input">' +
-                                '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-remark" placeholder="remark" value="' + res.data.remark + '">' +
-                                '    </div>' +
-                                '  </div>\n' +
-                                '</form>'
-                            ,
-                            title: "修改键值对",
-                            shadeClose: false,
-                            btn1: function () {
-                                ajaxHttp({
-                                    type: "PUT",
-                                    url: ctx + "/manager/keyValueOptions/edit",
-                                    data: {
-                                        optKey: $("#keyValueOptions-add-optKey").val(),
-                                        optValue: $("#keyValueOptions-add-optValue").val(),
-                                        remark: $("#keyValueOptions-add-remark").val()
-                                    },
-                                    success: function (res) {
-                                        if (res != null && res.code === 200) {
-                                            xtip.msg(res.msg, {icon: 's', type: 'w'})
-                                            $("#" + tableId).bootstrapTable('refresh');
-                                        } else {
-                                            xtip.msg(res.msg, {icon: 'e', type: 'w'})
-                                        }
-                                    },
-                                    complete: function () {
-                                        $("#" + tableId).bootstrapTable('getOptions').onUncheckAll();
-                                    }
-                                })
-                            }
-                        });
-                    } else {
-                        xtip.msg(res.msg, {icon: 'e', type: 'w'})
-                    }
+                    const winId = xtip.win({
+                        type: 'confirm', //alert 或 confirm
+                        btn: ['保存', '取消'],
+                        icon: ['', '#5bc0de'],
+                        width: '400px',
+                        tip:
+                            '<form class="form-horizontal validateForm">\n' +
+                            '  <div class="form-group">\n' +
+                            '    <label for="keyValueOptions-add-optKey" class="col-sm-2 control-label xtip-label">键</label>' +
+                            '    <div class="col-sm-10 xtip-input">' +
+                            '      <input disabled type="text" class="form-control input-sm table-modal-input required" ' +
+                            '       id="keyValueOptions-add-optKey" placeholder="optKey" value="' + res.data.optKey + '" oninput="inputValidate($(this))">' +
+                            '    </div>' +
+                            '  </div>\n' +
+                            '  <div class="form-group">\n' +
+                            '    <label for="keyValueOptions-add-optValue" class="col-sm-2 control-label xtip-label">值</label>' +
+                            '    <div class="col-sm-10 xtip-input">' +
+                            '      <input type="text" class="form-control input-sm table-modal-input" ' +
+                            '       id="keyValueOptions-add-optValue" placeholder="optValue" value="' + res.data.optValue + '">' +
+                            '    </div>' +
+                            '  </div>\n' +
+                            '  <div class="form-group">\n' +
+                            '    <label for="keyValueOptions-add-remark" class="col-sm-2 control-label xtip-label">备注</label>' +
+                            '    <div class="col-sm-10 xtip-input">' +
+                            '      <input type="text" class="form-control input-sm table-modal-input" ' +
+                            '       id="keyValueOptions-add-remark" placeholder="remark" value="' + res.data.remark + '">' +
+                            '    </div>' +
+                            '  </div>\n' +
+                            '</form>'
+                        ,
+                        title: "修改键值对",
+                        shadeClose: false,
+                        btn1: function () {
+                            ajaxHttp({
+                                type: "PUT",
+                                url: ctx + "/manager/keyValueOptions/edit",
+                                data: {
+                                    optKey: $("#keyValueOptions-add-optKey").val(),
+                                    optValue: $("#keyValueOptions-add-optValue").val(),
+                                    remark: $("#keyValueOptions-add-remark").val()
+                                },
+                                winId: winId,
+                                success: function (res) {
+                                    xtip.msg(res.msg, {icon: 's', type: 'w'})
+                                    $table.bootstrapTable('refresh');
+                                    $table.bootstrapTable('getOptions').onUncheckAll();
+                                },
+                            })
+                        }
+                    });
                 },
             })
         }
 
         /*删除*/
         function keyValueOptionsRemove(tableId, optKey) {
+            const $table = getTable(tableId);
             //获取选择的数据
             if (optKey == null) {
                 optKey = '';
@@ -497,23 +493,18 @@
                     optKey += checkIdListElement.optKey += ",";
                 }
             }
-            xtip.confirm('确认删除所选数据？', function () {
+            const winId = xtip.confirm('确认删除所选数据？', function () {
                 ajaxHttp({
                     type: "DELETE",
                     url: ctx + "/manager/keyValueOptions/remove",
                     data: {
                         optKeys: optKey
                     },
+                    winId: winId,
                     success: function (res) {
-                        if (res != null && res.code === 200) {
-                            xtip.msg(res.msg, {icon: 's', type: 'w'})
-                            $("#" + tableId).bootstrapTable('refresh');
-                        } else {
-                            xtip.msg(res.msg, {icon: 'e', type: 'w'})
-                        }
-                    },
-                    complete: function () {
-                        $("#" + tableId).bootstrapTable('getOptions').onUncheckAll();
+                        xtip.msg(res.msg, {icon: 's', type: 'w'})
+                        $table.bootstrapTable('refresh');
+                        $table.bootstrapTable('getOptions').onUncheckAll();
                     }
                 })
             }, {icon: ['', '#d9534f']});
@@ -524,11 +515,12 @@
     <script>
         /*删除*/
         function chatMessageRemove(tableId, id) {
+            const $table = getTable(tableId);
             //获取选择的数据
             if (id == null) {
                 id = '';
                 //复选框所选数据
-                const checkIdList = $("#" + tableId).bootstrapTable('getAllSelections');
+                const checkIdList = $table.bootstrapTable('getAllSelections');
                 if (checkIdList.length <= 0) {
                     xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
                     return;
@@ -538,26 +530,19 @@
                     id += checkIdListElement.id += ",";
                 }
             }
-            xtip.confirm('确认删除所选数据？', function () {
+            const winId = xtip.confirm('确认删除所选数据？', function () {
                 ajaxHttp({
                     type: "DELETE",
                     url: ctx + "/manager/chatMessage/remove",
                     data: {
                         ids: id
                     },
-                    beforeSend: function () {
-                        this.loadId = xtip.load();
-                    },
+                    winId: winId,
                     success: function (res) {
-                        if (res != null && res.code === 200) {
-                            xtip.msg(res.msg, {icon: 's', type: 'w'})
-                            $("#" + tableId).bootstrapTable('refresh');
-                        } else {
-                            xtip.msg(res.msg, {icon: 'e', type: 'w'})
-                        }
-                    },
-                    complete: function () {
-                        $("#" + tableId).bootstrapTable('getOptions').onUncheckAll();
+                        xtip.msg(res.msg, {icon: 's', type: 'w'})
+                        $table.bootstrapTable('refresh');
+                        $table.bootstrapTable('getOptions').onUncheckAll();
+
                     }
                 })
             }, {icon: ['', '#d9534f']});

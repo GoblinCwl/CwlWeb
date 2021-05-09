@@ -38,10 +38,15 @@ function genTableOptions() {
         rowStyle: rowStyle,
         //接口返回数据处理
         responseHandler: function (res) {
-            return {
-                "rows": res.data.records,
-                "total": res.data.total
-            };
+            if (res != null && res.code === 200) {
+                return {
+                    "rows": res.data.records,
+                    "total": res.data.total
+                };
+            } else {
+                xtip.msg(res.msg, {icon: 'e', type: 'w'});
+                return {};
+            }
         },
         //表格渲染前
         onPreBody: function () {

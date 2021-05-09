@@ -47,14 +47,18 @@
 .btn:focus, .btn:active:focus,
 .btn.active:focus, .btn.focus,
 .btn:active.focus, .btn.active.focus,
-.dropdown-toggle:focus{
-    outline: none!important;
+.dropdown-toggle:focus {
+    outline: none !important;
     border-color: transparent;
-    box-shadow: none!important;
+    box-shadow: none !important;
 }
 
 input:focus {
     outline: none;
     border-color: #31b0d5;
     box-shadow: 0 0 5px #269abc;
+}
+
+input.required {
+    border-color: orange;
 }

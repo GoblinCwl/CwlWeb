@@ -125,30 +125,29 @@
                     insertMessage("数据请求失败，有空的话麻烦联系下站长处理~", 50);
                 },
                 success: function (res) {
-                    if (res != null && res.code === 200) {
-                        const data = res.data;
-                        insertMessage("您是第<span style='color: orange;font-weight: bold'>" + data.accessIpCount + "</span>个访问本站的地址，站点总计已被访问<span style='color: #3c763d;font-weight: bold'>" + data.accessCount + "</span>次。", 50);
-                        insertMessage("同一地址超过半小时后再次访问才会进行次数记录。", 100);
-                        insertMessage("认证中...", 200);
-                        insertMessage("上次访问: <span style='color: grey'>" + data.lastAccessTime + "</span>.", 800);
-                        insertMessage("本次访问: <span style='color: dodgerblue'>" + data.accessTime + "</span>.", 800);
-                        if (res.data.lastAccessTime === '首次访问') {
-                            insertMessage("根据你的环境，我给你取了个名字：<span style='color: #38c0e2;font-weight: bold'>" + data.nickName + "</span>。✔", 850);
-                        } else {
-                            insertMessage("<span style='color: #38c0e2;font-weight: bold'>" + data.nickName + "</span>，允许访问！✔", 850);
-                        }
-                        setTimeout(function () {
-                            $("#nickName").text(data.nickName)
-                        }, 900);
-                        insertMessage("<span style='color: #E74C3C;font-weight: bold'>欢迎来到GoblinCwl的个人网站！</span>", 950);
-
-                        setTimeout(function () {
-                            websocketInit()
-                        }, 1000)
+                    const data = res.data;
+                    insertMessage("您是第<span style='color: orange;font-weight: bold'>" + data.accessIpCount + "</span>个访问本站的地址，站点总计已被访问<span style='color: #3c763d;font-weight: bold'>" + data.accessCount + "</span>次。", 50);
+                    insertMessage("同一地址超过半小时后再次访问才会进行次数记录。", 100);
+                    insertMessage("认证中...", 200);
+                    insertMessage("上次访问: <span style='color: grey'>" + data.lastAccessTime + "</span>.", 800);
+                    insertMessage("本次访问: <span style='color: dodgerblue'>" + data.accessTime + "</span>.", 800);
+                    if (res.data.lastAccessTime === '首次访问') {
+                        insertMessage("根据你的环境，我给你取了个名字：<span style='color: #38c0e2;font-weight: bold'>" + data.nickName + "</span>。✔", 850);
                     } else {
-                        insertMessage(res.msg, 50);
-                        insertMessage("数据请求失败，有空的话麻烦联系下站长处理~", 100);
+                        insertMessage("<span style='color: #38c0e2;font-weight: bold'>" + data.nickName + "</span>，允许访问！✔", 850);
                     }
+                    setTimeout(function () {
+                        $("#nickName").text(data.nickName)
+                    }, 900);
+                    insertMessage("<span style='color: #E74C3C;font-weight: bold'>欢迎来到GoblinCwl的个人网站！</span>", 950);
+
+                    setTimeout(function () {
+                        websocketInit()
+                    }, 1000)
+                },
+                successFalse: function (res) {
+                    insertMessage(res.msg, 50);
+                    insertMessage("数据请求失败，有空的话麻烦联系下站长处理~", 100);
                 }
             });
         }

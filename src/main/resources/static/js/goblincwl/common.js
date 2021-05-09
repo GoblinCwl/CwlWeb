@@ -52,18 +52,38 @@ function ajaxHeaders() {
 
 //Ajax封装
 const ajaxHttp = function (options) {
+    //默认值
     const defaults = {
         type: 'get',
         headers: {},
+        validateForm: $(".validateForm"),
         data: {},
         dataType: 'json',
         async: true,
         cache: false,
-        beforeSend: null,
+        beforeSend: function () {
+            this.loadId = xtip.load();
+        },
         success: null,
-        complete: null
+        successFalse: function (res) {
+            xtip.msg(res.msg, {icon: 'e', type: 'w'});
+        },
+        complete: function () {
+            xtip.close(o.loadId);
+        },
+        error: function () {
+            xtip.msg("前端发生未知错误，请联系站长！", {icon: 'e', type: 'w'});
+        }
     };
+    //合并
     const o = $.extend({}, defaults, options);
+    //表单校验
+    if (o.validateForm != null && o.validateForm.length > 0) {
+        if (!fromValidate(o.validateForm)) {
+            return;
+        }
+    }
+    //执行Ajax
     $.ajax({
         url: o.url,
         type: o.type,
@@ -72,21 +92,29 @@ const ajaxHttp = function (options) {
         dataType: o.dataType,
         async: o.async,
         beforeSend: function () {
-            this.loadId = xtip.load();
             o.beforeSend && o.beforeSend();
         },
         success: function (res) {
-            o.success && o.success(res);
+            if (res != null && res.code === 200) {
+                o.success && o.success(res);
+                xtip.close(o.winId);
+            } else {
+                o.successFalse && o.successFalse(res);
+            }
         },
         complete: function () {
             o.complete && o.complete();
-            xtip.close(this.loadId);
         },
         error: function () {
-            xtip.msg("前端发生未知错误，请联系站长！", {icon: 'e', type: 'w'});
+            o.error && o.error();
         }
     });
 };
+
+/*获取表格Jquery对象*/
+function getTable(tableId){
+    return $("#"+tableId);
+}
 
 /*获取url参数*/
 $.getUrlParam = function (name) {
@@ -96,9 +124,43 @@ $.getUrlParam = function (name) {
     return null;
 }
 
+
 /*将富文本替换成纯文本*/
 function getSimpleText(html) {
     const re1 = new RegExp("<.+?>", "g");//匹配html标签的正则表达式，"g"是搜索匹配多个符合的内容
     //执行替换成空字符
     return html.replace(re1, ' ');
+}
+
+/*判断数据是否为Null或者undefined或者为空字符串*/
+$.isEmpty = function (value) {
+    //正则表达式用于判斷字符串是否全部由空格或换行符组成
+    const reg = /^\s*$/;
+    //返回值为true表示不是空字符串
+    return (value != null && !reg.test(value))
+}
+
+/*表单校验*/
+function fromValidate($from) {
+    const requiredList = $from.find(".required");
+    for (let i = 0; i < requiredList.length; i++) {
+        const $element = $(requiredList[i]);
+        if (!inputValidate($element)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/*INPUT校验*/
+function inputValidate($input) {
+    if ($input.is("input")) {
+        if (!($.isEmpty($input.val()))) {
+            $input.css("border-color", "red")
+            return false;
+        } else {
+            $input.css("border-color", "green")
+        }
+    }
+    return true;
 }
