@@ -15,16 +15,12 @@
             display: none;
         }
 
-        /*多选框选项徽章样式*/
-        .badge {
-            border-radius: 0;
-        }
-
         /*标题样式*/
         #blogTitle {
             border: solid 2px #666;
             border-radius: 0;
-            padding: 0.05rem;
+            padding: 0.05rem 0.5rem;
+            width: 30rem;
         }
 
         /*多选框样式*/
@@ -50,18 +46,28 @@
             box-shadow: none !important;
         }
 
-        /*多选框导致的下移*/
-        .CodeMirror-wrap {
-            margin-top: 2.5rem !important;
+        /*本页面显示滚动条*/
+        ::-webkit-scrollbar {
+            display: block; /* Chrome Safari */
         }
 
-        /*多选框导致的下移*/
-        .editormd-preview {
-            top: 2.5rem !important;;
+        html body div {
+            scrollbar-width: auto; /* firefox */
+            -ms-overflow-style: auto; /* IE 10+ */
         }
+
+        /*!*多选框导致的下移*!*/
+        /*.CodeMirror-wrap {*/
+        /*    margin-top: 2.5rem !important;*/
+        /*}*/
+
+        /*!*多选框导致的下移*!*/
+        /*.editormd-preview {*/
+        /*    top: 2.5rem !important;;*/
+        /*}*/
 
         /*未选择元素的时候是文本，对其*/
-        .filter-option-inner-inner{
+        .filter-option-inner-inner {
             font-size: 0.94rem;
         }
 
@@ -80,30 +86,57 @@
     <script th:src="@{/js/goblincwl/tablePage.js}" type="text/javascript"></script>
     <script th:src="@{/plugins/editormd/editormd.min.js}"></script>
     <script>
-        var editorMd;
+        let editorMd;
 
         $(function () {
             ajaxHttp({
                 type: "GET",
                 url: ctx + "/blog/" + $.getUrlParam("id"),
-                beforeSend: function () {
-                    this.loadId = xtip.load();
-                },
                 success: function (res) {
-                    if (res != null && res.code === 200) {
+                    let title = '';
+                    let tabsArray;
+                    if (res != null && res.code === 200 && res.data != null) {
                         $("#article").html(res.data.content);
+                        title = res.data.title;
+                        tabsArray = res.data.tabsArray;
                     }
-                    initEditorMd(res.data.title);
+
+                    //下拉框数据
+                    let optionsHtml = "";
+                    ajaxHttp({
+                        method: 'GET',
+                        url: ctx + '/blog/blogTabs/list',
+                        data: {
+                            pageSize: 100
+                        },
+                        success: function (resTabs) {
+                            if (resTabs != null && resTabs.code === 200) {
+                                for (let i = 0; i < resTabs.data.records.length; i++) {
+                                    const row = resTabs.data.records[i];
+                                    let html = "" +
+                                        "<option ";
+                                    if ($.inArray(row.id, tabsArray) !== -1) {
+                                        html += "selected ";
+                                    }
+                                    html += "data-content=\"" + "" +
+                                        "<span class='badge' style='background-color: " + row.color + "'>" + row.name + "</span>\"" +
+                                        " value='" + row.id + "'>" + row.name + "</option>";
+                                    optionsHtml += html;
+                                }
+                            } else {
+                                xtip.msg(res.msg, {icon: 'e', type: 'w'})
+                            }
+                            //加载editorMd
+                            initEditorMd(title, optionsHtml);
+                        }
+                    })
                 },
-                complete: function () {
-                    xtip.close(this.loadId);
-                }
             })
 
 
         })
 
-        function initEditorMd(title) {
+        function initEditorMd(title, optionsHtml) {
             editorMd = editormd("editormd", {
                 width: "100%",                  //宽度
                 autoHeight: true,               //高度（自动）
@@ -112,13 +145,14 @@
                 tex: true,                      // 开启科学公式TeX语言支持，默认关闭
                 flowChart: true,                // 开启流程图支持，默认关闭
                 sequenceDiagram: true,          // 开启时序/序列图支持，默认关闭,
+                fullscreen: true,
                 emoji: true,                    //emoji表情
                 toolbarIcons: function () {     //自定义工具栏
                     return [
                         "undo", "redo",
                         "|", "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase",
                         "|", "list-ul", "list-ol", "hr",
-                        "|", "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime", "emoji",
+                        "|", "link", "reference-link", "image", "code", "preformatted-text", "code-block", "datetime",
                         "|", "watch", "preview",
                         "||", "tabs", "title", "submit"
                     ]
@@ -127,39 +161,77 @@
                     submit: "fa-check"
                 },
                 toolbarCustomIcons: {
-                    title: "<input id='blogTitle' type='text' value='123'/>",
+                    title: "<input id='blogTitle' type='text' placeholder='请输入文章标题'/>",
                     tabs: "" +
-                        "<select class='editorSelect' " +
+                        "<select id='editorSelect' " +
                         "   multiple " +
                         "   data-live-search='true' " +
                         "   data-width='fit'" +
                         "   data-size='5' " +
                         "   data-style='editBlog-select-btn'" +
                         "   title='选择标签'" +
-                        "   data-selected-text-format='count > 3'" +
+                        "   data-selected-text-format='count > 5'" +
                         ">" +
-                        "   <option data-content=\"<span class='badge badge-danger'>Java</span>\">Java</option>" +
-                        "   <option data-content=\"<span class='badge badge-success'>Spring</span>\">Spring</option>" +
-                        "   <option data-content=\"<span class='badge badge-warning'>MySql</span>\">MySql</option>" +
-                        "   <option data-content=\"<span class='badge badge-info'>Oracle</span>\">Oracle</option>" +
-                        "   <option data-content=\"<span class='badge badge-info'>Oracle</span>\">Oracle</option>" +
-                        "   <option data-content=\"<span class='badge badge-info'>Oracle</span>\">Oracle</option>" +
+                        optionsHtml +
                         "</select>",
                 },
                 toolbarHandlers: {              //自定义按钮事件
                     submit: function (cm, icon, cursor, selection) {
-                        alert(editorMd.getMarkdown())
+
+                        xtip.confirm('确认保存文章？', function () {
+                            const id = $.getUrlParam("id");
+                            let url;
+                            let method;
+                            if (id == null || id === "") {
+                                url = "/blog/add";
+                                method = 'POST';
+                            } else {
+                                url = "/blog/edit";
+                                method = 'PUT';
+                            }
+
+                            //发布文章
+                            ajaxHttp({
+                                type: method,
+                                url: ctx + url,
+                                data: {
+                                    id: id,
+                                    title: $("#blogTitle").val(),
+                                    content: editorMd.getMarkdown(),
+                                    shortContent: getSimpleText(editorMd.getPreviewedHTML()).substr(0, 130) + ' ...',
+                                    tabsArray: $("#editorSelect").val()
+                                },
+                                success: function (res) {
+                                    if (res != null && res.code === 200) {
+                                        const selfId = self.frameElement.getAttribute('parentid');
+                                        //关闭窗口
+                                        parent.xtip.close(selfId);
+                                        //提示信息
+                                        parent.xtip.msg(res.msg, {icon: 's', type: 'w'})
+                                        //刷新表格
+                                        parent.$("#" + $.getUrlParam("tableId")).bootstrapTable('refresh');
+
+                                    } else {
+                                        xtip.msg(res.msg, {icon: 'e', type: 'w'})
+                                    }
+                                }
+                            })
+                        }, {icon: ['', '#62c462']});
                     }
                 },
                 onload: function () {           //加载完毕时
+                    //加载标题
+                    $("#blogTitle").val(title)
+                    //加载下拉框
+                    $("#editorSelect").selectpicker()
                     //自动全屏
                     editorMd.fullscreen()
-                    $("#blogTitle").val(title)
-                    $(".editorSelect").selectpicker()
                 }
             });
 
         }
+
+
     </script>
 </div>
 </html>

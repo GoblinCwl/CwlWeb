@@ -6,6 +6,11 @@
     <link rel="stylesheet" th:href="@{/css/goblincwl/tablePage.css}">
     <link rel="stylesheet" th:href="@{/plugins/editormd/css/editormd.css}">
     <style>
+        /*颜色显示*/
+        .color-div {
+            width: auto;
+            height: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -25,6 +30,11 @@
                         文章管理
                     </a>
                 </li>
+                <li data-name="blogTabsTab">
+                    <a data-toggle="tab" href="#blogTabsTab" onclick="refreshTable('blogTabs-table')">
+                        标签管理
+                    </a>
+                </li>
             </ul>
             <div class="tab-content" id="tabContent">
                 <div id="blogTab" class="tab-pane active">
@@ -32,7 +42,7 @@
                         <div id="blog-toolbar" class="btn-group">
                             <button id="blog-toolbar-add" type="button"
                                     class="btn btn-success btn-sm rightSize toolbarBtn">
-                                <i class="glyphicon glyphicon-plus toolbarIcon" aria-hidden="true"></i>新增
+                                <i class="glyphicon glyphicon-plus toolbarIcon" aria-hidden="true"></i>发布文章
                             </button>
                             <button id=blog-toolbar-edit type="button"
                                     class="btn btn-info btn-sm rightSize toolbarBtn">
@@ -54,8 +64,34 @@
                         <table id="blog-table" class="table table-condensed text-nowrap my-table"></table>
                     </div>
                 </div>
+                <div id="blogTabsTab" class="tab-pane">
+                    <div class="table-responsive">
+                        <div id="blogTabs-toolbar" class="btn-group">
+                            <button id="blogTabs-toolbar-add" type="button"
+                                    class="btn btn-success btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon glyphicon-plus toolbarIcon" aria-hidden="true"></i>添加
+                            </button>
+                            <button id=blogTabs-toolbar-edit type="button"
+                                    class="btn btn-info btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon glyphicon-pencil toolbarIcon" aria-hidden="true"></i>修改
+                            </button>
+                            <button id="blogTabs-toolbar-remove" type="button"
+                                    class="btn btn-danger btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon glyphicon-remove " aria-hidden="true"></i>删除
+                            </button>
+                        </div>
+                        <div class="form-inline table-search">
+                            <div class="form-group">
+                                <label for="blog-query-title"></label>
+                                <input type="text" class="form-control input-sm"
+                                       id="blogTabs-query-name"
+                                       placeholder="标签名">
+                            </div>
+                        </div>
+                        <table id="blogTabs-table" class="table table-condensed text-nowrap my-table"></table>
+                    </div>
+                </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -69,6 +105,7 @@
             //左侧导航
             $("#managerBlogLi").addClass("active")
             initData('blogTab')
+            initData('blogTabsTab')
         })
 
         //初始化表格
@@ -109,6 +146,9 @@
                             title: $queryInputArray[0].val()
                         });
                     }
+                    //其他
+                    tableOptions.sortName = 'release_time';
+                    tableOptions.sortOrder = 'desc';
                     columns = [
                         {
                             checkbox: true,
@@ -116,8 +156,8 @@
                         {
                             title: '操作',
                             formatter: function (value, row, index) {//赋予的参数
-                                return genTableOptionA('#5bc0de', '编辑', 'glyphicon-pencil', "editContent('" + row.title + "','" + row.id + "')") +
-                                    genTableOptionA('#d9534f', '删除', 'glyphicon-remove', "blogRemove('" + tableId + "','" + row.id + "')")
+                                return genTableOptionA('#5bc0de', '编辑', 'glyphicon-pencil', 'blogEdit("' + tableId + '",' + JSON.stringify(row) + ')') +
+                                    genTableOptionA('#d9534f', '删除', 'glyphicon-remove', 'blogRemove("' + tableId + '","' + row.id + '")')
                                     ;
 
                             }, //自定义方法，添加操作按钮,
@@ -134,7 +174,6 @@
                             field: 'id',
                             title: '主键',
                             sortable: true,
-                            sortName: "id",
                             align: 'center',
                             width: 50,
                         },
@@ -146,11 +185,84 @@
                         }, {
                             field: 'releaseTime',
                             title: '发布时间',
+                            sortable: true,
+                            sortName: "release_time",
                             align: 'center',
                         }, {
                             field: 'updateTime',
                             title: '更新时间',
+                            sortable: true,
+                            sortName: "update_time",
                             align: 'center',
+                        }
+                    ];
+                    break;
+                case 'blogTabsTab':
+                    url = ctx + "/blog/blogTabs/list";
+                    tableId = 'blogTabs-table';
+                    $table = $("#" + tableId);
+                    $toolbar = $("#blogTabs-toolbar");
+                    uniqueId = "id";
+                    //单选/多选按钮及事件
+                    $("#blogTabs-toolbar-add").on('click', function () {
+                        blogTabsAdd(tableId);
+                    });
+                    $singleBtnArray[0] = $("#blogTabs-toolbar-edit");
+                    $singleBtnArray[0].on('click', function () {
+                        blogTabsEdit(tableId)
+                    });
+                    $multiBtnArray[0] = $("#blogTabs-toolbar-remove");
+                    $multiBtnArray[0].on('click', function () {
+                        blogTabsRemove(tableId)
+                    });
+                    $queryInputArray[0] = $("#blogTabs-query-name")
+                    //自定义参数
+                    tableOptions.queryParams = function (params) {
+                        return $.extend(queryParams(params), {
+                            name: $queryInputArray[0].val()
+                        });
+                    }
+                    columns = [
+                        {
+                            checkbox: true,
+                        },
+                        {
+                            title: '操作',
+                            formatter: function (value, row, index) {//赋予的参数
+                                return genTableOptionA('#5bc0de', '编辑', 'glyphicon-pencil', 'blogTabsEdit("' + tableId + '",' + JSON.stringify(row) + ')') +
+                                    genTableOptionA('#d9534f', '删除', 'glyphicon-remove', 'blogTabsRemove("' + tableId + '","' + row.id + '")')
+                                    ;
+
+                            },
+                            switchable: false,
+                            align: 'center',
+                            width: 50,
+                            cellStyle: function () {
+                                const style = rowStyle(tableOptions);
+                                style.css["border-right"] = "1px solid #ddd"
+                                return style;
+                            },
+                        },
+                        {
+                            field: 'id',
+                            title: '主键',
+                            sortable: true,
+                            align: 'center',
+                            width: 50,
+                        },
+                        {
+                            field: 'name',
+                            title: '标签名称',
+                            align: 'center',
+                            width: 500
+                        }, {
+                            field: 'color',
+                            title: '标签颜色',
+                            align: 'center',
+                            formatter: function (value, row, index) {
+                                return "" +
+                                    "<div class='color-div' style='background-color: " + row.color + "'></div>";
+                            }
                         }
                     ];
                     break;
@@ -177,13 +289,14 @@
 
     </script>
 
-    <!--键值对设置-->
+    <!--文章管理-->
     <script>
-        function editContent(title, id) {
+        /*发布文章*/
+        function blogAdd(tableId) {
             xtip.open({
                 type: 'url',
-                content: '/manager/editBlog?id=' + id,
-                title: '编辑 - ' + title,
+                content: '/manager/editBlog?tableId=' + tableId,
+                title: '发布文章',
                 lock: true,
                 width: '100%',
                 height: '100%',
@@ -195,154 +308,33 @@
             });
         }
 
-        /*新增*/
-        function blogAdd(tableId) {
-            xtip.win({
-                type: 'confirm',
-                btn: ['保存', '取消'],
-                icon: ['', '#5cb85c'],
-                tip:
-                    '<form class="form-horizontal">\n' +
-                    '  <div class="form-group">\n' +
-                    '    <label for="blog-add-optKey" class="col-sm-2 control-label xtip-label">文章标题</label>' +
-                    '    <div class="col-sm-10 xtip-input">' +
-                    '      <input type="text" class="form-control input-sm table-modal-input" id="blog-add-optKey" placeholder="key">' +
-                    '    </div>' +
-                    '  </div>\n' +
-                    '  <div class="form-group">\n' +
-                    '    <label for="blog-add-optValue" class="col-sm-2 control-label xtip-label">文章标签</label>' +
-                    '    <div class="col-sm-10 xtip-input">' +
-                    '      <input type="text" class="form-control input-sm table-modal-input" id="blog-add-optValue" placeholder="value">' +
-                    '    </div>' +
-                    '  </div>\n' +
-                    '  <div class="form-group">\n' +
-                    '    <label for="blog-add-remark" class="col-sm-2 control-label xtip-label">文章内容</label>' +
-                    '    <div class="col-sm-10 xtip-input">' +
-                    '      <input type="text" class="form-control input-sm table-modal-input" id="blog-add-remark" placeholder="...">' +
-                    '    </div>' +
-                    '  </div>\n' +
-                    '</form>'
-                ,
-                title: "新增键值对",
-                width: '600px',
-                maxWidth: '100%',
-                height: '35em',
-                shadeClose: false,
-                btn1: function () {
-                    ajaxHttp({
-                        type: "POST",
-                        url: ctx + "/manager/blog/add",
-                        data: {
-                            optKey: $("#blog-add-optKey").val(),
-                            optValue: $("#blog-add-optValue").val(),
-                            remark: $("#blog-add-remark").val()
-                        },
-                        beforeSend: function () {
-                            this.loadId = xtip.load();
-                        },
-                        success: function (res) {
-                            if (res != null && res.code === 200) {
-                                xtip.msg(res.msg, {icon: 's', type: 'w'})
-                                $("#" + tableId).bootstrapTable('refresh');
-                            } else {
-                                xtip.msg(res.msg, {icon: 'e', type: 'w'})
-                            }
-                        },
-                        complete: function () {
-                            xtip.close(this.loadId);
-                        }
-                    })
-                }
-            });
-        }
-
-        /*修改*/
-        function blogEdit(tableId, id) {
+        /*编辑*/
+        function blogEdit(tableId, row) {
             //获取选择的数据
-            if (id == null) {
+            if (row == null) {
                 //复选框所选数据
                 const checkIdList = $("#" + tableId).bootstrapTable('getAllSelections');
                 if (checkIdList.length === 1) {
-                    id = checkIdList[0].id;
+                    row = checkIdList[0];
                 } else {
                     xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
                     return;
                 }
             }
 
-            //回显
-            ajaxHttp({
-                type: "GET",
-                url: ctx + "/manager/blog/" + optKey,
-                beforeSend: function (request) {
-                    this.loadId = xtip.load();
-                },
-                success: function (res) {
-                    if (res != null && res.code === 200) {
-                        xtip.win({
-                            type: 'confirm', //alert 或 confirm
-                            btn: ['保存', '取消'],
-                            icon: ['', '#5bc0de'],
-                            width: '400px',
-                            tip:
-                                '<form class="form-horizontal">\n' +
-                                '  <div class="form-group">\n' +
-                                '    <label for="blog-add-optKey" class="col-sm-2 control-label xtip-label">键</label>' +
-                                '    <div class="col-sm-10 xtip-input">' +
-                                '      <input disabled type="text" class="form-control input-sm table-modal-input" id="blog-add-optKey" placeholder="key" value="' + res.data.optKey + '">' +
-                                '    </div>' +
-                                '  </div>\n' +
-                                '  <div class="form-group">\n' +
-                                '    <label for="blog-add-optValue" class="col-sm-2 control-label xtip-label">值</label>' +
-                                '    <div class="col-sm-10 xtip-input">' +
-                                '      <input type="text" class="form-control input-sm table-modal-input" id="blog-add-optValue" placeholder="value" value="' + res.data.optValue + '">' +
-                                '    </div>' +
-                                '  </div>\n' +
-                                '  <div class="form-group">\n' +
-                                '    <label for="blog-add-remark" class="col-sm-2 control-label xtip-label">备注</label>' +
-                                '    <div class="col-sm-10 xtip-input">' +
-                                '      <input type="text" class="form-control input-sm table-modal-input" id="blog-add-remark" placeholder="..." value="' + res.data.remark + '">' +
-                                '    </div>' +
-                                '  </div>\n' +
-                                '</form>'
-                            ,
-                            title: "修改键值对",
-                            shadeClose: false,
-                            btn1: function () {
-                                ajaxHttp({
-                                    type: "PUT",
-                                    url: ctx + "/manager/blog/edit",
-                                    data: {
-                                        optKey: $("#blog-add-optKey").val(),
-                                        optValue: $("#blog-add-optValue").val(),
-                                        remark: $("#blog-add-remark").val()
-                                    },
-                                    beforeSend: function () {
-                                        this.loadId = xtip.load();
-                                    },
-                                    success: function (res) {
-                                        if (res != null && res.code === 200) {
-                                            xtip.msg(res.msg, {icon: 's', type: 'w'})
-                                            $("#" + tableId).bootstrapTable('refresh');
-                                        } else {
-                                            xtip.msg(res.msg, {icon: 'e', type: 'w'})
-                                        }
-                                    },
-                                    complete: function () {
-                                        $("#" + tableId).bootstrapTable('getOptions').onUncheckAll();
-                                        xtip.close(this.loadId);
-                                    }
-                                })
-                            }
-                        });
-                    } else {
-                        xtip.msg(res.msg, {icon: 'e', type: 'w'})
-                    }
-                },
-                complete: function () {
-                    xtip.close(this.loadId);
-                }
-            })
+            xtip.open({
+                type: 'url',
+                content: '/manager/editBlog?id=' + row.id + '&tableId=' + tableId,
+                title: '编辑 - ' + row.title,
+                lock: true,
+                width: '100%',
+                height: '100%',
+                min: true,
+                shadeClose: false,
+                shade: false,
+                max: true,
+                closeBtn: true,
+            });
         }
 
         /*删除*/
@@ -368,8 +360,165 @@
                     data: {
                         ids: id
                     },
-                    beforeSend: function () {
-                        this.loadId = xtip.load();
+                    success: function (res) {
+                        if (res != null && res.code === 200) {
+                            xtip.msg(res.msg, {icon: 's', type: 'w'})
+                            $("#" + tableId).bootstrapTable('refresh');
+                        } else {
+                            xtip.msg(res.msg, {icon: 'e', type: 'w'})
+                        }
+                    },
+                    complete: function () {
+                        $("#" + tableId).bootstrapTable('getOptions').onUncheckAll();
+                    }
+                })
+            }, {icon: ['', '#d9534f']});
+        }
+    </script>
+
+    <!--标签管理-->
+    <script>
+        /*新增*/
+        function blogTabsAdd(tableId) {
+            xtip.win({
+                type: 'confirm',
+                btn: ['保存', '取消'],
+                icon: ['', '#5cb85c'],
+                tip:
+                    '<form class="form-horizontal">\n' +
+                    '  <div class="form-group">\n' +
+                    '    <label for="blogTabs-add-name" class="col-sm-2 control-label xtip-label">标签名称</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <input type="text" class="form-control input-sm table-modal-input" id="blogTabs-add-name" placeholder="name">' +
+                    '    </div>' +
+                    '  </div>\n' +
+                    '  <div class="form-group">\n' +
+                    '    <label for="blogTabs-add-color" class="col-sm-2 control-label xtip-label">标签颜色</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <input type="color" class="form-control input-sm table-modal-input" id="blogTabs-add-color" placeholder="color">' +
+                    '    </div>' +
+                    '  </div>\n' +
+                    '</form>'
+                ,
+                title: "新增标签",
+                width: '600px',
+                shadeClose: false,
+                btn1: function () {
+                    ajaxHttp({
+                        type: "POST",
+                        url: ctx + "/blog/blogTabs/add",
+                        data: {
+                            name: $("#blogTabs-add-name").val(),
+                            color: $("#blogTabs-add-color").val(),
+                        },
+                        success: function (res) {
+                            if (res != null && res.code === 200) {
+                                xtip.msg(res.msg, {icon: 's', type: 'w'})
+                                $("#" + tableId).bootstrapTable('refresh');
+                            } else {
+                                xtip.msg(res.msg, {icon: 'e', type: 'w'})
+                            }
+                        },
+                    })
+                }
+            });
+        }
+
+        /*修改*/
+        function blogTabsEdit(tableId, row) {
+            //获取选择的数据
+            if (row == null) {
+                //复选框所选数据
+                const checkIdList = $("#" + tableId).bootstrapTable('getAllSelections');
+                if (checkIdList.length === 1) {
+                    row = checkIdList[0];
+                } else {
+                    xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
+                    return;
+                }
+            }
+
+            //回显
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/blog/blogTabs/" + row.id,
+                success: function (res) {
+                    if (res != null && res.code === 200) {
+                        xtip.win({
+                            type: 'confirm', //alert 或 confirm
+                            btn: ['保存', '取消'],
+                            icon: ['', '#5bc0de'],
+                            width: '600px',
+                            tip:
+                                '<form class="form-horizontal">\n' +
+                                '  <div class="form-group">\n' +
+                                '    <label for="blogTabs-add-name" class="col-sm-2 control-label xtip-label">标签名称</label>' +
+                                '    <div class="col-sm-10 xtip-input">' +
+                                '      <input type="text" class="form-control input-sm table-modal-input" id="blogTabs-add-name" placeholder="name" value="' + res.data.name + '">' +
+                                '    </div>' +
+                                '  </div>\n' +
+                                '  <div class="form-group">\n' +
+                                '    <label for="blogTabs-add-color" class="col-sm-2 control-label xtip-label">标签颜色</label>' +
+                                '    <div class="col-sm-10 xtip-input">' +
+                                '      <input type="color" class="form-control input-sm table-modal-input" id="blogTabs-add-color" placeholder="color" value="' + res.data.color + '">' +
+                                '    </div>' +
+                                '  </div>\n' +
+                                '</form>'
+                            ,
+                            title: "修改标签",
+                            shadeClose: false,
+                            btn1: function () {
+                                ajaxHttp({
+                                    type: "PUT",
+                                    url: ctx + "/blog/blogTabs/edit",
+                                    data: {
+                                        id: res.data.id,
+                                        name: $("#blogTabs-add-name").val(),
+                                        color: $("#blogTabs-add-color").val(),
+                                    },
+                                    success: function (res) {
+                                        if (res != null && res.code === 200) {
+                                            xtip.msg(res.msg, {icon: 's', type: 'w'})
+                                            $("#" + tableId).bootstrapTable('refresh');
+                                        } else {
+                                            xtip.msg(res.msg, {icon: 'e', type: 'w'})
+                                        }
+                                    },
+                                    complete: function () {
+                                        $("#" + tableId).bootstrapTable('getOptions').onUncheckAll();
+                                    }
+                                })
+                            }
+                        });
+                    } else {
+                        xtip.msg(res.msg, {icon: 'e', type: 'w'})
+                    }
+                },
+            })
+        }
+
+        /*删除*/
+        function blogTabsRemove(tableId, id) {
+            //获取选择的数据
+            if (id == null) {
+                id = '';
+                //复选框所选数据
+                const checkIdList = $("#" + tableId).bootstrapTable('getAllSelections');
+                if (checkIdList.length <= 0) {
+                    xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
+                    return;
+                }
+                for (let i = 0; i < checkIdList.length; i++) {
+                    let checkIdListElement = checkIdList[i];
+                    id += checkIdListElement.id += ",";
+                }
+            }
+            xtip.confirm('确认删除所选数据？', function () {
+                ajaxHttp({
+                    type: "DELETE",
+                    url: ctx + "/blog/blogTabs/remove",
+                    data: {
+                        ids: id
                     },
                     success: function (res) {
                         if (res != null && res.code === 200) {
@@ -381,7 +530,6 @@
                     },
                     complete: function () {
                         $("#" + tableId).bootstrapTable('getOptions').onUncheckAll();
-                        xtip.close(this.loadId);
                     }
                 })
             }, {icon: ['', '#d9534f']});

@@ -72,6 +72,7 @@ const ajaxHttp = function (options) {
         dataType: o.dataType,
         async: o.async,
         beforeSend: function () {
+            this.loadId = xtip.load();
             o.beforeSend && o.beforeSend();
         },
         success: function (res) {
@@ -79,8 +80,9 @@ const ajaxHttp = function (options) {
         },
         complete: function () {
             o.complete && o.complete();
+            xtip.close(this.loadId);
         },
-        error:function (){
+        error: function () {
             xtip.msg("前端发生未知错误，请联系站长！", {icon: 'e', type: 'w'});
         }
     });
@@ -90,5 +92,13 @@ const ajaxHttp = function (options) {
 $.getUrlParam = function (name) {
     const reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
     const r = window.location.search.substr(1).match(reg);
-    if (r != null) return unescape(r[2]); return null;
+    if (r != null) return unescape(r[2]);
+    return null;
+}
+
+/*将富文本替换成纯文本*/
+function getSimpleText(html) {
+    const re1 = new RegExp("<.+?>", "g");//匹配html标签的正则表达式，"g"是搜索匹配多个符合的内容
+    //执行替换成空字符
+    return html.replace(re1, ' ');
 }

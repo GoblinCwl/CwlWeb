@@ -3,6 +3,7 @@ package com.goblincwl.cwlweb.common.interceptor;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.enums.ResultCode;
 import com.goblincwl.cwlweb.common.utils.IpUtils;
+import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -29,20 +30,7 @@ public class WebMvcInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String goblinCwlRequestType = request.getHeader("GoblinCwlRequestType");
         //验证Token
-        String token = request.getHeader("Authorization");
-        if (StringUtils.isEmpty(token)) {
-            //请求头未携带token，从cookie中获取
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null){
-                for (Cookie cookie : cookies) {
-                    if ("Authorization".equals(cookie.getName())) {
-                        token = cookie.getValue();
-                        break;
-                    }
-                }
-            }
-        }
-        if (!this.tokenService.checkToken(token, IpUtils.getIpAddress(request))) {
+        if (!ServletUtils.checkToken(request, this.tokenService)) {
             //验证不通过
             throw new GoblinCwlException(ResultCode.AUTH_FAIL);
         }

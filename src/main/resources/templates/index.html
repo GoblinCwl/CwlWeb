@@ -24,20 +24,24 @@
             width: 100%;
         }
 
-        .web-record{
+        .web-record {
             font-size: 0.8em;
             color: gray;
             margin-top: 4em;
         }
-        .web-record p{
-            text-align: center;font-family: MyHack;
+
+        .web-record p {
+            text-align: center;
+            font-family: MyHack;
             margin-left: 25em;
         }
-        .web-record a{
+
+        .web-record a {
             color: gray;
         }
+
         @media (max-width: 768px) {
-            .web-record p{
+            .web-record p {
                 margin: 0;
             }
         }
@@ -145,8 +149,6 @@
                         insertMessage(res.msg, 50);
                         insertMessage("数据请求失败，有空的话麻烦联系下站长处理~", 100);
                     }
-                },
-                complete: function () {
                 }
             });
         }

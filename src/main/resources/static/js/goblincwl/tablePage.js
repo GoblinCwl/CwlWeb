@@ -185,8 +185,13 @@ function pushParamTableOptions(tableOptions,
             }
             //多选
             for (let i = 0; i < $multiBtnArray.length; i++) {
-                $multiBtnArray[i].removeClass("disabled");
-                $multiBtnArray[i].removeClass("button-disabled");
+                if (checkIdList.length <= 0) {
+                    $multiBtnArray[i].addClass("disabled");
+                    $multiBtnArray[i].addClass("button-disabled");
+                } else {
+                    $multiBtnArray[i].removeClass("disabled");
+                    $multiBtnArray[i].removeClass("button-disabled");
+                }
             }
         },
         //取消全选时
@@ -209,7 +214,7 @@ function pushParamTableOptions(tableOptions,
 function genTableOptionA(color, text, icon, onclick) {
     return '' +
         '<a class="table-options" style="color: ' + color + '" ' +
-        'onclick="' + onclick + '">' +
+        'onclick=\'' + onclick + '\'>' +
         '   <i class="glyphicon ' + icon + '"></i>' + text + ' ' +
         '</a>'
 }

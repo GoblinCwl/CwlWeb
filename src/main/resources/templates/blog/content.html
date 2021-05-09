@@ -41,9 +41,6 @@
             ajaxHttp({
                 type: "GET",
                 url: ctx + "/blog/" + $.getUrlParam("id"),
-                beforeSend: function (request) {
-                    this.loadId = xtip.load();
-                },
                 success: function (res) {
                     if (res != null && res.code === 200) {
                         $("title").html(res.data.title);
@@ -71,9 +68,6 @@
                         xtip.msg(res.msg, {icon: 'e', type: 'w'});
                     }
                 },
-                complete: function () {
-                    xtip.close(this.loadId);
-                }
             });
         });
     </script>

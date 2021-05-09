@@ -3,12 +3,17 @@ package com.goblincwl.cwlweb.blog.entity;
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.SqlCondition;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.goblincwl.cwlweb.common.utils.ConvertUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 博客（文章）Entity
@@ -59,7 +64,37 @@ public class Blog implements Serializable {
     private String tabs;
 
     /**
+     * 标签数组
+     */
+    @TableField(exist = false)
+    private Integer[] tabsArray;
+
+    /**
+     * 标签集合
+     */
+    @TableField(exist = false)
+    private List<BlogTabs> blogTabsList;
+
+    /**
      * 预览内容
      */
     private String shortContent;
+
+    public String getTabs() {
+        if (StringUtils.isEmpty(this.tabs)) {
+            if (this.tabsArray != null && this.tabsArray.length > 0) {
+                return StringUtils.join(this.getTabsArray(), ",");
+            }
+        }
+        return this.tabs;
+    }
+
+    public Integer[] getTabsArray() {
+        if (this.tabsArray == null || this.tabsArray.length <= 0) {
+            if (StringUtils.isNotEmpty(this.tabs)) {
+                return ConvertUtils.toIntArray(this.tabs);
+            }
+        }
+        return tabsArray;
+    }
 }

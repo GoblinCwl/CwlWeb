@@ -24,7 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //重定向拦截器
-        registry.addInterceptor(new WebRedirectInterceptor())
+        registry.addInterceptor(new WebRedirectInterceptor(this.tokenService))
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         //首页

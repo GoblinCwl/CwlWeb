@@ -6,7 +6,7 @@
     <style>
         .blog {
             height: 10em;
-            border: 3px solid black;
+            border: 3px solid #8e8d8d;
             margin: 2em 1em 0 2em;
             padding: 0.8em;
             position: relative;
@@ -31,6 +31,11 @@
         .blog h2 {
             padding-bottom: 0.5em;
             font-weight: bold;
+            color: #5e5e5e;
+        }
+
+        .blog p {
+            color: #8e8d8d;
         }
 
         .blog .blog-tabs {
@@ -40,18 +45,14 @@
         }
 
         .blog .blog-tabs span {
-            background-color: #6ecadc;
-            padding: 0.2em;
-            border: 1px solid black;
-            font-size: 10px;
-            font-family: MyHack;
+            margin-right: 0.2rem;
         }
 
         .blog .blog-time {
             position: absolute;
             bottom: 0.8em;
             right: 0.8em;
-            color: #ddd;
+            color: #d3d3d3;
         }
 
         #pageRow {
@@ -113,9 +114,6 @@
                     sortName: "update_time",
                     sortOrder: "desc"
                 },
-                beforeSend: function (request) {
-                    this.loadId = xtip.load();
-                },
                 success: function (res) {
                     if (res != null && res.code === 200) {
                         const dataList = res.data.records;
@@ -129,11 +127,18 @@
                                 '    <div class="blog" onclick="location.href=\'blog/content?id=' + rowData.id + '\'">' +
                                 '        <h2>' + rowData.title + '</h2>' +
                                 '        <p>' + rowData.shortContent + '</p>' +
-                                '        <div class="blog-tabs">' +
-                                '            <span>Java</span>' +
-                                '            <span>Springboot</span>' +
-                                '        </div>' +
-                                '        <span class="blog-time">' + rowData.releaseTime + '</span>' +
+                                '        <div class="blog-tabs">';
+
+                            //拼接标签
+                            if (rowData.tabsArray != null) {
+                                for (let j = 0; j < rowData.blogTabsList.length; j++) {
+                                    const tabs = rowData.blogTabsList[j];
+                                    html += '<span class="badge" style="background-color: ' + tabs.color + '">' + tabs.name + '</span>';
+                                }
+                            }
+
+                            html += '        </div>' +
+                                '        <span class="blog-time">' + rowData.updateTime + '</span>' +
                                 '    </div>' +
                                 '</div>';
                             $blogHtml.html(html)
@@ -169,9 +174,6 @@
                         xtip.msg(res.msg, {icon: 'e', type: 'w'});
                     }
                 },
-                complete: function () {
-                    xtip.close(this.loadId);
-                }
             });
         }
     </script>

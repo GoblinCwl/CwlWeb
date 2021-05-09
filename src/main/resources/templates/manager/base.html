@@ -166,8 +166,8 @@
                         {
                             title: '操作',
                             formatter: function (value, row, index) {//赋予的参数
-                                return genTableOptionA('#5bc0de', '修改', 'glyphicon-pencil', "keyValueOptionsEdit('" + tableId + "','" + row.optKey + "')") +
-                                    genTableOptionA('#d9534f', '删除', 'glyphicon-remove', "keyValueOptionsRemove('" + tableId + "','" + row.optKey + "')");
+                                return genTableOptionA('#5bc0de', '修改', 'glyphicon-pencil', 'keyValueOptionsEdit("' + tableId + '",' + JSON.stringify(row) + ')') +
+                                    genTableOptionA('#d9534f', '删除', 'glyphicon-remove', 'keyValueOptionsRemove("' + tableId + '","' + row.optKey + '")');
 
                             }, //自定义方法，添加操作按钮,
                             switchable: false,
@@ -289,7 +289,7 @@
                         {
                             title: '操作',
                             formatter: function (value, row, index) {//赋予的参数
-                                return genTableOptionA('#c9302c', '删除', 'glyphicon-remove', "chatMessageRemove('" + tableId + "','" + row.id + "')");
+                                return genTableOptionA('#c9302c', '删除', 'glyphicon-remove', 'chatMessageRemove("' + tableId + '","' + row.id + '")');
                             }, //自定义方法，添加操作按钮,
                             switchable: false,
                             align: 'center',
@@ -346,7 +346,7 @@
 
     </script>
 
-    <!--键值对设置-->
+    <!--键值配置-->
     <script>
         /*新增*/
         function keyValueOptionsAdd(tableId) {
@@ -359,19 +359,19 @@
                     '  <div class="form-group">\n' +
                     '    <label for="keyValueOptions-add-optKey" class="col-sm-2 control-label xtip-label">键</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
-                    '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optKey" placeholder="key">' +
+                    '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optKey" placeholder="optKey">' +
                     '    </div>' +
                     '  </div>\n' +
                     '  <div class="form-group">\n' +
                     '    <label for="keyValueOptions-add-optValue" class="col-sm-2 control-label xtip-label">值</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
-                    '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optValue" placeholder="value">' +
+                    '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optValue" placeholder="optValue">' +
                     '    </div>' +
                     '  </div>\n' +
                     '  <div class="form-group">\n' +
                     '    <label for="keyValueOptions-add-remark" class="col-sm-2 control-label xtip-label">备注</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
-                    '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-remark" placeholder="...">' +
+                    '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-remark" placeholder="remark">' +
                     '    </div>' +
                     '  </div>\n' +
                     '</form>'
@@ -389,9 +389,6 @@
                             optValue: $("#keyValueOptions-add-optValue").val(),
                             remark: $("#keyValueOptions-add-remark").val()
                         },
-                        beforeSend: function () {
-                            this.loadId = xtip.load();
-                        },
                         success: function (res) {
                             if (res != null && res.code === 200) {
                                 xtip.msg(res.msg, {icon: 's', type: 'w'})
@@ -400,22 +397,19 @@
                                 xtip.msg(res.msg, {icon: 'e', type: 'w'})
                             }
                         },
-                        complete: function () {
-                            xtip.close(this.loadId);
-                        }
                     })
                 }
             });
         }
 
         /*修改*/
-        function keyValueOptionsEdit(tableId, optKey) {
+        function keyValueOptionsEdit(tableId, row) {
             //获取选择的数据
-            if (optKey == null) {
+            if (row == null) {
                 //复选框所选数据
                 const checkIdList = $("#" + tableId).bootstrapTable('getAllSelections');
                 if (checkIdList.length === 1) {
-                    optKey = checkIdList[0].optKey;
+                    row = checkIdList[0];
                 } else {
                     xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
                     return;
@@ -425,10 +419,7 @@
             //回显
             ajaxHttp({
                 type: "GET",
-                url: ctx + "/manager/keyValueOptions/" + optKey,
-                beforeSend: function (request) {
-                    this.loadId = xtip.load();
-                },
+                url: ctx + "/manager/keyValueOptions/" + row.optKey,
                 success: function (res) {
                     if (res != null && res.code === 200) {
                         xtip.win({
@@ -441,19 +432,19 @@
                                 '  <div class="form-group">\n' +
                                 '    <label for="keyValueOptions-add-optKey" class="col-sm-2 control-label xtip-label">键</label>' +
                                 '    <div class="col-sm-10 xtip-input">' +
-                                '      <input disabled type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optKey" placeholder="key" value="' + res.data.optKey + '">' +
+                                '      <input disabled type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optKey" placeholder="optKey" value="' + res.data.optKey + '">' +
                                 '    </div>' +
                                 '  </div>\n' +
                                 '  <div class="form-group">\n' +
                                 '    <label for="keyValueOptions-add-optValue" class="col-sm-2 control-label xtip-label">值</label>' +
                                 '    <div class="col-sm-10 xtip-input">' +
-                                '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optValue" placeholder="value" value="' + res.data.optValue + '">' +
+                                '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-optValue" placeholder="optValue" value="' + res.data.optValue + '">' +
                                 '    </div>' +
                                 '  </div>\n' +
                                 '  <div class="form-group">\n' +
                                 '    <label for="keyValueOptions-add-remark" class="col-sm-2 control-label xtip-label">备注</label>' +
                                 '    <div class="col-sm-10 xtip-input">' +
-                                '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-remark" placeholder="..." value="' + res.data.remark + '">' +
+                                '      <input type="text" class="form-control input-sm table-modal-input" id="keyValueOptions-add-remark" placeholder="remark" value="' + res.data.remark + '">' +
                                 '    </div>' +
                                 '  </div>\n' +
                                 '</form>'
@@ -469,9 +460,6 @@
                                         optValue: $("#keyValueOptions-add-optValue").val(),
                                         remark: $("#keyValueOptions-add-remark").val()
                                     },
-                                    beforeSend: function () {
-                                        this.loadId = xtip.load();
-                                    },
                                     success: function (res) {
                                         if (res != null && res.code === 200) {
                                             xtip.msg(res.msg, {icon: 's', type: 'w'})
@@ -482,7 +470,6 @@
                                     },
                                     complete: function () {
                                         $("#" + tableId).bootstrapTable('getOptions').onUncheckAll();
-                                        xtip.close(this.loadId);
                                     }
                                 })
                             }
@@ -491,9 +478,6 @@
                         xtip.msg(res.msg, {icon: 'e', type: 'w'})
                     }
                 },
-                complete: function () {
-                    xtip.close(this.loadId);
-                }
             })
         }
 
@@ -520,9 +504,6 @@
                     data: {
                         optKeys: optKey
                     },
-                    beforeSend: function () {
-                        this.loadId = xtip.load();
-                    },
                     success: function (res) {
                         if (res != null && res.code === 200) {
                             xtip.msg(res.msg, {icon: 's', type: 'w'})
@@ -533,7 +514,6 @@
                     },
                     complete: function () {
                         $("#" + tableId).bootstrapTable('getOptions').onUncheckAll();
-                        xtip.close(this.loadId);
                     }
                 })
             }, {icon: ['', '#d9534f']});
@@ -578,7 +558,6 @@
                     },
                     complete: function () {
                         $("#" + tableId).bootstrapTable('getOptions').onUncheckAll();
-                        xtip.close(this.loadId);
                     }
                 })
             }, {icon: ['', '#d9534f']});
