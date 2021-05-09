@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.common.interceptor;
 
+import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.enums.ResultCode;
 import com.goblincwl.cwlweb.common.utils.IpUtils;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * WebMVC 拦截器
@@ -25,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 public class WebMvcInterceptor implements HandlerInterceptor {
 
     private final TokenService tokenService;
+    private final GoblinCwlConfig goblinCwlConfig;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -34,10 +37,23 @@ public class WebMvcInterceptor implements HandlerInterceptor {
             //验证不通过
             throw new GoblinCwlException(ResultCode.AUTH_FAIL);
         }
-        //请求头中[不]带有GoblinCwlRequestType=api时，转发至重定向
-        if (!"api".equals(goblinCwlRequestType)) {
-            request.getRequestDispatcher(request.getContextPath() + "/redirect" + request.getRequestURI()).forward(request, response);
-            return false;
+
+        //API请求白名单
+        boolean checkApi = true;
+        List<String> apiRequestWhiteList = this.goblinCwlConfig.getApiRequestWhiteList();
+        String requestUri = request.getRequestURI();
+        for (String whiteUri : apiRequestWhiteList) {
+            if (requestUri.startsWith(whiteUri)) {
+                checkApi = false;
+                break;
+            }
+        }
+        if (checkApi) {
+            //请求头中[不]带有GoblinCwlRequestType=api时，转发至重定向
+            if (!"api".equals(goblinCwlRequestType)) {
+                request.getRequestDispatcher(request.getContextPath() + "/redirect" + requestUri).forward(request, response);
+                return false;
+            }
         }
         return true;
     }

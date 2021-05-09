@@ -38,7 +38,7 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
         //验证请求的Origin
         HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
         String origin = request.getHeader("Origin");
-        return this.goblinCwlConfig.getOriginWhiteList().contains(origin);
+        return this.goblinCwlConfig.getWebSocketOriginWhiteList().contains(origin);
     }
 
     /**

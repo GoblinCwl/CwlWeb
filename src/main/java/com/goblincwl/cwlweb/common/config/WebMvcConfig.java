@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.common.config;
 
+import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
 import com.goblincwl.cwlweb.common.interceptor.WebMvcInterceptor;
 import com.goblincwl.cwlweb.common.interceptor.WebRedirectInterceptor;
 import com.goblincwl.cwlweb.manager.service.TokenService;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final TokenService tokenService;
+    private final GoblinCwlConfig goblinCwlConfig;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -39,7 +41,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/manager/**"
                 );
         //mvc拦截器
-        registry.addInterceptor(new WebMvcInterceptor(this.tokenService))
+        registry.addInterceptor(new WebMvcInterceptor(this.tokenService, this.goblinCwlConfig))
                 .addPathPatterns("/manager/**")
                 .excludePathPatterns(
                         //管理员登陆

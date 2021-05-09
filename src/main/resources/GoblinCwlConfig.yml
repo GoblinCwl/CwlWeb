@@ -1,6 +1,22 @@
-websocket:
-  endPoint: websocket
-  origin-white-list:
+goblin-cwl-config:
+  # API请求白名单
+  api-request-white-list:
+    - "/manager/ossFile/uploadFile"
+
+  # webSocket
+  websocket-endpoint: websocket
+  websocket-origin-white-list:
     - "http://localhost:8500"
     - "https://goblincwl.cn"
     - "https://www.goblincwl.cn"
+
+
+  # 阿里云OSS
+  # bucket名称
+  oss-bucket: cwl-web
+  # bucket域名
+  oss-domain: cwl-web.oss-cn-shanghai.aliyuncs.com
+  # 地域节点
+  oss-endpoint: oss-cn-shanghai.aliyuncs.com
+  oss-access-key-id: LTAI4GCBsrZBcZvvCUEG7cr2
+  oss-access-key-secret: tQhvtHw8dTB8HnRC6N6clcjWXd2SOq

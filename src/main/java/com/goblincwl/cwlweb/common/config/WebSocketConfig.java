@@ -31,7 +31,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(), this.goblinCwlConfig.getEndPoint())
+        registry.addHandler(new WebSocketHandler(), this.goblinCwlConfig.getWebSocketEndpoint())
                 .addInterceptors(new WebSocketInterceptor(goblinCwlConfig))
                 .setAllowedOrigins("*");
     }

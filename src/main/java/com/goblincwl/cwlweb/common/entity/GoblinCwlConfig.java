@@ -22,14 +22,51 @@ import java.util.List;
         factory = YamlPropertySourceFactory.class
 )
 @Data
-@ConfigurationProperties("websocket")
+@ConfigurationProperties("goblin-cwl-config")
 @Component
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoblinCwlConfig {
 
-    private String endPoint;
+    /**
+     * 请求不校验GoblinCwlRequestType的地址白名单
+     * 某些请求无法给请求头，设置白名单处理
+     */
+    private List<String> apiRequestWhiteList;
 
-    private List<String> originWhiteList;
+    /**
+     * webSocket访问节点
+     */
+    private String webSocketEndpoint;
+
+    /**
+     * webSocket Origin白名单
+     */
+    private List<String> webSocketOriginWhiteList;
+
+    /**
+     * 阿里云OSS Bucket名称
+     */
+    private String ossBucket;
+
+    /**
+     * 阿里云OSS Bucket域名
+     */
+    private String ossDomain;
+
+    /**
+     * 阿里云OSS 地域节点
+     */
+    private String ossEndpoint;
+
+    /**
+     * 阿里云OSS API密钥ID
+     */
+    private String ossAccessKeyId;
+
+    /**
+     * 阿里云OSS API密钥
+     */
+    private String ossAccessKeySecret;
 
 }
