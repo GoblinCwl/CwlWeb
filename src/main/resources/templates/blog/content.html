@@ -49,7 +49,7 @@
         }
 
         /*评论*/
-        p.comment::before {
+        p.comment::before, .commentForm::before {
             content: '';
             position: absolute;
             width: 0;
@@ -73,6 +73,24 @@
 
         .commentRow div img {
             border-radius: 2rem;
+        }
+
+        .commentForm {
+            /*对其列*/
+            margin-left: -3.5rem;
+            /*内间距*/
+            padding: 1rem;
+            position: relative;
+            box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.3), 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.2);
+        }
+
+        /*表单内文本框*/
+        .commentForm div div input {
+            border-radius: 0;
+        }
+
+        .commentForm div div textarea {
+            border-radius: 0;
         }
     </style>
 </head>
@@ -120,7 +138,8 @@
                         <img th:src="@{/images/profile.jpg}" style="width: 3.3rem">
                     </div>
                     <div class="comment col-lg-8">
-                        <p class="comment">哇哇哇扭扭扭，我的妈呀?</p>
+                        <p class="comment">
+                            哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?</p>
                     </div>
                 </div>
                 <div class="row commentRow">
@@ -129,6 +148,43 @@
                     </div>
                     <div class="comment col-lg-8">
                         <p class="comment">哇哇哇扭扭扭，我的妈呀?</p>
+                    </div>
+                </div>
+                <div class="row commentRow">
+                    <div class="col-lg-1">
+                        <img th:src="@{/images/profile.jpg}" style="width: 3.3rem">
+                    </div>
+                    <div class="comment col-lg-8">
+                        <form class="form commentForm">
+                            <div class="row">
+                                <div class="form-group col-lg-4">
+                                    <label class="sr-only" for="nickName"></label>
+                                    <input type="text" class="form-control required" id="nickName"
+                                           oninput='inputValidate($(this))' pos="b"
+                                           placeholder="昵称">
+                                </div>
+                                <div class="form-group col-lg-4">
+                                    <label class="sr-only" for="email"></label>
+                                    <input type="email" class="form-control required" id="email"
+                                           oninput='inputValidate($(this))' pos="b"
+                                           placeholder="邮箱">
+                                </div>
+                                <div class="form-group col-lg-4">
+                                    <label class="sr-only" for="website"></label>
+                                    <input type="text" class="form-control" id="website"
+                                           placeholder="网址(头像超链接)">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label class="sr-only" for="commentContent"></label>
+                                    <textarea id="commentContent" class="form-control required" rows="3"
+                                              oninput='inputValidate($(this))'
+                                              style="resize: vertical"></textarea>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">Transfer cash</button>
+                        </form>
                     </div>
                 </div>
             </div>

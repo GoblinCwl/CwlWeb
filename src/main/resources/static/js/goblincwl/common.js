@@ -152,12 +152,19 @@ function fromValidate($from) {
 
 /*INPUT校验*/
 function inputValidate($input) {
-    if ($input.is("input")) {
+    if ($input.is("input") || $input.is("textarea")) {
         if (!($.isEmpty($input.val()))) {
-            $input.css("cssText", "border-color:red!important")
+            $input.css("border-color", "red")
+            if ($input.attr('pos') == null) {
+                $input.attr('pos', 'r');
+            }
+            xtip.tips('请填写必填项!', '#' + $input.attr('id'), {
+                bgcolor: 'red',
+                pos: $input.attr('pos')
+            })
             return false;
         } else {
-            $input.css("cssText", "border-color:green!important")
+            $input.css("border-color", "green")
         }
     }
     return true;

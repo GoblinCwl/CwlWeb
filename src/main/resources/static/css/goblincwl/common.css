@@ -56,9 +56,9 @@
 input:focus {
     outline: none;
     border-color: #31b0d5;
-    box-shadow: 0 0 5px #269abc;
+    box-shadow: 0 0 0px #269abc;
 }
 
-input.required {
-    border-color: orange!important;
+input.required, textarea.required {
+    border-color: orange ;
 }
