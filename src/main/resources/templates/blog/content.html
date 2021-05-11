@@ -38,60 +38,111 @@
             background-color: darkgray;
         }
 
-        /*评论*/
-        p.comment {
-            position: relative;
-            background-color: #fff;
-            padding: 1.125em 1.5em;
-            font-size: 14px;
-            box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.3), 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.2);
-            margin-left: -3.5rem;
-        }
-
-        /*评论*/
-        p.comment::before, .commentForm::before {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 0;
-            left: -0.75rem;
-            border: .75rem solid transparent;
-            border-left: none;
-            border-right-color: #fff;
-            -webkit-filter: drop-shadow(-0.0625rem 0.0625rem 0 rgba(0, 0, 0, 0.1));
-            filter: drop-shadow(-0.0625rem 0.0625rem 0 rgba(0, 0, 0, 0.1));
-        }
-
         .footer {
             padding-bottom: 2rem;
         }
 
-        .commentRow {
-            padding-top: 0.3rem;
-            padding-bottom: 0.3rem;
+        /*目录*/
+        .markdown-toc-list li ul,
+        .markdown-toc-list li ul li ul,
+        .markdown-toc-list li ul li ul li ul,
+        .markdown-toc-list li ul li ul li ul li ul,
+        .markdown-toc-list li ul li ul li ul li ul li ul {
+            padding-left: 1rem;
         }
 
-        .commentRow div img {
-            border-radius: 2rem;
+        .cancelReply {
+            color: red;
+            cursor: pointer
         }
 
-        .commentForm {
-            /*对其列*/
-            margin-left: -3.5rem;
-            /*内间距*/
-            padding: 1rem;
+        .cancelReply:hover {
+            text-decoration: underline;
+        }
+
+        /*评论区*/
+        .comment {
+            padding: 0.8rem;
+            font-size: 14px;
+            box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            overflow: hidden;
+            margin-top: 0.5rem
+        }
+
+        /*头像<a>*/
+        a.commentProfile {
+            float: left;
+            width: 5.5%;
+            padding-right: 0.5rem;
+        }
+
+        /*头像图片*/
+        .commentProfileImg {
+            width: 3.3rem;
+            height: 3.3rem;
+            border-radius: 1rem;
+            transition: 0.5s;
+            box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
+        }
+
+        .commentProfileImg:hover {
+            transition: 0.5s;
+            -moz-transform: rotate(-180deg);
+            -webkit-transform: rotate(-180deg);
+            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+        }
+
+        /*评论内容区*/
+        .comment > .content {
+            width: 100%;
+        }
+
+        .comment > .content > div > .commentNickName {
+            font-weight: bold;
+        }
+
+        .comment > .content > div > .commentSendTime {
+            color: darkgray;
+            font-size: 0.6rem
+        }
+
+        /*评论表单输入框*/
+        .commentFormInput {
+            margin-top: 0.5rem;
+            border-radius: 0;
+        }
+
+        /*评论表单 选择头像 气泡框 图片*/
+        .commentFormProfileChooseImg {
+            width: 3.3rem;
+            height: 3.3rem;
+            border-radius: 1rem;
+            transition: 0.5s;
+            box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
+            margin-right: 1rem;
+        }
+
+        /*表单选择头像 预览*/
+        .fromProfile {
+            width: 3.3rem;
+            height: 3.3rem;
+            border-radius: 1rem;
+            transition: 0.5s;
+            box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
+            margin: 0.5rem 0.5rem 0.3rem;
+            float: left;
+            background: url("https://www.lanrentuku.com/savepic/img/allimg/1212/5-121204194028.gif") no-repeat center center;;
+        }
+
+        /*昵称生成头像，颜色选择器*/
+        .inFormColorSelect {
+            border: 0;
+            background-color: white;
             position: relative;
-            box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.3), 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.2);
+            top: 0.25rem;
         }
 
-        /*表单内文本框*/
-        .commentForm div div input {
-            border-radius: 0;
-        }
-
-        .commentForm div div textarea {
-            border-radius: 0;
-        }
     </style>
 </head>
 <body>
@@ -103,6 +154,7 @@
     <div class="content">
         <!-- 顶部导航 -->
         <div th:replace="fragment/globalComponent::topHeader"></div>
+
 
         <div class="container" style="float: left;width: 100%">
             <div class="header" style="margin-left: 1rem;margin-top: 2rem">
@@ -119,8 +171,8 @@
                     <div class="col-lg-9">
                         <div id="view-editormd"></div>
                     </div>
-                    <div class="col-lg-3">
-                        <div id="custom-toc-container"></div>
+                    <div class="col-lg-3" style="background-color: #e8fbf2">
+                        <div id="custom-toc-container" style="padding: 1rem"></div>
                     </div>
                 </div>
 
@@ -133,64 +185,56 @@
                 </div>
             </div>
             <div class="footer">
-                <div class="row commentRow">
-                    <div class="col-lg-1">
-                        <img th:src="@{/images/profile.jpg}" style="width: 3.3rem">
-                    </div>
-                    <div class="comment col-lg-8">
-                        <p class="comment">
-                            哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?哇哇哇扭扭扭，我的妈呀?</p>
-                    </div>
+                <div id="commentDiv">
+                    <!--评论区-->
                 </div>
-                <div class="row commentRow">
-                    <div class="col-lg-1">
-                        <img th:src="@{/images/profile.jpg}" style="width: 3.3rem">
-                    </div>
-                    <div class="comment col-lg-8">
-                        <p class="comment">哇哇哇扭扭扭，我的妈呀?</p>
-                    </div>
-                </div>
-                <div class="row commentRow">
-                    <div class="col-lg-1">
-                        <img th:src="@{/images/profile.jpg}" style="width: 3.3rem">
-                    </div>
-                    <div class="comment col-lg-8">
-                        <form class="form commentForm">
-                            <div class="row">
-                                <div class="form-group col-lg-4">
-                                    <label class="sr-only" for="nickName"></label>
-                                    <input type="text" class="form-control required" id="nickName"
-                                           oninput='inputValidate($(this))' pos="b"
-                                           placeholder="昵称">
-                                </div>
-                                <div class="form-group col-lg-4">
-                                    <label class="sr-only" for="email"></label>
-                                    <input type="email" class="form-control required" id="email"
-                                           oninput='inputValidate($(this))' pos="b"
-                                           placeholder="邮箱">
-                                </div>
-                                <div class="form-group col-lg-4">
-                                    <label class="sr-only" for="website"></label>
-                                    <input type="text" class="form-control" id="website"
-                                           placeholder="网址(头像超链接)">
-                                </div>
+                <div class="comment col-lg-8" style="margin-bottom: 1rem">
+                    <form id="commentFormId" class="form commentForm">
+                        <div class="row">
+                            <div class="form-group col-lg-1 width-7">
+                                <img id="formProfileImg" alt="选择头像" th:src="@{/images/profile.jpg}"
+                                     class="commentProfileImg"
+                                     onclick="chooseProfile()">
                             </div>
-                            <div class="form-group">
-                                <div class="form-group">
-                                    <label class="sr-only" for="commentContent"></label>
-                                    <textarea id="commentContent" class="form-control required" rows="3"
-                                              oninput='inputValidate($(this))'
-                                              style="resize: vertical"></textarea>
-                                </div>
+                            <div class="form-group col-lg-3 width-31">
+                                <label class="sr-only" for="nickName"></label>
+                                <input type="text" class="form-control commentFormInput required"
+                                       id="nickName"
+                                       oninput='inputValidate($(this))' pos="b"
+                                       placeholder="昵称">
                             </div>
-                            <button class="btn btn-primary">Transfer cash</button>
-                        </form>
-                    </div>
+                            <div class="form-group col-lg-4 width-31">
+                                <label class="sr-only" for="email"></label>
+                                <input type="email" class="form-control commentFormInput" id="email"
+                                       placeholder="邮箱(收到回复将会邮件通知)">
+                            </div>
+                            <div class="form-group col-lg-4 width-31">
+                                <label class="sr-only" for="website"></label>
+                                <input type="text" class="form-control commentFormInput" id="website"
+                                       oninput='inputValidate($(this))' pos="b"
+                                       placeholder="网址(可通过点击头像跳转)">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-12">
+                                <label class="sr-only" for="commentContent"></label>
+                                <textarea id="commentContent" class="form-control no-border-radio required" rows="3"
+                                          oninput='inputValidate($(this))'
+                                          style="resize: vertical"></textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-warning no-border-radio" type="button">😀</button>
+                        <button class="btn btn-success pull-right no-border-radio" type="button"
+                                onclick="sendComment()">评论
+                        </button>
+                    </form>
                 </div>
+
             </div>
         </div>
 
     </div>
+    <input type="hidden" id="defaultProfileColor"/>
 </div>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
     <script type="text/javascript" th:src="@{/plugins/editormd/lib/marked.min.js}"></script>
@@ -204,11 +248,13 @@
 
     <script type="text/javascript" th:inline="javascript">
         let editorMdView;
+        let blogId;
 
         $(function () {
+            blogId = $("#blogId").val();
             ajaxHttp({
                 type: "GET",
-                url: ctx + "/blog/" + $("#blogId").val(),
+                url: ctx + "/blog/" + blogId,
                 success: function (res) {
                     let content = '';
                     if (res.data != null) {
@@ -237,20 +283,309 @@
                         }
                         content = data.content;
                     }
-                    editorMdView = editormd.markdownToHTML("view-editormd", {
-                        markdown: content,
-                        htmlDecode: "style,script,iframe", // you can filter tags decode
-                        tocContainer: "#custom-toc-container",
-                        tocDropdown: false,
-                        emoji: true,
-                        taskList: true,
-                        tex: true, // 默认不解析
-                        flowChart: true, // 默认不解析
-                        sequenceDiagram: true, // 默认不解析
-                    })
+                    initPreview(content);
+                    if (blogId != null) {
+                        //加载评论区
+                        initComment(blogId);
+                    }
                 },
             });
         });
+
+        /*渲染文章*/
+        function initPreview(content) {
+            editorMdView = editormd.markdownToHTML("view-editormd", {
+                markdown: content,
+                htmlDecode: "style,script,iframe", // you can filter tags decode
+                tocContainer: "#custom-toc-container",
+                tocDropdown: false,
+                emoji: true,
+                taskList: true,
+                tex: true, // 默认不解析
+                flowChart: true, // 默认不解析
+                sequenceDiagram: true, // 默认不解析
+            });
+        }
+
+        /*加载评论*/
+        function initComment(blogId) {
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/blog/comment/listAll?blogId=" + blogId,
+                success: function (res) {
+                    if (res.data != null) {
+                        const data = res.data;
+                        var commemntHtml = '';
+                        for (let i = 0; i < data.length; i++) {
+                            const row = data[i];
+                            commemntHtml += '' +
+                                '<div class="col-lg-9 comment">' +
+                                '    <a ' + (row.website == null || row.website === '' ? '' : 'href="' + row.website + '" target="_blank"') + ' class="commentProfile">' +
+                                '        <img class="commentProfileImg" alt="' + row.nickName + '" src=' + (row.profileUrl == null || row.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', row.nickName) : row.profileUrl) + '>' +
+                                '    </a>' +
+                                '    <div class="content">' +
+                                '        <div><span class="commentNickName">' + row.nickName + '</span></div>' +
+                                '        <div><span class="commentSendTime">' + row.sendTime + '</span></div>' +
+                                '        <div><span>' + row.content + '</span></div>' +
+                                '    </div>';
+                            //子评论
+                            if (row.childrenList != null) {
+                                for (let j = 0; j < row.childrenList.length; j++) {
+                                    const childrenRow = row.childrenList[j];
+                                    commemntHtml += '' +
+                                        '<div class="comment">' +
+                                        '    <a ' + (childrenRow.website == null || childrenRow.website === '' ? '' : 'href="' + childrenRow.website + '" target="_blank"') + 'class="commentProfile">' +
+                                        '        <img class="commentProfileImg" alt="' + childrenRow.nickName + '" src=' + (childrenRow.profileUrl == null || childrenRow.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', childrenRow.nickName) : childrenRow.profileUrl) + '>' +
+                                        '    </a>' +
+                                        '    <div class="content">' +
+                                        '        <div><span class="commentNickName">' + childrenRow.nickName + '</span></div>' +
+                                        '        <div><span class="commentSendTime">' + childrenRow.sendTime + '</span></div>' +
+                                        '        <div><span>' + childrenRow.content + '</span></div>' +
+                                        '    </div>' +
+                                        '</div>';
+                                }
+                            }
+                            commemntHtml += '' +
+                                '</div>';
+                        }
+
+                        $("#commentDiv").html(commemntHtml);
+                    }
+                },
+            });
+        }
+
+        /*评论*/
+        function sendComment() {
+            //校验邮箱
+            const $email = $("#email");
+            if ($website.val() != null && $website.val() !== '') {
+                const emailReg = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
+                if (!emailReg.test($email.val())) {
+                    checkFail($email, '请输入正确的邮箱');
+                    return
+                }
+            }
+            //校验网站
+            const $website = $("#website");
+            if ($website.val() != null && $website.val() !== '') {
+                const websiteReg = /([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[wW]{3}.|[wW][aA][pP].|[fF][tT][pP].|[fF][iI][lL][eE].)[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]/;
+                if (!websiteReg.test($website.val())) {
+                    checkFail($website, "请输入正确的网址-http(s)/www开头")
+                    return;
+                }
+            }
+
+
+            if (fromValidate($("#commentFormId"))) {
+                const winId = xtip.confirm("确认发送评论？", function () {
+                    var content = $("#commentContent").val();
+                    var parentId = $("#parentId").val();
+                    if (parentId != null) {
+                        content = '回复@' + $("#replayNickNameSpan").text() + "： " + content;
+                    }
+                    ajaxHttp({
+                        type: "POST",
+                        url: ctx + "/blog/comment/add",
+                        data: {
+                            blogId: blogId,
+                            parentId: parentId,
+                            nickName: $("#nickName").val(),
+                            email: $email.val(),
+                            website: $website.val(),
+                            content: content
+                        },
+                        winId: winId,
+                        success: function (res) {
+                            xtip.msg(res.msg, {icon: 's', type: 'w'});
+                            //刷新评论区
+                            initComment(blogId);
+                            //清空表单
+                            $("#commentFormId")[0].reset()
+                            //取消回复
+                            $('#replyComment').remove();
+                        },
+                    });
+                }, {icon: ['', '#5cb85c']});
+            }
+        }
+
+        /*回复*/
+        function replyComment(id, nickName) {
+            const $replyComment = $("#replyComment");
+            if ($replyComment.length > 0) {
+                $("#parentId").val(id);
+                $("#replayNickNameSpan").text(nickName);
+            } else {
+                const html = '' +
+                    '<div id="replyComment" class="row">\n' +
+                    '    <div class="form-group col-lg-12">\n' +
+                    '        <input type="hidden" id="parentId" value="' + id + '"/>\n' +
+                    '        <span id="replyNickName" style="font-weight: bold">回复：@<span id="replayNickNameSpan">' + nickName + '</span>:</span>\n' +
+                    '        <span class="pull-right cancelReply"\n' +
+                    '              onclick="$(\'#replyComment\').remove()">取消回复</span>\n' +
+                    '    </div>\n' +
+                    '</div>';
+                $("#commentContentDiv").before($(html));
+            }
+            $("#commentContent").focus();
+
+        }
+
+        function getUiAvatarsUrl(backgroudColor, color, nickname) {
+            backgroudColor = (backgroudColor == null || backgroudColor === '' ? '&background=333' : '&background=' + backgroudColor);
+            color = (color == null || color === '' ? '&color=ffffff' : (color === 'auto' ? '' : '&color=' + color));
+            nickname = (nickname == null || nickname === '' ? '&name=' + $("#nickName").val() : '&name=' + nickname);
+            return "https://ui-avatars.com/api/?font-size=0.33&length=1" + backgroudColor + color + nickname;
+        }
+
+        function getQQProfileUrl(qq) {
+            return "https://q1.qlogo.cn/g?b=qq&nk=" + (qq == null || qq === "" ? '1' : qq) + "&s=100";
+        }
+
+        function getTwdneProfileImg() {
+            return "https://www.thiswaifudoesnotexist.net/v2/example-" + randomInt(199999, 0) + ".jpg";
+        }
+
+        function changeTwdneProfileImg() {
+            $("#randomComicProfileImage").attr("src", '')
+            $("#randomComicProfileImage").attr("src", getTwdneProfileImg())
+        }
+
+
+        /*选择头像*/
+        let chooseProfileWinId = null;
+
+        function chooseProfile() {
+            if (chooseProfileWinId == null) {
+                chooseProfileWinId = xtip.tips(
+                    '<a class="" href="javascript:void(0)" onclick="nickNameGenProfile()">昵称生成</a><br>' +
+                    '<a class="" href="javascript:void(0)" onclick="qqGenProfile()">QQ头像</a><br>' +
+                    '<a class="" href="javascript:void(0)" onclick="randomComicProfile()">随机动漫(女)</a><br>' +
+                    '<a class="" href="javascript:void(0)" onclick="urlProfile()">图片地址</a><br>' +
+                    ''
+                    , 'formProfileImg', {
+                        bgcolor: 'rgb(255,255,255)',
+                        times: 3,
+                        pos: 't',
+                        isAutoClose: false,
+                        width: '100rem'
+                    });
+                $("#" + chooseProfileWinId).css("max-width", "100%")
+            } else {
+                xtip.close(chooseProfileWinId)
+                chooseProfileWinId = null;
+            }
+        }
+
+        function nickNameGenProfile() {
+            const winId = xtip.win({
+                type: 'confirm',
+                btn: ['确定', '取消'],
+                icon: ['', '#5cb85c'],
+                tip:
+                    '<form class="form-horizontal validateForm">' +
+                    '   <img alt="预览" class="fromProfile " id="nickNameProfileImg" src="' + getUiAvatarsUrl() + '">' +
+                    '   <div class="row">' +
+                    '       <div class="col-lg-4">' +
+                    '           <label for="nickNameProfileInputBgColor">背景颜色 </label>' +
+                    '           <input id="nickNameProfileInputBgColor" class=" form-control" type="color"' +
+                    '                oninput="$(\'#nickNameProfileImg\').attr(\'src\',getUiAvatarsUrl(this.value.substr(1),$(\'#nickNameProfileInputColor\').val().substr(1)))">' +
+                    '       </div>' +
+                    '       <div class="col-lg-4">' +
+                    '           <label for="nickNameProfileInputColor">文字颜色 </label>' +
+                    '           <input id="nickNameProfileInputColor" class="form-control" value="#ffffff" type="color" style="top: 0.15rem"' +
+                    '                oninput="$(\'#nickNameProfileImg\').attr(\'src\',getUiAvatarsUrl($(\'#nickNameProfileInputBgColor\').val().substr(1),this.value.substr(1)))">' +
+                    '       </div>' +
+                    '   </div>' +
+                    '</form>'
+                ,
+                title: "昵称生成头像",
+                maxWidth: '100%',
+                shadeClose: false,
+                btn1: function () {
+                    alert("设置头像和赋值")
+                }
+            });
+        }
+
+        function qqGenProfile() {
+            const winId = xtip.win({
+                type: 'confirm',
+                btn: ['确定', '取消'],
+                icon: ['', '#5cb85c'],
+                tip:
+                    '<form class="form-horizontal validateForm">' +
+                    '   <img alt="预览" class="fromProfile" id="qqProfileImg" src="' + getQQProfileUrl('1') + '">' +
+                    '   <div style="float: left;padding-left: 0.5rem">' +
+                    '       <div class="">' +
+                    '           <label for="qqProFileInput">QQ号: </label>' +
+                    '           <input id="qqProFileInput" class="form-control no-border-radio" type="text" placeholder="你的QQ号"' +
+                    '                oninput="$(\'#qqProfileImg\').attr(\'src\',getQQProfileUrl(this.value))">' +
+                    '       </div>' +
+                    '   </div>' +
+                    '</form>'
+                ,
+                title: "获取QQ头像",
+                maxWidth: '100%',
+                shadeClose: false,
+                btn1: function () {
+                    alert("设置头像和赋值")
+                }
+            });
+        }
+
+        function randomComicProfile() {
+            const winId = xtip.win({
+                type: 'confirm',
+                btn: ['确定', '取消'],
+                icon: ['', '#5cb85c'],
+                tip:
+                    '<form class="form-horizontal validateForm">' +
+                    '   <img alt="预览" class="fromProfile" id="randomComicProfileImage" src="' + getTwdneProfileImg() + '">' +
+                    '   <div style="float: left;padding-left: 0.5rem">' +
+                    '       <div class="">' +
+                    '           <button id="customProfileInput" class="no-border-radio form-control btn btn-info"' +
+                    '           style="position:relative;top: 1rem" href="javascript:void(0)" type="button"' +
+                    '                onclick="changeTwdneProfileImg()">重新随机</button>' +
+                    '       </div>' +
+                    '   </div>' +
+                    '</form>'
+                ,
+                title: "随即动漫(女)",
+                maxWidth: '100%',
+                shadeClose: false,
+                btn1: function () {
+                    // alert("设置头像和赋值")
+                }
+            });
+        }
+
+        function urlProfile() {
+            const winId = xtip.win({
+                type: 'confirm',
+                btn: ['确定', '取消'],
+                icon: ['', '#5cb85c'],
+                tip:
+                    '<form class="form-horizontal validateForm">' +
+                    '   <img alt="预览" class="fromProfile" id="customProfileImage" src="' + getUiAvatarsUrl('ffffff') + '">' +
+                    '   <div style="float: left;padding-left: 0.5rem">' +
+                    '       <div class="">' +
+                    '           <label for="customProfileInput">图片地址: </label>' +
+                    '           <input id="customProfileInput" class="form-control no-border-radio" type="text" placeholder="允许访问的图片链接"' +
+                    '                oninput="$(\'#customProfileImage\').attr(\'src\',this.value)">' +
+                    '       </div>' +
+                    '   </div>' +
+                    '</form>'
+                ,
+                title: "图片地址",
+                maxWidth: '100%',
+                shadeClose: false,
+                btn1: function () {
+                    alert("设置头像和赋值")
+                }
+            });
+        }
     </script>
 </div>
 </body>

@@ -60,5 +60,8 @@ input:focus {
 }
 
 input.required, textarea.required {
-    border-color: orange ;
+    border-color: #c59090 ;
+}
+.no-border-radio{
+    border-radius: 0;
 }

@@ -1197,28 +1197,30 @@ Xclass.pt.autoClose = function(){
   var c = that.c;
   var xtipdiv = that.xtipdiv;
 
-  //倒计时
-  if(xtipdiv.getElementsByClassName('xtiper_times')[0]){
-    var times = c.times - 1;
-    var i = times;
-    var fn = function() {
-      xtiper_times = xtipdiv.getElementsByClassName('xtiper_times')[0];
-      xtiper_times.innerHTML = i;
-      if(i<=0){
-        that.close();
-        clearInterval(that.timer);
-        that.timer = null;
+  if (that.c.isAutoClose !== false){
+    //倒计时
+    if(xtipdiv.getElementsByClassName('xtiper_times')[0]){
+      var times = c.times - 1;
+      var i = times;
+      var fn = function() {
+        xtiper_times = xtipdiv.getElementsByClassName('xtiper_times')[0];
+        xtiper_times.innerHTML = i;
+        if(i<=0){
+          that.close();
+          clearInterval(that.timer);
+          that.timer = null;
+        }
+        i--;
+      };
+      that.timer = setInterval(fn, 1000);
+      fn();
+    }else{
+      var times = c.times;
+      if(times && times!=0){
+        setTimeout(function(){
+          that.close();
+        },times*1000);
       }
-      i--;
-    };
-    that.timer = setInterval(fn, 1000);
-    fn();
-  }else{
-    var times = c.times;
-    if(times && times!=0){
-      setTimeout(function(){
-        that.close();
-      },times*1000);
     }
   }
 };
@@ -1630,6 +1632,7 @@ window.xtip = {
     o.pos = config.pos ? config.pos : 'right';
     o.closeBtn = config.closeBtn ? config.closeBtn : false;
     o.zindex = config.zindex ? config.zindex : 99999;
+    o.isAutoClose = config.isAutoClose;
 
     return(this.run(o));
   },

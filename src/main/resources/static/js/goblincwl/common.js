@@ -154,18 +154,30 @@ function fromValidate($from) {
 function inputValidate($input) {
     if ($input.is("input") || $input.is("textarea")) {
         if (!($.isEmpty($input.val()))) {
-            $input.css("border-color", "red")
-            if ($input.attr('pos') == null) {
-                $input.attr('pos', 'r');
-            }
-            xtip.tips('请填写必填项!', '#' + $input.attr('id'), {
-                bgcolor: 'red',
-                pos: $input.attr('pos')
-            })
+            checkFail($input, '请填写必填项');
             return false;
         } else {
             $input.css("border-color", "green")
         }
     }
     return true;
+}
+
+/*校验不通过时*/
+function checkFail($element, msg) {
+    $element.css("border-color", "red")
+    if ($element.attr('pos') == null) {
+        $element.attr('pos', 'r');
+    }
+    xtip.tips(msg, '#' + $element.attr('id'), {
+        bgcolor: 'red',
+        pos: $element.attr('pos')
+    })
+    $element.focus();
+}
+
+/*生成随机数*/
+function randomInt(x, y) {
+    //x上限，y下限
+    return parseInt(Math.random() * (x - y + 1) + y);
 }
