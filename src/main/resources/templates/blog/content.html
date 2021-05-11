@@ -143,6 +143,18 @@
             top: 0.25rem;
         }
 
+        /*随机头像要选择*/
+        .randomComicProfileImage {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .randomComicProfileImage:hover {
+            position: relative;
+            transition: 0.5s;
+            bottom: 0.2rem;
+        }
+
     </style>
 </head>
 <body>
@@ -448,8 +460,12 @@
         }
 
         function changeTwdneProfileImg() {
-            $("#randomComicProfileImage").attr("src", '')
-            $("#randomComicProfileImage").attr("src", getTwdneProfileImg())
+            const $randomComicProfileImage = $(".randomComicProfileImage");
+            $randomComicProfileImage.attr("src", '')
+            for (let i = 0; i < $randomComicProfileImage.length; i++) {
+                const $randomComicProfileImageElement = $($randomComicProfileImage[i]);
+                $randomComicProfileImageElement.attr("src", getTwdneProfileImg())
+            }
         }
 
 
@@ -482,7 +498,7 @@
             const winId = xtip.win({
                 type: 'confirm',
                 btn: ['确定', '取消'],
-                icon: ['', '#5cb85c'],
+                icon: ['', '#5bc0de'],
                 tip:
                     '<form class="form-horizontal validateForm">' +
                     '   <img alt="预览" class="fromProfile " id="nickNameProfileImg" src="' + getUiAvatarsUrl() + '">' +
@@ -513,7 +529,7 @@
             const winId = xtip.win({
                 type: 'confirm',
                 btn: ['确定', '取消'],
-                icon: ['', '#5cb85c'],
+                icon: ['', '#5bc0de'],
                 tip:
                     '<form class="form-horizontal validateForm">' +
                     '   <img alt="预览" class="fromProfile" id="qqProfileImg" src="' + getQQProfileUrl('1') + '">' +
@@ -538,25 +554,22 @@
         function randomComicProfile() {
             const winId = xtip.win({
                 type: 'confirm',
-                btn: ['确定', '取消'],
-                icon: ['', '#5cb85c'],
+                btn: ['重随', '取消'],
+                icon: ['', '#5bc0de'],
                 tip:
                     '<form class="form-horizontal validateForm">' +
-                    '   <img alt="预览" class="fromProfile" id="randomComicProfileImage" src="' + getTwdneProfileImg() + '">' +
-                    '   <div style="float: left;padding-left: 0.5rem">' +
-                    '       <div class="">' +
-                    '           <button id="customProfileInput" class="no-border-radio form-control btn btn-info"' +
-                    '           style="position:relative;top: 1rem" href="javascript:void(0)" type="button"' +
-                    '                onclick="changeTwdneProfileImg()">重新随机</button>' +
-                    '       </div>' +
-                    '   </div>' +
+                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '">' +
+                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '">' +
+                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '">' +
+                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '">' +
                     '</form>'
                 ,
-                title: "随即动漫(女)",
+                title: "随机动漫(女) - 点击选择",
+                width: '310px',
                 maxWidth: '100%',
                 shadeClose: false,
                 btn1: function () {
-                    // alert("设置头像和赋值")
+                    changeTwdneProfileImg()
                 }
             });
         }
@@ -565,7 +578,7 @@
             const winId = xtip.win({
                 type: 'confirm',
                 btn: ['确定', '取消'],
-                icon: ['', '#5cb85c'],
+                icon: ['', '#5bc0de'],
                 tip:
                     '<form class="form-horizontal validateForm">' +
                     '   <img alt="预览" class="fromProfile" id="customProfileImage" src="' + getUiAvatarsUrl('ffffff') + '">' +
