@@ -9,7 +9,7 @@
 </head>
 <body>
 <!-- 左侧侧边栏 -->
-<div th:replace="fragment/managerComponent::leftSiderBar"></div>
+<div th:replace="fragment/manager/managerComponent::leftSiderBar"></div>
 
 <!-- 页面内容 -->
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -113,10 +113,18 @@
                     </div>
                 </div>
 
-                <!--聊天消息-->
+                <!--OSS文件-->
                 <div id="ossFileTab" class="tab-pane">
                     <div class="table-responsive">
                         <div id="ossFile-toolbar" class="btn-group">
+                            <button id="ossFile-toolbar-view" type="button"
+                                    class="btn btn-info btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon glyphicon-eye-open " aria-hidden="true"></i>预览
+                            </button>
+                            <button id="ossFile-toolbar-download" type="button"
+                                    class="btn btn-primary btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon glyphicon-download " aria-hidden="true"></i>下载
+                            </button>
                             <button id="ossFile-toolbar-remove" type="button"
                                     class="btn btn-danger btn-sm rightSize toolbarBtn">
                                 <i class="glyphicon glyphicon-remove " aria-hidden="true"></i>删除
@@ -357,13 +365,21 @@
                     $table = $("#" + tableId);
                     $toolbar = $("#ossFile-toolbar");
                     uniqueId = "ossFileName";
-                    //单选/多选按钮及事件
-                    // $multiBtnArray[0] = $("#ossFile-toolbar-remove");
-                    // $multiBtnArray[0].on('click', function () {
-                    //     chatMessageRemove(tableId)
-                    // });
-                    // $queryInputArray[0] = $("#ossFile-query-content");
-                    //自定义参数
+                    // 单选/多选按钮及事件
+                    $singleBtnArray[0] = $("#ossFile-toolbar-view");
+                    $singleBtnArray[0].on('click', function () {
+                        ossFileView(tableId)
+                    });
+                    $singleBtnArray[1] = $("#ossFile-toolbar-download");
+                    $singleBtnArray[1].on('click', function () {
+                        ossFileDownload(tableId)
+                    });
+                    $multiBtnArray[0] = $("#ossFile-toolbar-remove");
+                    $multiBtnArray[0].on('click', function () {
+                        ossFileRemove(tableId)
+                    });
+                    $queryInputArray[0] = $("#ossFile-query-content");
+                    // 自定义参数
                     tableOptions.queryParams = function (params) {
                         return $.extend(queryParams(params), {});
                     };
@@ -374,9 +390,10 @@
                         {
                             title: '操作',
                             formatter: function (value, row, index) {//赋予的参数
-                                return genTableOptionA('#6ecadc', '预览', 'glyphicon-eye-open', 'ossFileView("img:' + row.ossFileName + '")') +
-                                    genTableOptionA('#c9302c', '删除', 'glyphicon-remove', 'chatMessageRemove("' + tableId + '","' + row.id + '")') +
-                                    "<img src='" + row.fullUrl + "' data-xphoto='img:" + row.ossFileName + "' style='display: none'>"
+                                return genTableOptionA('#6ecadc', '预览', 'glyphicon-eye-open', 'ossFileView("' + tableId + '","' + (index + 1) + '")') +
+                                    genTableOptionA('#c9302c', '删除', 'glyphicon-remove', 'ossFileRemove("' + tableId + '","' + row.ossFileName + '")') +
+                                    genTableOptionA('#c9302c', '下载', 'glyphicon-remove', 'ossFileDownload("' + tableId + '",' + JSON.stringify(row) + ')') +
+                                    "<img src='" + row.fullUrl + "' data-xphoto='imgViewGroup' style='display: none'>"
                                     ;
                             }, //自定义方法，添加操作按钮,
                             switchable: false,
@@ -639,12 +656,23 @@
     <!--OSS文件-->
     <script>
         /*预览*/
-        function ossFileView(group) {
-            xtip.photo(group)
+        function ossFileView(tableId, index) {
+            const $table = getTable(tableId);
+            if (index == null) {
+                //复选框所选数据
+                const checkIdList = $table.bootstrapTable('getAllSelections');
+                if (checkIdList.length === 1) {
+                    index = (checkIdList[0].index) + 1;
+                } else {
+                    xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
+                    return;
+                }
+            }
+            xtip.photo("imgViewGroup", {index: index})
         }
 
         /*删除*/
-        function chatMessageRemove(tableId, id) {
+        function ossFileRemove(tableId, id) {
             const $table = getTable(tableId);
             //获取选择的数据
             if (id == null) {
@@ -657,13 +685,13 @@
                 }
                 for (let i = 0; i < checkIdList.length; i++) {
                     let checkIdListElement = checkIdList[i];
-                    id += checkIdListElement.id += ",";
+                    id += checkIdListElement.ossFileName += ",";
                 }
             }
             const winId = xtip.confirm('确认删除所选数据？', function () {
                 ajaxHttp({
                     type: "DELETE",
-                    url: ctx + "/manager/chatMessage/remove",
+                    url: ctx + "/manager/ossFile/remove",
                     data: {
                         ids: id
                     },
@@ -676,6 +704,54 @@
                     }
                 })
             }, {icon: ['', '#d9534f']});
+        }
+
+        /*下载*/
+        function ossFileDownload(tableId, row) {
+            const $table = getTable(tableId);
+
+            if (row == null) {
+                //复选框所选数据
+                const checkIdList = $table.bootstrapTable('getAllSelections');
+                if (checkIdList.length === 1) {
+                    row = checkIdList[0];
+                } else {
+                    xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
+                    return;
+                }
+            }
+
+            const winId = xtip.confirm('确认下载？', function () {
+                //使用xhr读取文件流
+                const url = ctx + "/manager/ossFile/download?ossFileName=" + row.ossFileName;
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', url, true);    // 也可以使用POST方式，根据接口
+                xhr.setRequestHeader("Authorization", localStorage.getItem('access_token'));
+                xhr.responseType = "blob";  // 返回类型blob
+                // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
+                xhr.onload = function () {
+                    // 请求完成
+                    if (this.status === 200) {
+                        // 返回200
+                        const blob = this.response;
+                        const reader = new FileReader();
+                        reader.readAsDataURL(blob);  // 转换为base64，可以直接放入a表情href
+                        reader.onload = function (e) {
+                            // 转换完成，创建一个a标签用于下载
+                            const a = document.createElement('a');
+                            a.download = row.originFileName;
+                            a.href = e.target.result;
+                            $("body").append(a);  // 修复firefox中无法触发click
+                            a.click();
+                            $(a).remove();
+                            //关闭确认框
+                            xtip.close(winId)
+                        }
+                    }
+                };
+                // 发送ajax请求
+                xhr.send()
+            }, {icon: ['', '#337ab7']});
         }
     </script>
 </div>

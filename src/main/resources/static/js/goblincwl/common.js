@@ -181,3 +181,12 @@ function randomInt(x, y) {
     //x上限，y下限
     return parseInt(Math.random() * (x - y + 1) + y);
 }
+
+// 文件下载
+$.download = function (url, method, filedir, filename) {
+    $('<form action="' + url + '" method="' + (method || 'post') + '">' +  // action请求路径及推送方法
+        '<input type="text" name="filedir" value="' + filedir + '"/>' + // 文件路径
+        '<input type="text" name="filename" value="' + filename + '"/>' + // 文件名称
+        '</form>')
+        .appendTo('body').submit().remove();
+};

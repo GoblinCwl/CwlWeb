@@ -138,7 +138,7 @@ function pushParamTableOptions(tableOptions,
         toolbar: $toolBar,
         tableSelect: $table,
         //复选框选择时
-        onCheck: function () {
+        onCheck: function (row, $element) {
             const checkIdList = $table.bootstrapTable('getAllSelections');
             //多选
             for (let i = 0; i < $multiBtnArray.length; i++) {
@@ -154,6 +154,7 @@ function pushParamTableOptions(tableOptions,
                     $singleBtnArray[i].addClass("button-disabled");
                 }
             }
+            row.index = $element.data('index');
         },
         //复选框取消选择时
         onUncheck: function () {

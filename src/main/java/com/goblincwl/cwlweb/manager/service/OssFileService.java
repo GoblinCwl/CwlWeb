@@ -185,7 +185,7 @@ public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
      * @date 2021-04-30 11:05:19
      * @author ☪wl
      */
-    public void removeFile(String ossFileName) {
+    public void removeById(String ossFileName) {
         //删除数据库数据
         this.ossFileMapper.deleteById(ossFileName);
         this.oss.deleteObject(this.goblinCwlConfig.getOssBucket(), ossFileName);

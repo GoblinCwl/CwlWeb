@@ -1,17 +1,21 @@
 package com.goblincwl.cwlweb.manager.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.manager.entity.OssFile;
 import com.goblincwl.cwlweb.manager.service.OssFileService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +49,40 @@ public class OssFileController extends BaseController<OssFile> {
                         createQueryWrapper(ossFile)
                 ), "成功"
         );
+    }
+
+    /**
+     * 删除
+     *
+     * @param ids OSS文件名（逗号拼接）
+     * @return 反馈
+     * @date 2021-05-12 22:24:47
+     * @author ☪wl
+     */
+    @DeleteMapping("/remove")
+    public Result<Object> remove(String ids) {
+        if (StringUtils.isNotEmpty(ids)) {
+            for (String ossFileName : ids.split(",")) {
+                this.ossFileService.removeById(ossFileName);
+            }
+        }
+        return Result.genSuccess("删除成功");
+    }
+
+    /**
+     * 文件下载
+     *
+     * @param ossFileName OSS文件名
+     * @param response    响应对象
+     * @date 2021-05-12 22:37:29
+     * @author ☪wl
+     */
+    @PostMapping("/download")
+    public void download(String ossFileName, HttpServletResponse response) throws IOException {
+        if (StringUtils.isNotEmpty(ossFileName)) {
+            this.ossFileService.downloadFile(response.getOutputStream(), ossFileName);
+        }
+        throw new GoblinCwlException("文件[" + ossFileName + "]不存在");
     }
 
     /**
