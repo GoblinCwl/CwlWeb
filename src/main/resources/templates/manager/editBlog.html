@@ -83,46 +83,46 @@
                 type: "GET",
                 url: ctx + "/blog/query/" + $.getUrlParam("id"),
                 success: function (res) {
-                    let title = '';
-                    let tabsArray;
                     if (res.data != null) {
                         $("#article").html(res.data.content);
-                        title = res.data.title;
-                        tabsArray = res.data.tabsArray;
+                        initOptions(res.data.title, res.data.tabsArray);
                     }
+                },
+                successFalse: function () {
+                    initOptions('', null);
+                }
+            })
+        })
 
-                    //下拉框数据
-                    let optionsHtml = "";
-                    ajaxHttp({
-                        method: 'GET',
-                        url: ctx + '/blog/blogTabs/list',
-                        data: {
-                            pageSize: 100
-                        },
-                        success: function (resTabs) {
-                            if (resTabs.data != null) {
-                                for (let i = 0; i < resTabs.data.records.length; i++) {
-                                    const row = resTabs.data.records[i];
-                                    let html = "" +
-                                        "<option ";
-                                    if ($.inArray(row.id, tabsArray) !== -1) {
-                                        html += "selected ";
-                                    }
-                                    html += "data-content=\"" + "" +
-                                        "<span class='badge' style='background-color: " + row.color + "'>" + row.name + "</span>\"" +
-                                        " value='" + row.id + "'>" + row.name + "</option>";
-                                    optionsHtml += html;
-                                }
+        /*获取下拉框数据*/
+        function initOptions(title, tabsArray) {
+            ajaxHttp({
+                method: 'GET',
+                url: ctx + '/blog/blogTabs/list',
+                data: {
+                    pageSize: 100
+                },
+                success: function (resTabs) {
+                    let optionsHtml = '';
+                    if (resTabs.data != null) {
+                        for (let i = 0; i < resTabs.data.records.length; i++) {
+                            const row = resTabs.data.records[i];
+                            let html = "" +
+                                "<option ";
+                            if ($.inArray(row.id, tabsArray) !== -1) {
+                                html += "selected ";
                             }
-                            //加载editorMd
-                            initEditorMd(title, optionsHtml, title);
+                            html += "data-content=\"" + "" +
+                                "<span class='badge' style='background-color: " + row.color + "'>" + row.name + "</span>\"" +
+                                " value='" + row.id + "'>" + row.name + "</option>";
+                            optionsHtml += html;
                         }
-                    })
+                    }
+                    //加载editorMd
+                    initEditorMd(title, optionsHtml);
                 },
             })
-
-
-        })
+        }
 
         function initEditorMd(title, optionsHtml) {
             editorMd = editormd("editormd", {
