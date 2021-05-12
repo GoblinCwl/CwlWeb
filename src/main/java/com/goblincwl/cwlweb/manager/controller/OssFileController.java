@@ -1,15 +1,14 @@
 package com.goblincwl.cwlweb.manager.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goblincwl.cwlweb.common.entity.Result;
+import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.manager.entity.OssFile;
 import com.goblincwl.cwlweb.manager.service.OssFileService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -25,13 +24,31 @@ import java.util.Map;
 @RestController
 @RequestMapping(ManagerController.MODULE_PREFIX + "/ossFile")
 @RequiredArgsConstructor
-public class OssFileController {
+public class OssFileController extends BaseController<OssFile> {
 
     private final Logger logger = LoggerFactory.getLogger(OssFileController.class);
     private final OssFileService ossFileService;
 
     /**
-     * 文件上传
+     * 主查询
+     *
+     * @param ossFile 查询参数
+     * @return 结果集
+     * @date 2021-05-12 17:57:49
+     * @author ☪wl
+     */
+    @GetMapping("/list")
+    public Result<Page<OssFile>> list(OssFile ossFile) {
+        return new Result<Page<OssFile>>().success(
+                this.ossFileService.page(
+                        createPage(),
+                        createQueryWrapper(ossFile)
+                ), "成功"
+        );
+    }
+
+    /**
+     * editorMd 图片上传
      *
      * @param file        文件
      * @param storagePath 存储路径
@@ -44,8 +61,8 @@ public class OssFileController {
      * @date 2021-05-10 00:20:54
      * @author ☪wl
      */
-    @RequestMapping("/uploadFile")
-    public Map<String, Object> uploadFile(@RequestParam("editormd-image-file") MultipartFile file, String storagePath) {
+    @RequestMapping("/editorMdUploadFile")
+    public Map<String, Object> editorMdUploadFile(@RequestParam("editormd-image-file") MultipartFile file, String storagePath) {
         Map<String, Object> resultMap = new HashMap<>(3);
         try {
             OssFile ossFile = this.ossFileService.uploadFile(file, storagePath);

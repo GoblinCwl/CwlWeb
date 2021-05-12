@@ -194,6 +194,7 @@
                     } else {
                         insertMessage("<span style='color: #38c0e2;font-weight: bold'>" + data.nickName + "</span>，允许访问！✔", 850);
                     }
+                    localStorage.setItem("nickName", data.nickName);
                     setTimeout(function () {
                         $("#nickName").text(data.nickName)
                     }, 900);

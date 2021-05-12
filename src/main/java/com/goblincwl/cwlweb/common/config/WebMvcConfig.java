@@ -43,7 +43,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/manager/**")
                 .excludePathPatterns(
                         //管理员登陆
-                        "/manager/login", "/manager/logout"
+                        "/manager/login", "/manager/logout", "/manager/check"
                 );
     }
 

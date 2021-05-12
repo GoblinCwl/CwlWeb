@@ -67,4 +67,18 @@ public class ManagerController {
         this.tokenService.clearToken(token);
         return Result.genSuccess();
     }
+
+    /**
+     * Token校验
+     *
+     * @param request 请求对象
+     * @return 结果
+     * @date 2021-05-12 17:30:44
+     * @author ☪wl
+     */
+    @GetMapping("/check")
+    public Result<Object> check(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        return Result.genSuccess(this.tokenService.checkToken(token, IpUtils.getIpAddress(request)), "成功");
+    }
 }

@@ -18,6 +18,7 @@
         /*文章内容块*/
         #view-editormd {
             background-color: #eef7fa;
+            box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
         }
 
         /*分割线*/
@@ -43,12 +44,22 @@
         }
 
         /*目录*/
-        .markdown-toc-list li ul,
-        .markdown-toc-list li ul li ul,
-        .markdown-toc-list li ul li ul li ul,
-        .markdown-toc-list li ul li ul li ul li ul,
-        .markdown-toc-list li ul li ul li ul li ul li ul {
+        .markdown-toc ul,
+        .markdown-toc ul li ul,
+        .markdown-toc ul li ul li ul,
+        .markdown-toc ul li ul li ul li ul,
+        .markdown-toc ul li ul li ul li ul li ul,
+        .markdown-toc ul li ul li ul li ul li ul li ul {
             padding-left: 1rem;
+            list-style: '- ';
+
+        }
+
+        #custom-toc-container {
+            padding: 1rem;
+            font-size: 13px;
+            background-color: #e8fbf2;
+            box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
         }
 
         .cancelReply {
@@ -84,6 +95,7 @@
             border-radius: 1rem;
             transition: 0.5s;
             box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
+            background: url("/images/imgLoading.gif") no-repeat center center;
         }
 
         .commentProfileImg:hover {
@@ -112,16 +124,6 @@
             border-radius: 0;
         }
 
-        /*评论表单 选择头像 气泡框 图片*/
-        .commentFormProfileChooseImg {
-            width: 3.3rem;
-            height: 3.3rem;
-            border-radius: 1rem;
-            transition: 0.5s;
-            box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
-            margin-right: 1rem;
-        }
-
         /*表单选择头像 预览*/
         .fromProfile {
             width: 3.3rem;
@@ -131,15 +133,7 @@
             box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
             margin: 0.5rem 0.5rem 0.3rem;
             float: left;
-            background: url("https://www.lanrentuku.com/savepic/img/allimg/1212/5-121204194028.gif") no-repeat center center;;
-        }
-
-        /*昵称生成头像，颜色选择器*/
-        .inFormColorSelect {
-            border: 0;
-            background-color: white;
-            position: relative;
-            top: 0.25rem;
+            background: url("/images/imgLoading.gif") no-repeat center center;
         }
 
         /*随机头像要选择*/
@@ -182,8 +176,8 @@
                     <div class="col-lg-9">
                         <div id="view-editormd"></div>
                     </div>
-                    <div class="col-lg-3" style="background-color: #e8fbf2">
-                        <div id="custom-toc-container" style="padding: 1rem"></div>
+                    <div class="col-lg-3" style="padding-left: 0">
+                        <div id="custom-toc-container"></div>
                     </div>
                 </div>
 
@@ -203,9 +197,9 @@
                     <form id="commentFormId" class="form commentForm">
                         <div class="row">
                             <div class="form-group col-lg-1 width-7">
-                                <img id="formProfileImg" alt="选择头像" th:src="@{/images/profile.jpg}"
-                                     class="commentProfileImg"
-                                     onclick="chooseProfile()">
+                                <img id="formProfileImg" alt="选择头像"
+                                     src="https://ui-avatars.com/api/?font-size=0.33&length=2&background=ffffff&name=头像"
+                                     class="commentProfileImg" onclick="chooseProfile()">
                             </div>
                             <div class="form-group col-lg-3 width-31">
                                 <label class="sr-only" for="nickName"></label>
@@ -262,10 +256,20 @@
         let blogId;
 
         $(function () {
+            //设置昵称
+            $("#nickName").val(localStorage.getItem("nickName"))
+            //设置头像
+            if (localStorage.getItem("profileUrl") != null) {
+                $("#formProfileImg").attr("src", localStorage.getItem("profileUrl"))
+            }
+            //导航
+            $("#blogBackLi").css("display", "block");
+            $("#blogBackLi").addClass("active");
+
             blogId = $("#blogId").val();
             ajaxHttp({
                 type: "GET",
-                url: ctx + "/blog/" + blogId,
+                url: ctx + "/blog/query/" + blogId,
                 success: function (res) {
                     let content = '';
                     if (res.data != null) {
@@ -300,6 +304,9 @@
                         initComment(blogId);
                     }
                 },
+                successFalse: function () {
+                    window.location.replace("/404");
+                }
             });
         });
 
@@ -385,6 +392,9 @@
                     checkFail($website, "请输入正确的网址-http(s)/www开头")
                     return;
                 }
+                if (!$website.val().startsWith("http")) {
+                    $website.val('http://' + $website.val())
+                }
             }
 
 
@@ -417,6 +427,7 @@
                             initComment(blogId);
                             //清空表单
                             $("#commentFormId")[0].reset()
+                            $("#nickName").val(localStorage.getItem("nickName"))
                             //取消回复
                             $('#replyComment').remove();
                         },
@@ -480,7 +491,7 @@
                 chooseProfileWinId = xtip.tips(
                     '<a class="" href="javascript:void(0)" onclick="nickNameGenProfile()">昵称生成</a><br>' +
                     '<a class="" href="javascript:void(0)" onclick="qqGenProfile()">QQ头像</a><br>' +
-                    '<a class="" href="javascript:void(0)" onclick="randomComicProfile()">随机动漫(女)</a><br>' +
+                    '<a class="" href="javascript:void(0)" onclick="randomComicProfile()">随机漫头</a><br>' +
                     '<a class="" href="javascript:void(0)" onclick="urlProfile()">图片地址</a><br>' +
                     ''
                     , 'formProfileImg', {
@@ -538,10 +549,7 @@
                 maxWidth: '100%',
                 shadeClose: false,
                 btn1: function () {
-                    const url = $("#nickNameProfileImg").attr("src");
-                    $("#formProfileImg").attr("src", url)
-                    $("#profileUrl").val(url)
-                    xtip.close(winId);
+                    saveImg(winId, $("#nickNameProfileImg").attr("src"))
                 }
             });
         }
@@ -568,10 +576,7 @@
                 maxWidth: '100%',
                 shadeClose: false,
                 btn1: function () {
-                    const url = $("#qqProfileImg").attr("src");
-                    $("#formProfileImg").attr("src", url)
-                    $("#profileUrl").val(url)
-                    xtip.close(winId);
+                    saveImg(winId, $("#qqProfileImg").attr("src"));
                 }
             });
         }
@@ -603,9 +608,7 @@
         }
 
         function checkRandomComicProfile(url) {
-            $("#formProfileImg").attr("src", url)
-            $("#profileUrl").val(url)
-            xtip.close(randomComicProfileWindId);
+            saveImg(randomComicProfileWindId, url);
         }
 
         //自定义地址头像
@@ -616,7 +619,7 @@
                 icon: ['', '#5bc0de'],
                 tip:
                     '<form class="form-horizontal validateForm">' +
-                    '   <img alt="预览" class="fromProfile" id="customProfileImage" src="' + getUiAvatarsUrl('ffffff') + '">' +
+                    '   <img alt="预览" class="fromProfile" id="customProfileImage" src="' + getUiAvatarsUrl('ffffff') + '" onerror="errorImg(this)">' +
                     '   <div style="float: left;padding-left: 0.5rem">' +
                     '       <div class="">' +
                     '           <label for="customProfileInput">图片地址: </label>' +
@@ -630,12 +633,27 @@
                 maxWidth: '100%',
                 shadeClose: false,
                 btn1: function () {
-                    const url = $("#customProfileImage").attr("src");
-                    $("#formProfileImg").attr("src", url)
-                    $("#profileUrl").val(url)
-                    xtip.close(winId);
+                    saveImg(winId, $("#customProfileImage").attr("src"))
                 }
             });
+        }
+
+        /*无法加载图片处理*/
+        function errorImg(elem) {
+            elem.src = getUiAvatarsUrl('ffffff');
+            xtip.tips('无法获取图片', 'customProfileImage', {
+                    bgcolor: 'red',
+                    pos: 'l'
+                }
+            )
+        }
+
+        /*保存头像*/
+        function saveImg(winId, url) {
+            $("#formProfileImg").attr("src", url)
+            $("#profileUrl").val(url)
+            xtip.close(winId);
+            localStorage.setItem("profileUrl", url)
         }
     </script>
 </div>

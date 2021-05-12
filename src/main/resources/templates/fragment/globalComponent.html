@@ -97,17 +97,28 @@
         //追加ManagerUl
         function addManagerUl() {
             let token = localStorage.getItem("access_token");
-            if (token != null && token != "") {
-                let $managerLi = $('#managerLi');
-                if ($managerLi.length && $managerLi.length > 0) {
-                } else {
-                    //不存在则添加
-                    $("#topHeaderUl").append(managerLi)
+            if (token != null && token !== '') {
+                ajaxHttp({
+                    url: ctx + "/manager/check",
+                    success: function (res) {
+                        if (res.data) {
+                            if (token != null && token != "") {
+                                let $managerLi = $('#managerLi');
+                                if ($managerLi.length && $managerLi.length > 0) {
+                                } else {
+                                    //不存在则添加
+                                    $("#topHeaderUl").append(managerLi)
 
-                }
+                                }
+                            }
+                            //全站cookie
+                            $.cookie("Authorization", token, {path: '/'});
+                        } else {
+                            localStorage.removeItem("access_token");
+                        }
+                    }
+                })
             }
-            //全站cookie
-            $.cookie("Authorization", token, {path: '/'});
         }
     </script>
 

@@ -6,6 +6,7 @@ import com.goblincwl.cwlweb.blog.entity.Blog;
 import com.goblincwl.cwlweb.blog.service.BlogService;
 import com.goblincwl.cwlweb.blog.service.BlogTabsService;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
+import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import lombok.RequiredArgsConstructor;
@@ -66,8 +67,8 @@ public class BlogController extends BaseController<Blog> {
      * @date 2021-05-07 22:39:29
      * @author ☪wl
      */
-    @GetMapping("/{id}")
-    public Result<Blog> one(@PathVariable("id") String id) {
+    @GetMapping("/query/{id}")
+    public Result<Blog> query(@PathVariable("id") String id) {
         Blog blog = this.blogService.getById(id);
         if (blog != null) {
             //标签赋值
@@ -75,14 +76,14 @@ public class BlogController extends BaseController<Blog> {
             if (tabsArray != null) {
                 blog.setBlogTabsList(this.blogTabsService.listByIds(Arrays.asList(tabsArray)));
             }
+            return new Result<Blog>().success(blog, "成功");
         }
-        return new Result<Blog>().success(blog, "成功");
+        throw new GoblinCwlException("没有这篇文章");
     }
 
     /**
      * 实现RestFull风格页面
      * 主要是因为页面跳转全部由/redirect转发
-     * 此处在拦截器内配置了白名单了
      *
      * @param id 文章ID
      * @return modelAndView

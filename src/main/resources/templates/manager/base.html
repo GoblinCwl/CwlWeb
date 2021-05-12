@@ -34,8 +34,14 @@
                         聊天消息
                     </a>
                 </li>
+                <li data-name="ossFileTab" class="">
+                    <a data-toggle="tab" href="#ossFileTab" onclick="refreshTable('ossFile-table')">
+                        OSS文件
+                    </a>
+                </li>
             </ul>
             <div class="tab-content" id="tabContent">
+                <!--键值对管理-->
                 <div id="keyValueOptionsTab" class="tab-pane active">
                     <div class="table-responsive">
                         <div id="keyValueOptions-toolbar" class="btn-group">
@@ -64,6 +70,7 @@
                     </div>
                 </div>
 
+                <!--访问记录-->
                 <div id="accessRecordTab" class="tab-pane">
                     <div class="table-responsive">
                         <div id="accessRecord-toolbar" class="btn-group"></div>
@@ -84,6 +91,8 @@
                         <table id="accessRecord-table" class="table table-condensed text-nowrap my-table"></table>
                     </div>
                 </div>
+
+                <!--聊天消息-->
                 <div id="chatMessageTab" class="tab-pane">
                     <div class="table-responsive">
                         <div id="chatMessage-toolbar" class="btn-group">
@@ -103,6 +112,27 @@
                         <table id="chatMessage-table" class="table table-condensed text-nowrap my-table"></table>
                     </div>
                 </div>
+
+                <!--聊天消息-->
+                <div id="ossFileTab" class="tab-pane">
+                    <div class="table-responsive">
+                        <div id="ossFile-toolbar" class="btn-group">
+                            <button id="ossFile-toolbar-remove" type="button"
+                                    class="btn btn-danger btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon glyphicon-remove " aria-hidden="true"></i>删除
+                            </button>
+                        </div>
+                        <div class="form-inline table-search">
+                            <div class="form-group">
+                                <label for="ossFile-query-content"></label>
+                                <input type="text" class="form-control input-sm"
+                                       id="ossFile-query-content"
+                                       placeholder="消息内容">
+                            </div>
+                        </div>
+                        <table id="ossFile-table" class="table table-condensed text-nowrap my-table"></table>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -119,6 +149,7 @@
             initData('keyValueOptionsTab')
             initData('accessRecordTab')
             initData('chatMessageTab')
+            initData('ossFileTab')
         })
 
         //初始化表格
@@ -320,8 +351,64 @@
                         }
                     ]
                     break;
-                case 'table4':
-                    //省略
+                case 'ossFileTab':
+                    url = ctx + "/manager/ossFile/list";
+                    tableId = "ossFile-table";
+                    $table = $("#" + tableId);
+                    $toolbar = $("#ossFile-toolbar");
+                    uniqueId = "ossFileName";
+                    //单选/多选按钮及事件
+                    // $multiBtnArray[0] = $("#ossFile-toolbar-remove");
+                    // $multiBtnArray[0].on('click', function () {
+                    //     chatMessageRemove(tableId)
+                    // });
+                    // $queryInputArray[0] = $("#ossFile-query-content");
+                    //自定义参数
+                    tableOptions.queryParams = function (params) {
+                        return $.extend(queryParams(params), {});
+                    };
+                    columns = [
+                        {
+                            checkbox: true,
+                        },
+                        {
+                            title: '操作',
+                            formatter: function (value, row, index) {//赋予的参数
+                                return genTableOptionA('#6ecadc', '预览', 'glyphicon-eye-open', 'ossFileView("img:' + row.ossFileName + '")') +
+                                    genTableOptionA('#c9302c', '删除', 'glyphicon-remove', 'chatMessageRemove("' + tableId + '","' + row.id + '")') +
+                                    "<img src='" + row.fullUrl + "' data-xphoto='img:" + row.ossFileName + "' style='display: none'>"
+                                    ;
+                            }, //自定义方法，添加操作按钮,
+                            switchable: false,
+                            align: 'center',
+                            width: 50,
+                            cellStyle: function () {
+                                const style = rowStyle(tableOptions);
+                                style.css["border-right"] = "1px solid #ddd"
+                                return style;
+                            },
+                        },
+                        {
+                            field: 'path',
+                            title: '目录',
+                            align: 'center',
+                        },
+                        {
+                            field: 'originFileName',
+                            title: '原始文件名',
+                            align: 'center',
+                        },
+                        {
+                            field: 'suffix',
+                            title: '后缀',
+                            align: 'center',
+                        },
+                        {
+                            field: 'ossFileName',
+                            title: 'OSS文件名',
+                            align: 'center',
+                        }
+                    ]
                     break;
             }
 
@@ -513,6 +600,49 @@
 
     <!--聊天消息-->
     <script>
+        /*删除*/
+        function chatMessageRemove(tableId, id) {
+            const $table = getTable(tableId);
+            //获取选择的数据
+            if (id == null) {
+                id = '';
+                //复选框所选数据
+                const checkIdList = $table.bootstrapTable('getAllSelections');
+                if (checkIdList.length <= 0) {
+                    xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
+                    return;
+                }
+                for (let i = 0; i < checkIdList.length; i++) {
+                    let checkIdListElement = checkIdList[i];
+                    id += checkIdListElement.id += ",";
+                }
+            }
+            const winId = xtip.confirm('确认删除所选数据？', function () {
+                ajaxHttp({
+                    type: "DELETE",
+                    url: ctx + "/manager/chatMessage/remove",
+                    data: {
+                        ids: id
+                    },
+                    winId: winId,
+                    success: function (res) {
+                        xtip.msg(res.msg, {icon: 's', type: 'w'})
+                        $table.bootstrapTable('refresh');
+                        $table.bootstrapTable('getOptions').onUncheckAll();
+
+                    }
+                })
+            }, {icon: ['', '#d9534f']});
+        }
+    </script>
+
+    <!--OSS文件-->
+    <script>
+        /*预览*/
+        function ossFileView(group) {
+            xtip.photo(group)
+        }
+
         /*删除*/
         function chatMessageRemove(tableId, id) {
             const $table = getTable(tableId);
