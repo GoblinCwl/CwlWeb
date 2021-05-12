@@ -100,7 +100,7 @@
     margin-bottom: 1em;
 }
 
-.table-search .form-group label{
+.table-search .form-group label {
     display: none;
 }
 
@@ -150,6 +150,10 @@
 
 .table-options i.glyphicon-pencil:before {
     color: #5bc0de;
+}
+
+.table-options i.glyphicon-download:before {
+    color: #337ab7;
 }
 
 /*移动端去边框*/

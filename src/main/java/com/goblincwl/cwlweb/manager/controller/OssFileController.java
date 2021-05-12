@@ -81,6 +81,7 @@ public class OssFileController extends BaseController<OssFile> {
     public void download(String ossFileName, HttpServletResponse response) throws IOException {
         if (StringUtils.isNotEmpty(ossFileName)) {
             this.ossFileService.downloadFile(response.getOutputStream(), ossFileName);
+            return;
         }
         throw new GoblinCwlException("文件[" + ossFileName + "]不存在");
     }

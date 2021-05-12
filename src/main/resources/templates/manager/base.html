@@ -391,8 +391,8 @@
                             title: '操作',
                             formatter: function (value, row, index) {//赋予的参数
                                 return genTableOptionA('#6ecadc', '预览', 'glyphicon-eye-open', 'ossFileView("' + tableId + '","' + (index + 1) + '")') +
+                                    genTableOptionA('#337ab7', '下载', 'glyphicon-download', 'ossFileDownload("' + tableId + '",' + JSON.stringify(row) + ')') +
                                     genTableOptionA('#c9302c', '删除', 'glyphicon-remove', 'ossFileRemove("' + tableId + '","' + row.ossFileName + '")') +
-                                    genTableOptionA('#c9302c', '下载', 'glyphicon-remove', 'ossFileDownload("' + tableId + '",' + JSON.stringify(row) + ')') +
                                     "<img src='" + row.fullUrl + "' data-xphoto='imgViewGroup' style='display: none'>"
                                     ;
                             }, //自定义方法，添加操作按钮,
