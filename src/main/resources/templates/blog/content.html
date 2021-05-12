@@ -73,7 +73,7 @@
         /*头像<a>*/
         a.commentProfile {
             float: left;
-            width: 5.5%;
+            width: 6.5%;
             padding-right: 0.5rem;
         }
 
@@ -95,7 +95,6 @@
 
         /*评论内容区*/
         .comment > .content {
-            width: 100%;
         }
 
         .comment > .content > div > .commentNickName {
@@ -200,7 +199,7 @@
                 <div id="commentDiv">
                     <!--评论区-->
                 </div>
-                <div class="comment col-lg-8" style="margin-bottom: 1rem">
+                <div class="comment col-lg-9" style="margin-bottom: 1rem">
                     <form id="commentFormId" class="form commentForm">
                         <div class="row">
                             <div class="form-group col-lg-1 width-7">
@@ -246,7 +245,7 @@
         </div>
 
     </div>
-    <input type="hidden" id="defaultProfileColor"/>
+    <input type="hidden" id="profileUrl"/>
 </div>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
     <script type="text/javascript" th:src="@{/plugins/editormd/lib/marked.min.js}"></script>
@@ -327,7 +326,7 @@
                 success: function (res) {
                     if (res.data != null) {
                         const data = res.data;
-                        var commemntHtml = '';
+                        let commemntHtml = '';
                         for (let i = 0; i < data.length; i++) {
                             const row = data[i];
                             commemntHtml += '' +
@@ -335,7 +334,7 @@
                                 '    <a ' + (row.website == null || row.website === '' ? '' : 'href="' + row.website + '" target="_blank"') + ' class="commentProfile">' +
                                 '        <img class="commentProfileImg" alt="' + row.nickName + '" src=' + (row.profileUrl == null || row.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', row.nickName) : row.profileUrl) + '>' +
                                 '    </a>' +
-                                '    <div class="content">' +
+                                '    <div class="content" onclick="replyComment(\'' + row.id + '\',\'' + row.nickName + '\')">' +
                                 '        <div><span class="commentNickName">' + row.nickName + '</span></div>' +
                                 '        <div><span class="commentSendTime">' + row.sendTime + '</span></div>' +
                                 '        <div><span>' + row.content + '</span></div>' +
@@ -345,11 +344,11 @@
                                 for (let j = 0; j < row.childrenList.length; j++) {
                                     const childrenRow = row.childrenList[j];
                                     commemntHtml += '' +
-                                        '<div class="comment">' +
+                                        '<div class="comment" >' +
                                         '    <a ' + (childrenRow.website == null || childrenRow.website === '' ? '' : 'href="' + childrenRow.website + '" target="_blank"') + 'class="commentProfile">' +
                                         '        <img class="commentProfileImg" alt="' + childrenRow.nickName + '" src=' + (childrenRow.profileUrl == null || childrenRow.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', childrenRow.nickName) : childrenRow.profileUrl) + '>' +
                                         '    </a>' +
-                                        '    <div class="content">' +
+                                        '    <div class="content" onclick="replyComment(\'' + row.id + '\',\'' + childrenRow.nickName + '\')">' +
                                         '        <div><span class="commentNickName">' + childrenRow.nickName + '</span></div>' +
                                         '        <div><span class="commentSendTime">' + childrenRow.sendTime + '</span></div>' +
                                         '        <div><span>' + childrenRow.content + '</span></div>' +
@@ -371,7 +370,7 @@
         function sendComment() {
             //校验邮箱
             const $email = $("#email");
-            if ($website.val() != null && $website.val() !== '') {
+            if ($email.val() != null && $email.val() !== '') {
                 const emailReg = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
                 if (!emailReg.test($email.val())) {
                     checkFail($email, '请输入正确的邮箱');
@@ -391,11 +390,14 @@
 
             if (fromValidate($("#commentFormId"))) {
                 const winId = xtip.confirm("确认发送评论？", function () {
-                    var content = $("#commentContent").val();
-                    var parentId = $("#parentId").val();
+                    let content = $("#commentContent").val();
+                    const parentId = $("#parentId").val();
                     if (parentId != null) {
                         content = '回复@' + $("#replayNickNameSpan").text() + "： " + content;
                     }
+
+                    let $profileUrl = $("#profileUrl");
+                    $profileUrl = ($profileUrl.val() == null || $profileUrl.val() === "") ? getUiAvatarsUrl() : $profileUrl.val();
                     ajaxHttp({
                         type: "POST",
                         url: ctx + "/blog/comment/add",
@@ -405,7 +407,8 @@
                             nickName: $("#nickName").val(),
                             email: $email.val(),
                             website: $website.val(),
-                            content: content
+                            content: content,
+                            profileUrl: $profileUrl
                         },
                         winId: winId,
                         success: function (res) {
@@ -438,7 +441,7 @@
                     '              onclick="$(\'#replyComment\').remove()">取消回复</span>\n' +
                     '    </div>\n' +
                     '</div>';
-                $("#commentContentDiv").before($(html));
+                $("#commentContent").before($(html));
             }
             $("#commentContent").focus();
 
@@ -469,7 +472,7 @@
         }
 
 
-        /*选择头像*/
+        /**选择头像*/
         let chooseProfileWinId = null;
 
         function chooseProfile() {
@@ -492,8 +495,23 @@
                 xtip.close(chooseProfileWinId)
                 chooseProfileWinId = null;
             }
+
+            //点击其他地方关闭tip
+            $(document).bind('click', function (e) {
+                const ae = e || window.event; //浏览器兼容性
+                var elem = ae.target || ae.srcElement;
+                while (elem) { //循环判断至跟节点，防止点击的是div子元素
+                    if (elem.id && elem.id === 'formProfileImg') {
+                        return;
+                    }
+                    elem = elem.parentNode;
+                }
+                xtip.close(chooseProfileWinId);
+                chooseProfileWinId = null;
+            });
         }
 
+        //昵称获取头像
         function nickNameGenProfile() {
             const winId = xtip.win({
                 type: 'confirm',
@@ -505,12 +523,12 @@
                     '   <div class="row">' +
                     '       <div class="col-lg-4">' +
                     '           <label for="nickNameProfileInputBgColor">背景颜色 </label>' +
-                    '           <input id="nickNameProfileInputBgColor" class=" form-control" type="color"' +
+                    '           <input id="nickNameProfileInputBgColor" class="form-control no-border-radio" type="color"' +
                     '                oninput="$(\'#nickNameProfileImg\').attr(\'src\',getUiAvatarsUrl(this.value.substr(1),$(\'#nickNameProfileInputColor\').val().substr(1)))">' +
                     '       </div>' +
                     '       <div class="col-lg-4">' +
                     '           <label for="nickNameProfileInputColor">文字颜色 </label>' +
-                    '           <input id="nickNameProfileInputColor" class="form-control" value="#ffffff" type="color" style="top: 0.15rem"' +
+                    '           <input id="nickNameProfileInputColor" class="form-control no-border-radio" value="#ffffff" type="color" style="top: 0.15rem"' +
                     '                oninput="$(\'#nickNameProfileImg\').attr(\'src\',getUiAvatarsUrl($(\'#nickNameProfileInputBgColor\').val().substr(1),this.value.substr(1)))">' +
                     '       </div>' +
                     '   </div>' +
@@ -520,11 +538,15 @@
                 maxWidth: '100%',
                 shadeClose: false,
                 btn1: function () {
-                    alert("设置头像和赋值")
+                    const url = $("#nickNameProfileImg").attr("src");
+                    $("#formProfileImg").attr("src", url)
+                    $("#profileUrl").val(url)
+                    xtip.close(winId);
                 }
             });
         }
 
+        //QQ头像
         function qqGenProfile() {
             const winId = xtip.win({
                 type: 'confirm',
@@ -546,22 +568,28 @@
                 maxWidth: '100%',
                 shadeClose: false,
                 btn1: function () {
-                    alert("设置头像和赋值")
+                    const url = $("#qqProfileImg").attr("src");
+                    $("#formProfileImg").attr("src", url)
+                    $("#profileUrl").val(url)
+                    xtip.close(winId);
                 }
             });
         }
 
+        //随机女漫头
+        let randomComicProfileWindId = null;
+
         function randomComicProfile() {
-            const winId = xtip.win({
+            randomComicProfileWindId = xtip.win({
                 type: 'confirm',
                 btn: ['重随', '取消'],
                 icon: ['', '#5bc0de'],
                 tip:
                     '<form class="form-horizontal validateForm">' +
-                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '">' +
-                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '">' +
-                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '">' +
-                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '">' +
+                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '" onclick="checkRandomComicProfile(this.src)">' +
+                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '" onclick="checkRandomComicProfile(this.src)">' +
+                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '" onclick="checkRandomComicProfile(this.src)">' +
+                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '" onclick="checkRandomComicProfile(this.src)">' +
                     '</form>'
                 ,
                 title: "随机动漫(女) - 点击选择",
@@ -574,6 +602,13 @@
             });
         }
 
+        function checkRandomComicProfile(url) {
+            $("#formProfileImg").attr("src", url)
+            $("#profileUrl").val(url)
+            xtip.close(randomComicProfileWindId);
+        }
+
+        //自定义地址头像
         function urlProfile() {
             const winId = xtip.win({
                 type: 'confirm',
@@ -595,7 +630,10 @@
                 maxWidth: '100%',
                 shadeClose: false,
                 btn1: function () {
-                    alert("设置头像和赋值")
+                    const url = $("#customProfileImage").attr("src");
+                    $("#formProfileImg").attr("src", url)
+                    $("#profileUrl").val(url)
+                    xtip.close(winId);
                 }
             });
         }
