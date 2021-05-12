@@ -257,7 +257,12 @@
 
         $(function () {
             //设置昵称
-            $("#nickName").val(localStorage.getItem("nickName"))
+            const $nickName = $("#nickName");
+            const localNickName = localStorage.getItem("nickName");
+            if (localNickName != null && localNickName !== '') {
+                $nickName.val(localNickName);
+                $nickName.css("border-color", "green");
+            }
             //设置头像
             if (localStorage.getItem("profileUrl") != null) {
                 $("#formProfileImg").attr("src", localStorage.getItem("profileUrl"))
@@ -401,13 +406,25 @@
             if (fromValidate($("#commentFormId"))) {
                 const winId = xtip.confirm("确认发送评论？", function () {
                     let content = $("#commentContent").val();
+
+                    //有父ID时为回复，添加前缀
                     const parentId = $("#parentId").val();
                     if (parentId != null) {
                         content = '回复@' + $("#replayNickNameSpan").text() + "： " + content;
                     }
 
-                    let $profileUrl = $("#profileUrl");
-                    $profileUrl = ($profileUrl.val() == null || $profileUrl.val() === "") ? getUiAvatarsUrl() : $profileUrl.val();
+                    //没有头像时使用昵称生成默认头像，并缓存
+                    let profileUrl = $("#profileUrl").val();
+                    if (profileUrl == null || profileUrl === "") {
+                        profileUrl = getUiAvatarsUrl();
+                        localStorage.setItem("profileUrl", profileUrl);
+                        $("#formProfileImg").attr("src", profileUrl);
+                        $("#profileUrl").val(profileUrl);
+                    }
+
+                    //缓存昵称
+                    localStorage.setItem("nickName", $("#nickName").val());
+                    //TODO 修改数据库和redis昵称
                     ajaxHttp({
                         type: "POST",
                         url: ctx + "/blog/comment/add",
@@ -418,7 +435,7 @@
                             email: $email.val(),
                             website: $website.val(),
                             content: content,
-                            profileUrl: $profileUrl
+                            profileUrl: profileUrl
                         },
                         winId: winId,
                         success: function (res) {
