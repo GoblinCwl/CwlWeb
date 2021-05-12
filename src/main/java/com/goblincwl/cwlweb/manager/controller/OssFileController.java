@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.manager.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
@@ -43,10 +44,15 @@ public class OssFileController extends BaseController<OssFile> {
      */
     @GetMapping("/list")
     public Result<Page<OssFile>> list(OssFile ossFile) {
+        QueryWrapper<OssFile> queryWrapper;
+        if (StringUtils.isEmpty(ossFile.getOssFileName())) {
+            ossFile.setOssFileName(null);
+        }
+        queryWrapper = createQueryWrapper(ossFile);
         return new Result<Page<OssFile>>().success(
                 this.ossFileService.page(
                         createPage(),
-                        createQueryWrapper(ossFile)
+                        queryWrapper
                 ), "成功"
         );
     }

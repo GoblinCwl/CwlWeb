@@ -132,10 +132,28 @@
                         </div>
                         <div class="form-inline table-search">
                             <div class="form-group">
-                                <label for="ossFile-query-content"></label>
+                                <label for="ossFile-query-path"></label>
                                 <input type="text" class="form-control input-sm"
-                                       id="ossFile-query-content"
-                                       placeholder="消息内容">
+                                       id="ossFile-query-path"
+                                       placeholder="目录">
+                            </div>
+                            <div class="form-group">
+                                <label for="ossFile-query-originFileName"></label>
+                                <input type="text" class="form-control input-sm"
+                                       id="ossFile-query-originFileName"
+                                       placeholder="原始文件名">
+                            </div>
+                            <div class="form-group">
+                                <label for="ossFile-query-suffix"></label>
+                                <input type="text" class="form-control input-sm"
+                                       id="ossFile-query-suffix"
+                                       placeholder="后缀">
+                            </div>
+                            <div class="form-group">
+                                <label for="ossFile-query-ossFileName"></label>
+                                <input type="text" class="form-control input-sm"
+                                       id="ossFile-query-ossFileName"
+                                       placeholder="OSS文件名">
                             </div>
                         </div>
                         <table id="ossFile-table" class="table table-condensed text-nowrap my-table"></table>
@@ -378,10 +396,18 @@
                     $multiBtnArray[0].on('click', function () {
                         ossFileRemove(tableId)
                     });
-                    $queryInputArray[0] = $("#ossFile-query-content");
+                    $queryInputArray[0] = $("#ossFile-query-path");
+                    $queryInputArray[1] = $("#ossFile-query-originFileName");
+                    $queryInputArray[2] = $("#ossFile-query-suffix");
+                    $queryInputArray[3] = $("#ossFile-query-ossFileName");
                     // 自定义参数
                     tableOptions.queryParams = function (params) {
-                        return $.extend(queryParams(params), {});
+                        return $.extend(queryParams(params), {
+                            path: $queryInputArray[0].val(),
+                            originFileName: $queryInputArray[1].val(),
+                            suffix: $queryInputArray[2].val(),
+                            ossFileName: $queryInputArray[3].val(),
+                        });
                     };
                     columns = [
                         {
