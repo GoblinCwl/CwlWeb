@@ -25,9 +25,9 @@ public class GoblinCwlException extends RuntimeException {
     protected String msg;
 
     public GoblinCwlException() {
-        super(ResultCode.SERVICE_FAIL.message());
-        this.code = ResultCode.SERVICE_FAIL.code();
-        this.msg = ResultCode.SERVICE_FAIL.message();
+        super(ResultCode.SERVICE_FAIL.getMessage());
+        this.code = ResultCode.SERVICE_FAIL.getCode();
+        this.msg = ResultCode.SERVICE_FAIL.getMessage();
     }
 
     /**
@@ -38,9 +38,9 @@ public class GoblinCwlException extends RuntimeException {
      * @author ☪wl
      */
     public GoblinCwlException(ResultCode resultCode) {
-        super(resultCode.message());
-        this.code = resultCode.code();
-        this.msg = resultCode.message();
+        super(resultCode.getMessage());
+        this.code = resultCode.getCode();
+        this.msg = resultCode.getMessage();
     }
 
     /**
@@ -66,7 +66,7 @@ public class GoblinCwlException extends RuntimeException {
      */
     public GoblinCwlException(String msg) {
         super(msg);
-        this.code = ResultCode.SERVICE_FAIL.code();
+        this.code = ResultCode.SERVICE_FAIL.getCode();
         this.msg = msg;
     }
 }

@@ -39,7 +39,7 @@ public class GoblinCwlExceptionHandler {
             return this.goblinCwlExceptionHandler(new GoblinCwlException("不支持" + request.getMethod() + "请求方式"), request);
         }
         request.setAttribute("exception", exception);
-        request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, ResultCode.FAIL.code());
+        request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, ResultCode.FAIL.getCode());
         request.setAttribute("resultCode", ResultCode.FAIL);
         return "forward:/error";
     }
