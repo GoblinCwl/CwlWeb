@@ -80,29 +80,29 @@ public class BaseErrorController extends AbstractErrorController {
         //如果为空，赋值
         if (resultCode == null) {
             //拦截器抛出的认证异常不会被ControllerAdvice处理，此处通过消息判断
-            if (message.equals(ResultCode.AUTH_FAIL.message())) {
+            if (message.equals(ResultCode.AUTH_FAIL.getMessage())) {
                 //处理认证失败异常
                 resultCode = ResultCode.AUTH_FAIL;
-                model.put("status", ResultCode.AUTH_FAIL.code());
+                model.put("status", ResultCode.AUTH_FAIL.getCode());
             } else {
                 resultCode = ResultCode.FAIL;
             }
         }
 
         //类型消息
-        model.put("typeMessage", resultCode.type());
+        model.put("typeMessage", resultCode.getType());
         //消息图标
-        model.put("messageIcon", resultCode.icon());
+        model.put("messageIcon", resultCode.getIcon());
         //消息
-        model.put("message", resultCode.message());
+        model.put("message", resultCode.getMessage());
 
         //需要处理的状态码
         switch (String.valueOf(model.get("status"))) {
             case "404":
                 //找不到异常
-                model.put("typeMessage", ResultCode.NOT_FOUND.type());
-                model.put("messageIcon", ResultCode.NOT_FOUND.icon());
-                model.put("message", ResultCode.NOT_FOUND.message());
+                model.put("typeMessage", ResultCode.NOT_FOUND.getType());
+                model.put("messageIcon", ResultCode.NOT_FOUND.getIcon());
+                model.put("message", ResultCode.NOT_FOUND.getMessage());
                 break;
             case "501":
                 //逻辑异常
@@ -150,10 +150,10 @@ public class BaseErrorController extends AbstractErrorController {
         //如果为空，赋值
         if (resultCode == null) {
             //拦截器抛出的认证异常不会被ControllerAdvice处理，此处通过消息判断
-            if (message.equals(ResultCode.AUTH_FAIL.message())) {
+            if (message.equals(ResultCode.AUTH_FAIL.getMessage())) {
                 //处理认证失败异常
                 resultCode = ResultCode.AUTH_FAIL;
-                status = ResultCode.AUTH_FAIL.code().toString();
+                status = ResultCode.AUTH_FAIL.getCode().toString();
             } else {
                 resultCode = ResultCode.FAIL;
             }
@@ -162,18 +162,18 @@ public class BaseErrorController extends AbstractErrorController {
         //需要处理的状态码
         switch (status) {
             case "404":
-                message = ResultCode.NOT_FOUND.message();
+                message = ResultCode.NOT_FOUND.getMessage();
                 break;
             case "501":
                 break;
             default:
-                message = resultCode.message();
+                message = resultCode.getMessage();
                 break;
         }
 
         return Result.genFail(message,
                 StringUtils.isEmpty(status) || "null".equals(status)
-                        ? ResultCode.FAIL.code() : Integer.parseInt(status));
+                        ? ResultCode.FAIL.getCode() : Integer.parseInt(status));
     }
 
     protected ErrorAttributeOptions getErrorAttributeOptions(HttpServletRequest request, MediaType mediaType) {

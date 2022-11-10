@@ -37,13 +37,13 @@ public class Result<T> implements Serializable {
     private T data;
 
     public Result(ResultCode resultCode) {
-        this.setCode(resultCode.code());
-        this.setMsg(resultCode.message());
+        this.setCode(resultCode.getCode());
+        this.setMsg(resultCode.getMessage());
     }
 
     public Result<T> success() {
-        this.setCode(ResultCode.SUCCESS.code());
-        this.setMsg(ResultCode.SUCCESS.message());
+        this.setCode(ResultCode.SUCCESS.getCode());
+        this.setMsg(ResultCode.SUCCESS.getMessage());
         return this;
     }
 
@@ -67,16 +67,16 @@ public class Result<T> implements Serializable {
 
     public static Result<Object> genResult(ResultCode resultCode) {
         Result<Object> result = new Result<>();
-        result.setCode(resultCode.code());
-        result.setMsg(resultCode.message());
-        result.setData(resultCode.type());
+        result.setCode(resultCode.getCode());
+        result.setMsg(resultCode.getMessage());
+        result.setData(resultCode.getType());
         return result;
     }
 
     public static Result<Object> genSuccess() {
         Result<Object> result = new Result<>();
-        result.setCode(ResultCode.SUCCESS.code());
-        result.setMsg(ResultCode.SUCCESS.message());
+        result.setCode(ResultCode.SUCCESS.getCode());
+        result.setMsg(ResultCode.SUCCESS.getMessage());
         return result;
     }
 
@@ -94,8 +94,8 @@ public class Result<T> implements Serializable {
     }
 
     public Result<T> fail() {
-        this.setCode(ResultCode.FAIL.code());
-        this.setMsg(ResultCode.FAIL.message());
+        this.setCode(ResultCode.FAIL.getCode());
+        this.setMsg(ResultCode.FAIL.getMessage());
         return this;
     }
 
@@ -113,9 +113,9 @@ public class Result<T> implements Serializable {
 
     public static Result<Object> genFail() {
         Result<Object> result = new Result<>();
-        result.setCode(ResultCode.FAIL.code());
-        result.setMsg(ResultCode.FAIL.message());
-        result.setData(ResultCode.FAIL.type());
+        result.setCode(ResultCode.FAIL.getCode());
+        result.setMsg(ResultCode.FAIL.getMessage());
+        result.setData(ResultCode.FAIL.getType());
         return result;
     }
 
@@ -128,7 +128,7 @@ public class Result<T> implements Serializable {
     public static Result<Object> genFail(String msg, Integer code) {
         Result<Object> result = genFail(msg);
         result.setCode(code);
-        result.setData(ResultCode.getByCode(code).type());
+        result.setData(ResultCode.getByCode(code).getType());
         return result;
     }
 }

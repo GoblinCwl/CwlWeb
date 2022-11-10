@@ -50,6 +50,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // 在线数加1
         int cnt = ONLINE_COUNT.incrementAndGet();
         sendMessage(session, new ChatMessage("连接成功，每次将只会加载10条历史记录。👌", "#2BD92B").toJson());
+        sendMessage(session, new ChatMessage("当前在线：[" + (ONLINE_COUNT.get()) + "]人。😶‍", "#2BD92B").toJson());
         ChatMessageService chatMessageService = BeanUtil.getBean(ChatMessageService.class);
         List<ChatMessage> chatMessageList = chatMessageService.findHistoryList(15);
         for (ChatMessage chatMessage : chatMessageList) {
@@ -149,8 +150,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
     /**
      * 异常处理
      *
-     * @param session 会话
-     * @param e       异常
+     * @param session   会话
+     * @param exception 异常
      * @date 2021-04-28 22:27:50
      * @author ☪wl
      */

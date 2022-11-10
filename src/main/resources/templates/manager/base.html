@@ -39,6 +39,11 @@
                         OSS文件
                     </a>
                 </li>
+                <li data-name="badWordsTab" class="">
+                    <a data-toggle="tab" href="#badWordsTab" onclick="refreshTable('badWords-table')">
+                        违禁词
+                    </a>
+                </li>
             </ul>
             <div class="tab-content" id="tabContent">
                 <!--键值对管理-->
@@ -159,6 +164,50 @@
                         <table id="ossFile-table" class="table table-condensed text-nowrap my-table"></table>
                     </div>
                 </div>
+
+                <!--违禁词-->
+                <div id="badWordsTab" class="tab-pane">
+                    <div class="table-responsive">
+                        <div id="badWords-toolbar" class="btn-group">
+                            <button id="badWords-toolbar-add" type="button"
+                                    class="btn btn-success btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon glyphicon-plus toolbarIcon" aria-hidden="true"></i>新增
+                            </button>
+                            <button id=badWords-toolbar-edit type="button"
+                                    class="btn btn-info btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon glyphicon-pencil toolbarIcon" aria-hidden="true"></i>修改
+                            </button>
+                            <button id="badWords-toolbar-remove" type="button"
+                                    class="btn btn-danger btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon glyphicon-remove " aria-hidden="true"></i>删除
+                            </button>
+                        </div>
+                        <div class="form-inline table-search">
+                            <div class="form-group">
+                                <label for="badWords-query-word"></label>
+                                <input type="text" class="form-control input-sm"
+                                       id="badWords-query-word"
+                                       placeholder="违禁词">
+                            </div>
+                            <div class="form-group">
+                                <label for="badWords-query-type"></label>
+                                <select class="form-control" style="height: 30px;font-size: 12px;padding: 5px 10px"
+                                        id="badWords-query-type">
+                                    <option value="">类型</option>
+                                    <option value="VIOLENCE_COULD">暴恐</option>
+                                    <option value="REACTIONARY">反动</option>
+                                    <option value="PEOPLE_LIVELIHOOD">民生</option>
+                                    <option value="PORN">色情</option>
+                                    <option value="CORRUPTION">贪腐</option>
+                                    <option value="ABUSE">辱骂</option>
+                                    <option value="OTHER">其他</option>
+                                </select>
+                            </div>
+                        </div>
+                        <table id="badWords-table" class="table table-condensed text-nowrap my-table"></table>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -176,6 +225,7 @@
             initData('accessRecordTab')
             initData('chatMessageTab')
             initData('ossFileTab')
+            initData('badWordsTab')
         })
 
         //初始化表格
@@ -453,6 +503,71 @@
                         }
                     ]
                     break;
+                case 'badWordsTab':
+                    url = ctx + "/manager/badWords/list";
+                    tableId = 'badWords-table';
+                    $table = $("#" + tableId);
+                    $toolbar = $("#badWords-toolbar");
+                    uniqueId = "id";
+                    //单选/多选按钮及事件
+                    $("#badWords-toolbar-add").on('click', function () {
+                        badWordsAdd(tableId);
+                    });
+                    $singleBtnArray[0] = $("#badWords-toolbar-edit");
+                    $singleBtnArray[0].on('click', function () {
+                        badWordsEdit(tableId)
+                    });
+                    $multiBtnArray[0] = $("#badWords-toolbar-remove");
+                    $multiBtnArray[0].on('click', function () {
+                        badWordsRemove(tableId)
+                    });
+                    $queryInputArray[0] = $("#badWords-query-word")
+                    $queryInputArray[1] = $("#badWords-query-type")
+                    //自定义参数
+                    tableOptions.queryParams = function (params) {
+                        return $.extend(queryParams(params), {
+                            word: $queryInputArray[0].val(),
+                            type: $queryInputArray[1].val()
+                        });
+                    }
+                    columns = [
+                        {
+                            checkbox: true,
+                        },
+                        {
+                            title: '操作',
+                            formatter: function (value, row, index) {//赋予的参数
+                                return genTableOptionA('#5bc0de', '修改', 'glyphicon-pencil', 'badWordsEdit("' + tableId + '",' + JSON.stringify(row) + ')') +
+                                    genTableOptionA('#d9534f', '删除', 'glyphicon-remove', 'badWordsRemove("' + tableId + '","' + row.id + '")');
+
+                            }, //自定义方法，添加操作按钮,
+                            switchable: false,
+                            align: 'center',
+                            width: 50,
+                            cellStyle: function () {
+                                const style = rowStyle(tableOptions);
+                                style.css["border-right"] = "1px solid #ddd"
+                                return style;
+                            },
+                        },
+                        {
+                            field: 'id',
+                            title: '主键',
+                            width: 50,
+                            sortable: true,
+                            align: 'center',
+                        },
+                        {
+                            field: 'word',
+                            title: '违禁词',
+                        },
+                        {
+                            field: 'typeName',
+                            title: '违禁词类型',
+                            width: 150
+                        }
+                    ]
+                    break;
             }
 
 
@@ -602,6 +717,7 @@
                             })
                         }
                     });
+                    inputValidate($("#keyValueOptions-add-optKey"));
                 },
             })
         }
@@ -778,6 +894,179 @@
                 // 发送ajax请求
                 xhr.send()
             }, {icon: ['', '#337ab7']});
+        }
+    </script>
+
+    <!--违禁词-->
+    <script>
+        /*新增*/
+        function badWordsAdd(tableId) {
+            const $table = getTable(tableId);
+            const winId = xtip.win({
+                type: 'confirm',
+                btn: ['保存', '取消'],
+                icon: ['', '#5cb85c'],
+                tip:
+                    '<form class="form-horizontal validateForm">\n' +
+                    '  <div class="form-group">\n' +
+                    '    <label for="badWords-add-optKey" class="col-sm-2 control-label xtip-label">词语</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <input type="text" class="form-control input-sm table-modal-input required" ' +
+                    '       id="badWords-add-word" placeholder="违禁词或敏感词"  oninput="inputValidate($(this))">' +
+                    '    </div>' +
+                    '  </div>\n' +
+                    '  <div class="form-group">\n' +
+                    '    <label for="badWords-add-optValue" class="col-sm-2 control-label xtip-label">类型</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <select class="form-control input-sm table-modal-input required" ' +
+                    '       id="badWords-add-type">' +
+                    '           <option value="VIOLENCE_COULD">暴恐</option>' +
+                    '           <option value="REACTIONARY">反动</option>' +
+                    '           <option value="PEOPLE_LIVELIHOOD">民生</option>' +
+                    '           <option value="PORN">色情</option>' +
+                    '           <option value="CORRUPTION">贪腐</option>' +
+                    '           <option value="ABUSE">辱骂</option>' +
+                    '           <option value="OTHER">其他</option>' +
+                    '      <select/>' +
+                    '    </div>' +
+                    '  </div>\n' +
+                    '</form>'
+                ,
+                title: "新增违禁词",
+                width: '400px',
+                maxWidth: '100%',
+                shadeClose: false,
+                btn1: function () {
+                    ajaxHttp({
+                        type: "POST",
+                        url: ctx + "/manager/badWords/add",
+                        data: {
+                            word: $("#badWords-add-word").val(),
+                            type: $("#badWords-add-type").val()
+                        },
+                        winId: winId,
+                        success: function (res) {
+                            xtip.msg(res.msg, {icon: 's', type: 'w'})
+                            $table.bootstrapTable('refresh');
+                        },
+                    })
+                }
+            });
+        }
+
+        /*修改*/
+        function badWordsEdit(tableId, row) {
+            const $table = getTable(tableId);
+            //获取选择的数据
+            if (row == null) {
+                //复选框所选数据
+                const checkIdList = $table.bootstrapTable('getAllSelections');
+                if (checkIdList.length === 1) {
+                    row = checkIdList[0];
+                } else {
+                    xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
+                    return;
+                }
+            }
+
+            //回显
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/manager/badWords/" + row.id,
+                success: function (res) {
+                    const winId = xtip.win({
+                        type: 'confirm', //alert 或 confirm
+                        btn: ['保存', '取消'],
+                        icon: ['', '#5bc0de'],
+                        width: '400px',
+                        tip:
+                            '<form class="form-horizontal validateForm">\n' +
+                            '  <div class="form-group">\n' +
+                            '    <label for="badWords-add-optKey" class="col-sm-2 control-label xtip-label">词语</label>' +
+                            '    <div class="col-sm-10 xtip-input">' +
+                            '      <input type="text" class="form-control input-sm table-modal-input required" ' +
+                            '       id="badWords-add-word" placeholder="违禁词或敏感词" value="' + res.data.word + '" oninput="inputValidate($(this))">' +
+                            '    </div>' +
+                            '  </div>\n' +
+                            '  <div class="form-group">\n' +
+                            '    <label for="badWords-add-type" class="col-sm-2 control-label xtip-label">类型</label>' +
+                            '    <div class="col-sm-10 xtip-input">' +
+                            '      <select  class="form-control input-sm table-modal-input required" ' +
+                            '       id="badWords-add-type">' +
+                            '           <option value="VIOLENCE_COULD">暴恐</option>' +
+                            '           <option value="REACTIONARY">反动</option>' +
+                            '           <option value="PEOPLE_LIVELIHOOD">民生</option>' +
+                            '           <option value="PORN">色情</option>' +
+                            '           <option value="CORRUPTION">贪腐</option>' +
+                            '           <option value="ABUSE">辱骂</option>' +
+                            '           <option value="OTHER">其他</option>' +
+                            '      <select/>' +
+                            '    </div>' +
+                            '  </div>\n' +
+                            '</form>'
+                        ,
+                        title: "修改键值对",
+                        shadeClose: false,
+                        btn1: function () {
+                            ajaxHttp({
+                                type: "PUT",
+                                url: ctx + "/manager/badWords/edit",
+                                data: {
+                                    id: res.data.id,
+                                    word: $("#badWords-add-word").val(),
+                                    type: $("#badWords-add-type").val()
+                                },
+                                winId: winId,
+                                success: function (res) {
+                                    xtip.msg(res.msg, {icon: 's', type: 'w'})
+                                    $table.bootstrapTable('refresh');
+                                    $table.bootstrapTable('getOptions').onUncheckAll();
+                                },
+                            })
+                        }
+                    });
+                    inputValidate($("#badWords-add-word"));
+                    $("#badWords-add-type option").each(function () {
+                        if ($(this).val() == res.data.type) {
+                            $(this).attr("selected", "selected");
+                        }
+                    })
+                },
+            })
+        }
+
+        /*删除*/
+        function badWordsRemove(tableId, ids) {
+            const $table = getTable(tableId);
+            //获取选择的数据
+            if (ids == null) {
+                ids = '';
+                //复选框所选数据
+                const checkIdList = $("#" + tableId).bootstrapTable('getAllSelections');
+                if (checkIdList.length <= 0) {
+                    xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
+                    return;
+                }
+                for (let i = 0; i < checkIdList.length; i++) {
+                    let checkIdListElement = checkIdList[i];
+                    ids += checkIdListElement.id += ",";
+                }
+            }
+            const winId = xtip.confirm('确认删除所选数据？', function () {
+                ajaxHttp({
+                    type: "DELETE",
+                    url: ctx + "/manager/badWords/remove",
+                    data: {
+                        ids: ids
+                    },
+                    winId: winId,
+                    success: function (res) {
+                        xtip.msg(res.msg, {icon: 's', type: 'w'})
+                        $table.bootstrapTable('refresh');
+                        $table.bootstrapTable('getOptions').onUncheckAll();
+                    }
+                })
+            }, {icon: ['', '#d9534f']});
         }
     </script>
 </div>
