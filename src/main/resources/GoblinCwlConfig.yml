@@ -6,7 +6,6 @@ goblin-cwl-config:
     - "https://goblincwl.cn"
     - "https://www.goblincwl.cn"
 
-  # commit Test
   # 阿里云OSS
   # bucket名称
   oss-bucket: cwl-web
