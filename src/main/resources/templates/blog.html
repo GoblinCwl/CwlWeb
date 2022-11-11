@@ -104,6 +104,24 @@
             border: 1px solid black;
             transform: scale(1.2);
         }
+
+        #clear-input-value {
+            width: 30px;
+            height: 90%;
+            position: absolute;
+            font-size: 18px;
+            z-index: 100;
+            cursor: pointer;
+            display: inline-block;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            left: 72%;
+        }
+
+        #clear-input-value:before{
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
@@ -142,9 +160,10 @@
                         margin-top: 2em;
                         width: 80%;
                     ">
-                        <div class="input-group">
+                        <div class="input-group" id="input-wrapper">
                             <input id="queryInput" type="text" class="form-control input-lg no-border-radio"
                                    placeholder="搜索文章/标签(“,”)">
+                            <span class="glyphicon glyphicon-remove" id="clear-input-value" onclick="clearInputValue()"></span>
                             <span class="input-group-btn">
                                  <button id="searchBtn" class="btn btn-primary btn-lg no-border-radio"
                                          onclick="initBlogList(1)">
@@ -199,6 +218,24 @@
                     initBlogList(1)
                 }
             });
+
+            $('#input-wrapper').hover(function() { // 鼠标悬浮时触发
+                if($.trim($('#queryInput').val()) != ''){ // input框中有值
+                    $('#clear-input-value').css('display', 'flex')
+                }else {
+                    $('#clear-input-value').css('display', 'none') // input框中没有值
+                }
+            }, function() { // 鼠标离开时触发
+                $('#clear-input-value').css('display', 'none')
+            })
+            // input change
+            $("#input-wrapper input").bind("input propertychange",function () {
+                if($.trim($('#queryInput').val()) != ''){ // input框中有值
+                    $('#clear-input-value').css('display', 'flex')
+                }else {
+                    $('#clear-input-value').css('display', 'none') // input框中没有值
+                }
+            })
         })
 
         //初始化文章列表
@@ -294,6 +331,15 @@
                 appendStr = ",#";
             }
             $queryInput.val($queryInput.val() + appendStr + name);
+            initBlogList(1)
+        }
+
+        /**
+         * 清空input框中的值
+         */
+        function clearInputValue() {
+            $('#queryInput').val('')
+            $('#clear-input-value').css('display', 'none')
             initBlogList(1)
         }
     </script>
