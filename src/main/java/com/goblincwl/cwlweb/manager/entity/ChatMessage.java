@@ -9,7 +9,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * 聊天消息 Entity
@@ -30,7 +33,7 @@ public class ChatMessage implements Serializable {
     /**
      * 消息内容
      */
-    @TableField(whereStrategy = FieldStrategy.NOT_EMPTY,condition = SqlCondition.LIKE)
+    @TableField(whereStrategy = FieldStrategy.NOT_EMPTY, condition = SqlCondition.LIKE)
     private String content;
     /**
      * 发送时间
@@ -55,6 +58,6 @@ public class ChatMessage implements Serializable {
     }
 
     public String toJson() {
-        return JSONObject.toJSONStringWithDateFormat(this, "HH:mm:ss");
+        return JSONObject.toJSONStringWithDateFormat(this, "MM-dd HH:mm");
     }
 }

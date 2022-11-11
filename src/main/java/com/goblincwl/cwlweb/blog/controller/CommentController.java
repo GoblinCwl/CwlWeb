@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.blog.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goblincwl.cwlweb.blog.entity.Comment;
@@ -7,12 +8,17 @@ import com.goblincwl.cwlweb.blog.service.CommentService;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
+import com.goblincwl.cwlweb.manager.entity.AccessRecord;
+import com.goblincwl.cwlweb.manager.service.AccessRecordService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 评论 Controller
@@ -25,7 +31,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController extends BaseController<Comment> {
 
+    @Resource(name = "redisStringTemplate")
+    private RedisTemplate<String, Object> redisTemplate;
     private final CommentService commentService;
+    private final AccessRecordService accessRecordService;
 
     /**
      * 分页主查询
@@ -84,7 +93,23 @@ public class CommentController extends BaseController<Comment> {
      */
     @PostMapping("/add")
     public Result<Object> add(Comment comment) {
+        //保存评论
         this.commentService.save(comment);
+        //更新用户信息
+        AccessRecord accessRecord = this.accessRecordService.getOne(
+                new LambdaQueryWrapper<AccessRecord>()
+                        .eq(AccessRecord::getIpAddress, comment.getIpAddress())
+        );
+        if (accessRecord != null) {
+            accessRecord.setNickName(comment.getNickName());
+            //更新访问记录
+            this.accessRecordService.updateById(accessRecord);
+            //更新Redis缓存
+            redisTemplate.opsForValue().set("ipAccessCache:" + accessRecord.getIpAddress(), accessRecord);
+            //设置有效期为30min
+            redisTemplate.expire("ipAccessCache:" + accessRecord.getIpAddress(), 30, TimeUnit.MINUTES);
+        }
+        //TODO 回复发邮件
         return Result.genSuccess("评论成功");
     }
 
