@@ -431,7 +431,6 @@
 
                     //缓存昵称
                     localStorage.setItem("nickName", $("#nickName").val());
-                    //TODO 修改数据库和redis昵称
                     ajaxHttp({
                         type: "POST",
                         url: ctx + "/blog/comment/add",
@@ -442,7 +441,8 @@
                             email: $email.val(),
                             website: $website.val(),
                             content: content,
-                            profileUrl: profileUrl
+                            profileUrl: profileUrl,
+                            ipAddress: localStorage.getItem("ipAddress")
                         },
                         winId: winId,
                         success: function (res) {

@@ -59,6 +59,11 @@ public class Comment {
     private String website;
 
     /**
+     * 评论IP
+     */
+    private String ipAddress;
+
+    /**
      * 子评论列表
      */
     @TableField(exist = false)

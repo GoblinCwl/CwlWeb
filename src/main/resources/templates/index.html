@@ -194,6 +194,7 @@
                     } else {
                         insertMessage("<span style='color: #38c0e2;font-weight: bold'>" + data.nickName + "</span>，允许访问！✔", 850);
                     }
+                    localStorage.setItem("ipAddress", data.ipAddress);
                     localStorage.setItem("nickName", data.nickName);
                     setTimeout(function () {
                         $("#nickName").text(data.nickName)
@@ -319,7 +320,7 @@
                     } else if ($chatInput.val().length > 0) {
                         //判断计时器是否处于关闭状态
                         if (time === 0) {
-                            time = 10; //设定间隔时间（秒）
+                            time = 5; //设定间隔时间（秒）
 
                             //启动计时器，倒计时time秒后自动关闭计时器。
                             var index = setInterval(function () {
@@ -357,7 +358,7 @@
         function getMessageTimestamp() {
             return "<span class='timeStampSHow'>"
                 + "["
-                + new Date().Format("HH:mm:ss")
+                + new Date().Format("MM-dd HH:mm")
                 + "] "
                 + "</span>";
         }

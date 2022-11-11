@@ -90,6 +90,8 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
         resultMap.put("accessIpCount", accessRecord.getId() == null ? this.accessRecordMapper.selectAccessIpCount() : accessRecord.getId());
         //昵称
         resultMap.put("nickName", accessRecord.getNickName());
+        //IP地址
+        resultMap.put("ipAddress",accessRecord.getIpAddress());
         return resultMap;
     }
 }
