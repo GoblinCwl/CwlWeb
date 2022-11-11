@@ -8,6 +8,7 @@ import com.goblincwl.cwlweb.blog.service.BlogTabsService;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
+import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -53,6 +54,10 @@ public class BlogController extends BaseController<Blog> {
         queryWrapper.leftJoin("blog_tabs t1 on find_in_set(t1.id,t.tabs)");
         queryWrapper.select(Blog.class, info -> !"content".equals(info.getColumn()));
         queryWrapper.select("t.id");
+        queryWrapper.groupBy("t.title", "t.release_time", "t.update_time", "t.tabs", " t.short_content", "t.id");
+        String sortName = ServletUtils.getParameter("sortName");
+        String sortOrder = ServletUtils.getParameter("sortOrder");
+        queryWrapper.orderBy(true, "asc".equals(sortOrder), sortName);
         if (StringUtils.isNotEmpty(queryInput)) {
             for (String str : queryInput.split(",")) {
                 //带#号查询标签
