@@ -1,7 +1,7 @@
 package com.goblincwl.cwlweb.blog.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.yulichang.query.MPJQueryWrapper;
 import com.goblincwl.cwlweb.blog.entity.Blog;
 import com.goblincwl.cwlweb.blog.service.BlogService;
 import com.goblincwl.cwlweb.blog.service.BlogTabsService;
@@ -46,8 +46,24 @@ public class BlogController extends BaseController<Blog> {
      */
     @GetMapping("/list")
     public Result<Page<Blog>> list(Blog blog) {
-        QueryWrapper<Blog> queryWrapper = createQueryWrapper(blog);
+        //查询条件
+        String queryInput = blog.getQueryInput();
+        //自定义ON条件，无法使用lambda的wrapper
+        MPJQueryWrapper<Blog> queryWrapper = new MPJQueryWrapper<>();
+        queryWrapper.leftJoin("blog_tabs t1 on find_in_set(t1.id,t.tabs)");
         queryWrapper.select(Blog.class, info -> !"content".equals(info.getColumn()));
+        queryWrapper.select("t.id");
+        if (StringUtils.isNotEmpty(queryInput)) {
+            for (String str : queryInput.split(",")) {
+                //带#号查询标签
+                if (str.contains("#")) {
+                    queryWrapper.or().like("t1.name", str.replaceAll("#", ""));
+                } else {
+                    queryWrapper.or().like("t.title", str);
+                }
+            }
+        }
+
         Page<Blog> page = this.blogService.page(createPage(), queryWrapper);
         //标签赋值
         for (Blog record : page.getRecords()) {

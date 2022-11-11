@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 文章标签 Controller
@@ -40,6 +41,19 @@ public class BlogTabsController extends BaseController<BlogTabs> {
                         createPage(),
                         createQueryWrapper(blogTabs)
                 ), "成功");
+    }
+
+    /**
+     * 不分页主查询
+     *
+     * @param blogTabs 条件参数
+     * @return 数据集
+     * @date 2022/11/11 14:18
+     * @author ☪wl
+     */
+    @GetMapping("/listNoPage")
+    public Result<List<BlogTabs>> listNoPage(BlogTabs blogTabs) {
+        return new Result<List<BlogTabs>>().success(this.blogTabsService.list(createQueryWrapper(blogTabs)), "成功");
     }
 
     /**
