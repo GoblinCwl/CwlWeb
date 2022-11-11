@@ -254,7 +254,22 @@
                             field: 'name',
                             title: '标签名称',
                             align: 'center',
+                            sortable: true,
                             width: 500
+                        },
+                        {
+                            field: 'sort1',
+                            title: '1级排序',
+                            align: 'center',
+                            sortable: true,
+                            width: 100
+                        },
+                        {
+                            field: 'sort2',
+                            title: '2级排序',
+                            align: 'center',
+                            sortable: true,
+                            width: 100
                         }, {
                             field: 'color',
                             title: '标签颜色',
@@ -391,6 +406,20 @@
                     '    </div>' +
                     '  </div>\n' +
                     '  <div class="form-group">\n' +
+                    '    <label for="blogTabs-add-sort2" class="col-sm-2 control-label xtip-label">1级排序</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <input type="text" class="form-control input-sm table-modal-input required validate-blogTabs-sort1" ' +
+                    '           id="blogTabs-add-sort1" placeholder="A-Z" oninput="customInputValidate($(this))">' +
+                    '    </div>' +
+                    '  </div>\n' +
+                    '  <div class="form-group">\n' +
+                    '    <label for="blogTabs-add-sort2" class="col-sm-2 control-label xtip-label">2级排序</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <input type="text" class="form-control input-sm table-modal-input required validate-blogTabs-sort2" ' +
+                    '           id="blogTabs-add-sort2" placeholder="1~?" oninput="customInputValidate($(this))">' +
+                    '    </div>' +
+                    '  </div>\n' +
+                    '  <div class="form-group">\n' +
                     '    <label for="blogTabs-add-color" class="col-sm-2 control-label xtip-label">标签颜色</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
                     '      <input type="color" class="form-control input-sm table-modal-input" ' +
@@ -409,8 +438,15 @@
                         data: {
                             name: $("#blogTabs-add-name").val(),
                             color: $("#blogTabs-add-color").val(),
+                            sort1: $("#blogTabs-add-sort1").val(),
+                            sort2: $("#blogTabs-add-sort2").val()
                         },
                         winId: winId,
+                        validate: function () {
+                            let validate1 = customInputValidate($("#blogTabs-add-sort1"));
+                            let validate2 = customInputValidate($("#blogTabs-add-sort2"));
+                            return validate1 && validate2
+                        },
                         success: function (res) {
                             xtip.msg(res.msg, {icon: 's', type: 'w'})
                             $table.bootstrapTable('refresh');
@@ -454,6 +490,20 @@
                             '    </div>' +
                             '  </div>\n' +
                             '  <div class="form-group">\n' +
+                            '    <label for="blogTabs-add-sort1" class="col-sm-2 control-label xtip-label">1级排序</label>' +
+                            '    <div class="col-sm-10 xtip-input">' +
+                            '      <input type="text" class="form-control input-sm table-modal-input required validate-blogTabs-sort1" ' +
+                            '       id=blogTabs-add-sort1 placeholder="A-Z" value="' + res.data.sort1 + '" oninput="customInputValidate($(this))">' +
+                            '    </div>' +
+                            '  </div>' +
+                            '  <div class="form-group">\n' +
+                            '    <label for="blogTabs-add-sort2" class="col-sm-2 control-label xtip-label">2级排序</label>' +
+                            '    <div class="col-sm-10 xtip-input">' +
+                            '      <input type="text" class="form-control input-sm table-modal-input required validate-blogTabs-sort2" ' +
+                            '       id="blogTabs-add-sort2" placeholder="1~?" value="' + res.data.sort2 + '" oninput="customInputValidate($(this))">' +
+                            '    </div>' +
+                            '  </div>\n' +
+                            '  <div class="form-group">\n' +
                             '    <label for="blogTabs-add-color" class="col-sm-2 control-label xtip-label">标签颜色</label>' +
                             '    <div class="col-sm-10 xtip-input">' +
                             '      <input type="color" class="form-control input-sm table-modal-input" ' +
@@ -472,8 +522,15 @@
                                     id: res.data.id,
                                     name: $("#blogTabs-add-name").val(),
                                     color: $("#blogTabs-add-color").val(),
+                                    sort1: $("#blogTabs-add-sort1").val(),
+                                    sort2: $("#blogTabs-add-sort2").val()
                                 },
                                 winId: winId,
+                                validate: function () {
+                                    let validate1 = customInputValidate($("#blogTabs-add-sort1"));
+                                    let validate2 = customInputValidate($("#blogTabs-add-sort2"));
+                                    return validate1 && validate2
+                                },
                                 success: function (res) {
                                     xtip.msg(res.msg, {icon: 's', type: 'w'})
                                     $table.bootstrapTable('refresh');
@@ -482,6 +539,9 @@
                             })
                         }
                     });
+                    inputValidate($("#blogTabs-add-name"))
+                    customInputValidate($("#blogTabs-add-sort1"))
+                    customInputValidate($("#blogTabs-add-sort2"))
                 },
             })
         }
@@ -518,6 +578,24 @@
                     },
                 })
             }, {icon: ['', '#d9534f']});
+        }
+
+        //自定义校验
+        function customInputValidate($input) {
+            if ($input.hasClass("validate-blogTabs-sort1")) {
+                if (!/^[A-Z]$/.test($input.val())) {
+                    checkFail($input, '请输入A-Z其中任意一个字母');
+                    return false;
+                }
+            }
+            if ($input.hasClass("validate-blogTabs-sort2")) {
+                if (!/^[1-9][0-9]*$/.test($input.val())) {
+                    checkFail($input, '请输入正整数');
+                    return false;
+                }
+            }
+            $input.css("border-color", "green")
+            return true;
         }
     </script>
 </div>

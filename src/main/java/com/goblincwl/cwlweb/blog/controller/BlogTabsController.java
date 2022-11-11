@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.blog.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goblincwl.cwlweb.blog.entity.BlogTabs;
 import com.goblincwl.cwlweb.blog.service.BlogTabsService;
@@ -53,7 +54,10 @@ public class BlogTabsController extends BaseController<BlogTabs> {
      */
     @GetMapping("/listNoPage")
     public Result<List<BlogTabs>> listNoPage(BlogTabs blogTabs) {
-        return new Result<List<BlogTabs>>().success(this.blogTabsService.list(createQueryWrapper(blogTabs)), "成功");
+        return new Result<List<BlogTabs>>().success(
+                this.blogTabsService.list(new LambdaQueryWrapper<>(blogTabs)
+                        .orderByAsc(BlogTabs::getSort1,BlogTabs::getSort2)),
+                "成功");
     }
 
     /**
