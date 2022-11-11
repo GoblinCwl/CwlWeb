@@ -90,8 +90,9 @@
 
         /*头像图片*/
         .commentProfileImg {
-            width: 3rem;
-            height: 3rem;
+            padding: 1px;
+            width: 3.7rem;
+            height: 3.7rem;
             /*border-radius: 1rem;*/
             transition: 0.5s;
             border: 1px solid #6ECADC;
@@ -202,8 +203,7 @@
                             <div class="form-group col-lg-1 width-7">
                                 <img id="formProfileImg" alt="选择头像"
                                      src="https://ui-avatars.com/api/?font-size=0.33&length=2&background=ffffff&name=头像"
-                                     class="commentProfileImg" onmouseenter="tipsProfile()"
-                                     onmouseleave="tipsProfileClose()" onclick="chooseProfile()">
+                                     class="commentProfileImg" onclick="chooseProfile()">
                             </div>
                             <div class="form-group col-lg-3 width-31">
                                 <label class="sr-only" for="nickName"></label>
@@ -549,29 +549,10 @@
 
         }
 
-        //头像提示
-        let tipsProfileWinId = null;
-
-        function tipsProfile() {
-            if (tipsProfileWinId == null) {
-                tipsProfileWinId = xtip.tips('更改头像', 'formProfileImg', {
-                    pos: 'b',
-                    bgcolor: 'white',
-                    times: 3,
-                    isAutoClose: false
-                });
-            } else {
-                xtip.close(tipsProfileWinId);
-                tipsProfileWinId = null;
-            }
+        function closeProfile(){
+            xtip.close(chooseProfileWinId);
+            chooseProfileWinId = null;
         }
-
-        //关闭头像提示气泡
-        function tipsProfileClose() {
-            xtip.close(tipsProfileWinId);
-            tipsProfileWinId = null;
-        }
-
 
         //昵称获取头像
         function nickNameGenProfile() {
