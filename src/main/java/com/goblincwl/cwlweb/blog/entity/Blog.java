@@ -80,6 +80,12 @@ public class Blog implements Serializable {
      */
     private String shortContent;
 
+    /**
+     * 查询条件
+     */
+    @TableField(exist = false)
+    private String queryInput;
+
     public String getTabs() {
         if (StringUtils.isEmpty(this.tabs)) {
             if (this.tabsArray != null && this.tabsArray.length > 0) {

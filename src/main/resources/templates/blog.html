@@ -71,6 +71,39 @@
             border-color: #58a1af;
             color: #FFFFFF;
         }
+
+        #searchInput:focus {
+            box-shadow: none;
+        }
+
+        #searchBtn {
+            background-color: #6ECADC;
+            border-color: #66AFE9;
+        }
+
+        #searchBtn i {
+            font-size: 18px;
+        }
+
+        #searchBtn i:before {
+            font-size: 18px;
+            color: white;
+        }
+
+        #searchBtn:hover {
+            background-color: #6EBDDC;
+        }
+
+        .badge-search {
+            cursor: pointer;
+            margin-right: 0.25em;
+            border: 1px solid white;
+        }
+
+        .badge-search:hover {
+            border: 1px solid black;
+            transform: scale(1.2);
+        }
     </style>
 </head>
 <body>
@@ -88,17 +121,42 @@
                 <div id="blogDiv" class="col-lg-8">
                     <!--文章列表-->
                     <div id="blogHtml"></div>
+                    <div class="company" id="noDataDiv">
+                        <div class="company_details">
+                            <h2>没有找到你想要搜索的东西...</h2>
+                            <br>
+                            <div style="font-size: 0.9em">
+                                <span>It was like a void 🫥</span><br>
+                                <span>要让不存在变为存在！</span>
+                            </div>
+                        </div>
+                    </div>
                     <div id="pageRow" class="col-lg-12">
                         <ul id="pageUl"></ul>
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <div style="
-                        border: 1px solid black;
+
+                    <div id="rightDiv" class="blog-tabs" style="
                         height: 35em;
-                        margin-top: 2em;">
-                        TODO 搜索框
-                        TODO 热门等？
+                        margin-top: 2em;
+                        width: 80%;
+                    ">
+                        <div class="input-group">
+                            <input id="queryInput" type="text" class="form-control input-lg no-border-radio"
+                                   placeholder="搜索文章/标签(“,”)">
+                            <span class="input-group-btn">
+                                 <button id="searchBtn" class="btn btn-primary btn-lg no-border-radio"
+                                         onclick="initBlogList(1)">
+                                     <i class="glyphicon glyphicon-search" style="color: white"></i>
+                                 </button>
+                             </span>
+                        </div>
+
+                        <div id="rightTabListDiv" style="padding-top: 1em;line-height: 1.3">
+                            <!--标签列表-->
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -109,10 +167,41 @@
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
     <script>
         $(function () {
+            //导航栏切换
             $("#blogHomeLi").addClass("active");
+            //加载第一页博客
             initBlogList(1)
+
+            //加载右边标签栏
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/blog/blogTabs/listNoPage",
+                data: {},
+                success: function (res) {
+                    let html = '';
+                    if (res.data != null) {
+                        for (let j = 0; j < res.data.length; j++) {
+                            const tabs = res.data[j];
+                            html += ''
+                                + '<span class="badge badge-search no-border-radio" ' +
+                                '   onclick="tabSearchAppend(\'' + tabs.name + '\')"' +
+                                '   style=" background-color: ' + tabs.color + '">' + tabs.name
+                                + '</span>';
+                        }
+                    }
+                    $("#rightTabListDiv").html(html)
+                },
+            });
+
+            //回车监听
+            $("#queryInput").keypress(function (even) {
+                if (even.which === 13) {
+                    initBlogList(1)
+                }
+            });
         })
 
+        //初始化文章列表
         function initBlogList(pageNumber) {
             ajaxHttp({
                 type: "GET",
@@ -121,7 +210,9 @@
                     pageNumber: pageNumber,
                     pageSize: 10,
                     sortName: "update_time",
-                    sortOrder: "desc"
+                    sortOrder: "desc",
+                    queryInput: $("#queryInput").val()
+
                 },
                 success: function (res) {
                     if (res.data != null) {
@@ -150,39 +241,60 @@
                                 '        <span class="blog-time">' + rowData.updateTime + '</span>' +
                                 '    </div>' +
                                 '</div>';
-                            $blogHtml.html(html)
                         }
+                        $blogHtml.html(html)
 
                         //渲染分页
-                        const $pageUl = $("#pageUl");
-                        const paginatorOptions = {
-                            bootstrapMajorVersion: 3,
-                            currentPage: res.data.current, // 当前页数
-                            numberOfPages: 3, // 显示按钮的数量
-                            totalPages: res.data.pages, // 总页数
-                            itemTexts: function (type, page, current) {
-                                switch (type) {
-                                    case "first":
-                                        return "首页";
-                                    case "prev":
-                                        return "<";
-                                    case "next":
-                                        return ">";
-                                    case "last":
-                                        return "末页";
-                                    case "page":
-                                        return page;
+                        if (res.data.pages > 0) {
+                            $("#pageRow").show()
+                            $("#noDataDiv").hide()
+
+                            const $pageUl = $("#pageUl");
+                            const paginatorOptions = {
+                                bootstrapMajorVersion: 3,
+                                currentPage: res.data.current, // 当前页数
+                                numberOfPages: 3, // 显示按钮的数量
+                                totalPages: res.data.pages, // 总页数
+                                itemTexts: function (type, page, current) {
+                                    switch (type) {
+                                        case "first":
+                                            return "首页";
+                                        case "prev":
+                                            return "<";
+                                        case "next":
+                                            return ">";
+                                        case "last":
+                                            return "末页";
+                                        case "page":
+                                            return page;
+                                    }
+                                },
+                                // 点击事件，用于通过Ajax来刷新整个list列表
+                                onPageClicked: function (event, originalEvent, type, page) {
+                                    initBlogList(page);
                                 }
-                            },
-                            // 点击事件，用于通过Ajax来刷新整个list列表
-                            onPageClicked: function (event, originalEvent, type, page) {
-                                initBlogList(page);
-                            }
-                        };
-                        $pageUl.bootstrapPaginator(paginatorOptions);
+                            };
+                            $pageUl.bootstrapPaginator(paginatorOptions);
+                        } else {
+                            $("#pageRow").hide()
+                            $("#noDataDiv").show()
+                        }
                     }
                 },
             });
+        }
+
+        //标签搜索
+        function tabSearchAppend(name) {
+            const $queryInput = $("#queryInput");
+            let appendStr;
+            if ($queryInput.val() === "") {
+                appendStr = "#";
+            } else {
+                appendStr = ",#";
+            }
+            $queryInput.val($queryInput.val() + appendStr + name);
+            initBlogList(1)
         }
     </script>
 </div>
