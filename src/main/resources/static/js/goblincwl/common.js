@@ -59,6 +59,9 @@ const ajaxHttp = function (options) {
         dataType: 'json',
         async: true,
         cache: false,
+        validate: function () {
+            return true;
+        },
         beforeSend: function () {
             this.loadId = xtip.load();
         },
@@ -77,7 +80,7 @@ const ajaxHttp = function (options) {
     const o = $.extend({}, defaults, options);
     //表单校验
     if (o.validateForm != null && o.validateForm.length > 0) {
-        if (!fromValidate(o.validateForm)) {
+        if (!fromValidate(o.validateForm) || !o.validate()) {
             return;
         }
     }

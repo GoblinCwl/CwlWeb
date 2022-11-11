@@ -37,4 +37,14 @@ public class BlogTabs implements Serializable {
      * 标签颜色
      */
     private String color;
+
+    /**
+     * 1级排序(A-Z)
+     */
+    private String sort1;
+
+    /**
+     * 2级排序(0~?)
+     */
+    private Integer sort2;
 }
