@@ -2,6 +2,7 @@ package com.goblincwl.cwlweb.manager.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.manager.entity.KeyValueOptions;
@@ -107,6 +108,9 @@ public class KeyValueOptionsController extends BaseController<KeyValueOptions> {
      */
     @DeleteMapping("/remove")
     public Result<Object> remove(String optKeys) {
+        if (optKeys.contains("loginPassword")) {
+            throw new GoblinCwlException("此KEY不能被删除!");
+        }
         if (StringUtils.isNotEmpty(optKeys)) {
             this.keyValueOptionsService.removeByIds(Arrays.asList(optKeys.split(",")));
         }
