@@ -1,8 +1,11 @@
 package com.goblincwl.cwlweb.blog.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.yulichang.query.MPJQueryWrapper;
 import com.goblincwl.cwlweb.blog.entity.Blog;
+import com.goblincwl.cwlweb.blog.entity.BlogTabs;
 import com.goblincwl.cwlweb.blog.service.BlogService;
 import com.goblincwl.cwlweb.blog.service.BlogTabsService;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
@@ -54,7 +57,7 @@ public class BlogController extends BaseController<Blog> {
         queryWrapper.leftJoin("blog_tabs t1 on find_in_set(t1.id,t.tabs)");
         queryWrapper.select(Blog.class, info -> !"content".equals(info.getColumn()));
         queryWrapper.select("t.id");
-        queryWrapper.groupBy("t.title", "t.release_time", "t.update_time", "t.tabs", " t.short_content", "t.id");
+        queryWrapper.groupBy("t.title", "t.release_time", "t.update_time", "t.tabs", " t.short_content", "t.id", "t.do_archive");
         String sortName = ServletUtils.getParameter("sortName");
         String sortOrder = ServletUtils.getParameter("sortOrder");
         queryWrapper.orderBy(true, "asc".equals(sortOrder), sortName);
@@ -68,13 +71,21 @@ public class BlogController extends BaseController<Blog> {
                 }
             }
         }
+        if (blog.getDoArchive() != null) {
+            queryWrapper.eq("t.do_archive", blog.getDoArchive());
+        }
 
         Page<Blog> page = this.blogService.page(createPage(), queryWrapper);
         //标签赋值
         for (Blog record : page.getRecords()) {
             Integer[] tabsArray = record.getTabsArray();
             if (tabsArray != null) {
-                record.setBlogTabsList(this.blogTabsService.listByIds(Arrays.asList(tabsArray)));
+                record.setBlogTabsList(this.blogTabsService.list(
+                        new LambdaQueryWrapper<BlogTabs>()
+                                .in(BlogTabs::getId, Arrays.asList(tabsArray))
+                                .orderByAsc(true, BlogTabs::getSort1)
+                                .orderByAsc(true, BlogTabs::getSort2)
+                ));
             }
         }
         return new Result<Page<Blog>>().success(page);
@@ -164,5 +175,25 @@ public class BlogController extends BaseController<Blog> {
             this.blogService.removeByIds(Arrays.asList(ids.split(",")));
         }
         return Result.genSuccess("删除成功");
+    }
+
+    /**
+     * 归档
+     *
+     * @param id 数据主键
+     * @return 反馈
+     * @date 2022/11/14 10:51
+     * @author ☪wl
+     */
+    @TokenCheck
+    @PutMapping("/doArchive/{id}/{doArchive}")
+    public Result<Object> doArchive(@PathVariable Integer id, @PathVariable Integer doArchive) {
+        boolean updateResult = this.blogService.update(
+                new UpdateWrapper<Blog>()
+                        .lambda().eq(Blog::getId, id)
+                        .set(id != null, Blog::getDoArchive, doArchive)
+                        .set(id != null,Blog::getUpdateTime,new Date())
+        );
+        return updateResult ? Result.genSuccess("归档成功") : Result.genFail("归档失败");
     }
 }

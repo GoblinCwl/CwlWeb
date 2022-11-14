@@ -1,16 +1,16 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
 <head th:replace="fragment/globalComponent::commonHead(~{::title},~{::style},~{})">
-    <title>GoblinCwl - 博客</title>
+    <title>GoblinCwl - 博客(归档)</title>
     <!--博客列表样式-->
     <style>
         .blog {
             height: 10em;
-            border: 2px solid #8e8d8d;
+            border: 2px solid #d2990a;
             margin: 2em 1em 0 2em;
             padding: 0.8em;
             position: relative;
-            cursor: pointer;
+            cursor: no-drop;
 
             /*禁止选中文本*/
             -moz-user-select: none; /*火狐*/
@@ -20,22 +20,14 @@
             user-select: none;
         }
 
-        .blog:hover {
-            border: 3px solid #6ecadc;
-        }
-
-        .blog:hover > h2 {
-            color: #6ecadc;
-        }
-
         .blog h2 {
             padding-bottom: 0.5em;
             font-weight: bold;
-            color: #5e5e5e;
+            color: #966f0e;
         }
 
         .blog p {
-            color: #8e8d8d;
+            color: #c29728;
         }
 
         .blog .blog-tabs {
@@ -52,7 +44,7 @@
             position: absolute;
             bottom: 0.8em;
             right: 0.8em;
-            color: #d3d3d3;
+            color: #d03737;
         }
 
         #pageRow {
@@ -60,15 +52,15 @@
         }
 
         #pageRow ul li a {
-            cursor: pointer;
+            cursor: no-drop;
             border-radius: 0;
-            border-color: #8e8d8d;
-            color: #6ECADC;
+            border-color: #d2990a;
+            color: #d2990a;
         }
 
         #pageRow ul .active a {
-            background-color: #6ECADC;
-            border-color: #58a1af;
+            background-color: #d2990a;
+            border-color: #af8212;
             color: #FFFFFF;
         }
 
@@ -77,8 +69,8 @@
         }
 
         #searchBtn {
-            background-color: #6ECADC;
-            border-color: #66AFE9;
+            background-color: #d2990a;
+            border-color: #af8212;
         }
 
         #searchBtn i {
@@ -91,7 +83,7 @@
         }
 
         #searchBtn:hover {
-            background-color: #6EBDDC;
+            background-color: #ad7e06;
         }
 
         .badge-search {
@@ -188,7 +180,7 @@
     <script>
         $(function () {
             //导航栏切换
-            $("#blogHomeLi").addClass("active");
+            $("#blogArchiveLi").addClass("active");
             //加载第一页博客
             initBlogList(1)
 
@@ -247,7 +239,7 @@
                 data: {
                     pageNumber: pageNumber,
                     pageSize: 10,
-                    doArchive: 0,
+                    doArchive: 1,
                     sortName: "update_time",
                     sortOrder: "desc",
                     queryInput: $("#queryInput").val()
@@ -268,7 +260,7 @@
                             }
                             html += '' +
                                 '<div class="row">' +
-                                '    <div class="blog" onclick="location.href=\'blog/content/' + rowData.id + '\'">' +
+                                '    <div class="blog">' +
                                 '        <h2 title="' + rowData.title + '">' + title + '</h2>' +
                                 '        <p>' + rowData.shortContent + '</p>' +
                                 '        <div class="blog-tabs">';
@@ -277,7 +269,7 @@
                             if (rowData.blogTabsList != null) {
                                 //记录标签文字长度，避免标签过多
                                 let tabsLength = 0;
-                                let tabsMaxLength = 72;
+                                let tabsMaxLength = 65;
                                 let tabsMaxFlg = false;
                                 //记录标签名用做title
                                 let tabsNameStr = "";
@@ -308,7 +300,7 @@
                             }
 
                             html += '        </div>' +
-                                '        <span class="blog-time">' + rowData.updateTime + '</span>' +
+                                '        <span class="blog-time">归档时间：' + rowData.updateTime + '</span>' +
                                 '    </div>' +
                                 '</div>';
                         }

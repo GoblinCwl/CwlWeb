@@ -11,6 +11,11 @@
             width: auto;
             height: 0.5rem;
         }
+
+        td.checkbox-custom label {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
@@ -163,7 +168,7 @@
                             }, //自定义方法，添加操作按钮,
                             switchable: false,
                             align: 'center',
-                            width: 50,
+                            width: 100,
                             cellStyle: function () {
                                 const style = rowStyle(tableOptions);
                                 style.css["border-right"] = "1px solid #ddd"
@@ -182,22 +187,59 @@
                             title: '文章标题',
                             sortable: true,
                             sortName: 'title',
-                            align: 'center',
-                            width: 300
+                            align: 'left',
+                            formatter: function (value, row, index) {
+                               return  paramsMatter(value, row, index, 55);
+                            },
                         }, {
                             field: 'releaseTime',
                             title: '发布时间',
                             sortable: true,
                             sortName: "release_time",
                             align: 'center',
+                            width: 150,
                         }, {
                             field: 'updateTime',
                             title: '更新时间',
                             sortable: true,
                             sortName: "update_time",
                             align: 'center',
+                            width: 150,
+                        }, {
+                            field: 'doArchive',
+                            title: '归档',
+                            sortable: true,
+                            sortName: "do_archive",
+                            width: 110,
+                            align: 'center',
+                            formatter: function (value, row, index) {
+                                let state = value === 1;
+                                return '<input style="display: none" type="checkbox" name="blogArchive" ' + (state ? "checked" : "") + ' value="' + row.id + '"/>';
+                            }
                         }
                     ];
+                    tableOptions.onLoadSuccess = function () {
+                        $("[name='blogArchive']").bootstrapSwitch({
+                            onText: "归档",
+                            offText: "正常",
+                            size: "small",
+                            inverse: true,
+                            onColor: 'warning',
+                            offColor: 'info',
+                            onSwitchChange: function onSwitchChange(event, state) {
+                                //修改操作
+                                ajaxHttp({
+                                    type: "PUT",
+                                    url: ctx + "/blog/doArchive/" + (event.currentTarget.value) + '/' + (state ? 1 : 0),
+                                    successFalse: function (res) {
+                                        xtip.msg(res.msg, {icon: 'e', type: 'w'});
+                                        $table.bootstrapTable('refresh');
+                                        $table.bootstrapTable('getOptions').onUncheckAll();
+                                    }
+                                })
+                            }
+                        })
+                    }
                     break;
                 case 'blogTabsTab':
                     url = ctx + "/blog/blogTabs/list";
@@ -299,7 +341,7 @@
                 $table,
                 $singleBtnArray,
                 $multiBtnArray,
-                $queryInputArray
+                $queryInputArray,
             ));
             //刷新按钮状态
             $table.bootstrapTable('getOptions').onUncheckAll();

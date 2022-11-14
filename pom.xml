@@ -22,6 +22,7 @@
 		<bootstrap-table.version>1.16.0</bootstrap-table.version>
 		<bootstrap-paginator.version>1.0.2</bootstrap-paginator.version>
 		<bootstrap-select.version>1.13.18</bootstrap-select.version>
+		<bootstrap-switch.version>3.3.4</bootstrap-switch.version>
 		<jquery.version>3.6.1</jquery.version>
 		<jquery-cookie.version>1.4.1-1</jquery-cookie.version>
 		<aliyunOss.version>3.15.2</aliyunOss.version>
@@ -146,6 +147,13 @@
 			<groupId>org.webjars</groupId>
 			<artifactId>bootstrap-select</artifactId>
 			<version>${bootstrap-select.version}</version>
+		</dependency>
+
+		<!-- bootstrap-switch -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap-switch</artifactId>
+			<version>${bootstrap-switch.version}</version>
 		</dependency>
 
 		<!-- jquery -->
