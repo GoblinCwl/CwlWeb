@@ -119,7 +119,7 @@
             left: 72%;
         }
 
-        #clear-input-value:before{
+        #clear-input-value:before {
             font-size: 20px;
         }
     </style>
@@ -163,7 +163,8 @@
                         <div class="input-group" id="input-wrapper">
                             <input id="queryInput" type="text" class="form-control input-lg no-border-radio"
                                    placeholder="搜索文章/标签(“,”)">
-                            <span class="glyphicon glyphicon-remove" id="clear-input-value" onclick="clearInputValue()"></span>
+                            <span class="glyphicon glyphicon-remove" id="clear-input-value"
+                                  onclick="clearInputValue()"></span>
                             <span class="input-group-btn">
                                  <button id="searchBtn" class="btn btn-primary btn-lg no-border-radio"
                                          onclick="initBlogList(1)">
@@ -219,20 +220,20 @@
                 }
             });
 
-            $('#input-wrapper').hover(function() { // 鼠标悬浮时触发
-                if($.trim($('#queryInput').val()) != ''){ // input框中有值
+            $('#input-wrapper').hover(function () { // 鼠标悬浮时触发
+                if ($.trim($('#queryInput').val()) != '') { // input框中有值
                     $('#clear-input-value').css('display', 'flex')
-                }else {
+                } else {
                     $('#clear-input-value').css('display', 'none') // input框中没有值
                 }
-            }, function() { // 鼠标离开时触发
+            }, function () { // 鼠标离开时触发
                 $('#clear-input-value').css('display', 'none')
             })
             // input change
-            $("#input-wrapper input").bind("input propertychange",function () {
-                if($.trim($('#queryInput').val()) != ''){ // input框中有值
+            $("#input-wrapper input").bind("input propertychange", function () {
+                if ($.trim($('#queryInput').val()) != '') { // input框中有值
                     $('#clear-input-value').css('display', 'flex')
-                }else {
+                } else {
                     $('#clear-input-value').css('display', 'none') // input框中没有值
                 }
             })
@@ -246,10 +247,10 @@
                 data: {
                     pageNumber: pageNumber,
                     pageSize: 10,
+                    doArchive: 0,
                     sortName: "update_time",
                     sortOrder: "desc",
                     queryInput: $("#queryInput").val()
-
                 },
                 success: function (res) {
                     if (res.data != null) {
@@ -259,18 +260,50 @@
                         //渲染列表
                         for (let i = 0; i < dataList.length; i++) {
                             const rowData = dataList[i];
+                            //避免标题过长
+                            let title = rowData.title;
+                            const maxTitleLong = 28;
+                            if (jmz.GetLength(title) > maxTitleLong) {
+                                title = title.substr(0, (maxTitleLong - 1)) + "...";
+                            }
                             html += '' +
                                 '<div class="row">' +
                                 '    <div class="blog" onclick="location.href=\'blog/content/' + rowData.id + '\'">' +
-                                '        <h2>' + rowData.title + '</h2>' +
+                                '        <h2 title="' + rowData.title + '">' + title + '</h2>' +
                                 '        <p>' + rowData.shortContent + '</p>' +
                                 '        <div class="blog-tabs">';
 
                             //拼接标签
                             if (rowData.blogTabsList != null) {
+                                //记录标签文字长度，避免标签过多
+                                let tabsLength = 0;
+                                let tabsMaxLength = 72;
+                                let tabsMaxFlg = false;
+                                //记录标签名用做title
+                                let tabsNameStr = "";
                                 for (let j = 0; j < rowData.blogTabsList.length; j++) {
                                     const tabs = rowData.blogTabsList[j];
-                                    html += '<span class="badge" style="background-color: ' + tabs.color + '">' + tabs.name + '</span>';
+                                    //未达到最大长度，判断最大长度，设置最大长度标识符
+                                    if (!tabsMaxFlg && tabsLength + jmz.GetLength(tabs.name) > tabsMaxLength) {
+                                        tabsMaxFlg = true;
+                                    } else {
+                                        //累加长度，用作下次判断最大长度
+                                        tabsLength += jmz.GetLength(tabs.name);
+                                    }
+                                    //未达到最大长度，则添加标签
+                                    if (!tabsMaxFlg) {
+                                        html += '<span class="badge" style="background-color: ' + tabs.color + '">' + tabs.name + '</span>';
+                                    } else {
+                                        //否则，拼接字符串到title
+                                        tabsNameStr += tabs.name;
+                                        if (j !== rowData.blogTabsList.length) {
+                                            tabsNameStr += ",";
+                                        }
+                                    }
+                                }
+                                //最后的...标签
+                                if (tabsMaxFlg) {
+                                    html += '<span class="badge" id="moreBadgeSpan" title="' + tabsNameStr + '">...</span>';
                                 }
                             }
 

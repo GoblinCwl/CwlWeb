@@ -213,6 +213,7 @@ function pushParamTableOptions(tableOptions,
                 $multiBtnArray[i].addClass("button-disabled");
             }
         },
+        onLoadSuccess: tableOptions.onLoadSuccess
     });
 }
 
@@ -229,4 +230,28 @@ function refreshTable(tableId) {
     const $table = $("#" + tableId);
     $table.bootstrapTable('refresh')
     $table.bootstrapTable('getOptions').onUncheckAll();
+}
+
+/*
+ * 判断备注内容是否长度过长，先截取后，再加上省略号。
+ */
+function paramsMatter(value, row, index, showStrNum) {
+
+    value = $.trim(value);
+    if (value === "") {
+        return "";
+    }
+    //自定义单元格内容
+    const span = document.createElement('span');
+    //写入面板标题
+    span.setAttribute('title', value);
+    span.setAttribute('style', "word-wrap: break-word;word-break: break-all;");
+
+    span.innerHTML = value;
+    if (jmz.GetLength(value) > showStrNum) {
+        span.innerHTML = value.substr(0, (showStrNum - 1)) + "...";
+    }
+
+    //将面板返回至单元格展示
+    return span.outerHTML;
 }

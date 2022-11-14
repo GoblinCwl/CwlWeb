@@ -287,7 +287,13 @@
                         //网页标签标题
                         $("title").html(data.title);
                         //文章标题
-                        $("#contentTitle").text(data.title)
+                        //避免标题过长
+                        let title = data.title;
+                        const maxTitleLong = 34;
+                        if (title.length > maxTitleLong) {
+                            title = title.substr(0, (maxTitleLong - 1)) + "...";
+                        }
+                        $("#contentTitle").text(title)
                         //文章时间
                         $("#blogTime").text('发布: ' + data.releaseTime + '\t更新: ' + data.updateTime)
                         //文章标签
