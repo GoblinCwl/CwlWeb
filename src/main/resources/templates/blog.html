@@ -189,6 +189,8 @@
         $(function () {
             //导航栏切换
             $("#blogHomeLi").addClass("active");
+            //带入URL查询参数
+            $("#queryInput").val(getRequest().query)
             //加载第一页博客
             initBlogList(1)
 
