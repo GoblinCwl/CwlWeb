@@ -302,7 +302,7 @@
                             for (let j = 0; j < data.blogTabsList.length; j++) {
                                 const tabs = data.blogTabsList[j];
                                 tabsHtml += '' +
-                                    '<span class="badge" style="background-color: ' + tabs.color + '">' + tabs.name + '</span>';
+                                    '<a class="badge" href=' + ctx + '"/blog?query=%23' + tabs.name + '" style="background-color: ' + tabs.color + '">' + tabs.name + '</a>';
                             }
                             $("#tabsRow").html(tabsHtml);
                         }
@@ -555,7 +555,7 @@
 
         }
 
-        function closeProfile(){
+        function closeProfile() {
             xtip.close(chooseProfileWinId);
             chooseProfileWinId = null;
         }
