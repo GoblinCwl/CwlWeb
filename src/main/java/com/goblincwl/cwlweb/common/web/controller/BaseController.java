@@ -62,7 +62,9 @@ public class BaseController<T> {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>(t);
         String sortName = ServletUtils.getParameter("sortName");
         String sortOrder = ServletUtils.getParameter("sortOrder");
-        queryWrapper.orderBy(true, "asc".equals(sortOrder), sortName);
+        if (sortName != null && sortOrder != null) {
+            queryWrapper.orderBy(true, "asc".equals(sortOrder), sortName);
+        }
         return queryWrapper;
     }
 }
