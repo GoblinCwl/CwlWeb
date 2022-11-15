@@ -10,7 +10,7 @@ function genTableOptions() {
         pagination: true,                                                   //是否分页
         sidePagination: "server",                                           //分页方式：client客户端分页，server服务端分页
         pageNumber: 1,                                                      //分页默认第一页
-        pageList: [10, 25, 50, 100],                                        //可供选择的每页的行数
+        pageList: [10, 50, 100, 500],                                        //可供选择的每页的行数
         queryParamsType: "",                                                //查询条件类型，留空为pageNumber,pageSize,sortName,sortOrder
         clickToSelect: true,                                                //是否启用点击选中行
         buttonsPrefix: 'btn btn-sm btn-info toolbarBtn',                    //所有按钮class前缀
@@ -21,7 +21,7 @@ function genTableOptions() {
             toggleOn: "glyphicon-list-alt",
             toggleOff: "glyphicon-list-alt",
             fullscreen: "glyphicon-fullscreen",
-            columns: "glyphicon-th icon-th",
+            columns: "glyphicon glyphicon-align-justify"
 
         },
         //表头样式
