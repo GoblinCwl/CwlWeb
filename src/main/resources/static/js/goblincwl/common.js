@@ -219,3 +219,16 @@ function getRequest() {
     }
     return theRequest;
 };
+
+function splitArrayToString(array) {
+    var str = "";
+    for (let i = 0; i < array.length; i++) {
+        const arrayElement = array[i];
+        str += arrayElement;
+        str += ",";
+    }
+    if (str.length > 1) {
+        str = str.substring(0, str.length - 1);
+    }
+    return str;
+}

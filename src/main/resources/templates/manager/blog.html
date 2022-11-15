@@ -15,7 +15,6 @@
         td.checkbox-custom label {
             display: none;
         }
-
     </style>
 </head>
 <body>
@@ -65,6 +64,11 @@
                                        id="blog-query-title"
                                        placeholder="文章标题">
                             </div>
+                            <select id="blogArchiveSelect" data-width='fit' data-size='归档' multiple
+                                    data-style="table-search-select">
+                                <option value="0" data-content="<span class='label label-info'>未归档</span>">未归档</option>
+                                <option value="1" data-content="<span class='label label-warning'>已归档</span>">已归档</option>
+                            </select>
                         </div>
                         <table id="blog-table" class="table table-condensed text-nowrap my-table"></table>
                     </div>
@@ -111,6 +115,9 @@
             $("#managerBlogLi").addClass("active")
             initData('blogTab')
             initData('blogTabsTab')
+
+            //加载下拉框
+            $("#blogArchiveSelect").selectpicker()
         })
 
         //初始化表格
@@ -148,7 +155,8 @@
                     //自定义参数
                     tableOptions.queryParams = function (params) {
                         return $.extend(queryParams(params), {
-                            title: $queryInputArray[0].val()
+                            title: $queryInputArray[0].val(),
+                            doArchiveStr: splitArrayToString($("#blogArchiveSelect").val())
                         });
                     }
                     //其他
@@ -189,7 +197,7 @@
                             sortName: 'title',
                             align: 'left',
                             formatter: function (value, row, index) {
-                               return  paramsMatter(value, row, index, 55);
+                                return paramsMatter(value, row, index, 55);
                             },
                         }, {
                             field: 'releaseTime',
