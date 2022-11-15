@@ -87,6 +87,33 @@ function genTableOptions() {
     }
 }
 
+//重置按钮
+function appendReloadButton(now$Table) {
+    const str = "<button class='btn btn-sm btn-info toolbarBtn btn btn-sm btn-info toolbarBtn-default' type='button' name='reload' aria-label='Reload' title='重置' onclick='reloadTable(now$Table)'>" +
+        "        <i class='glyphicon glyphicon-refresh' >" +
+        "        </button>";
+    $(".columns.columns-right.btn-group.pull-right").append(str);
+}
+
+//重置
+function reloadTable(nowTable) {
+    let $tableSearchClass = $(".table-search");
+    //查找所有input
+    let findInput = $tableSearchClass.find("input");
+    for (const findInputElement of findInput) {
+        //清空input
+        $(findInputElement).val("");
+    }
+    //查找所有select
+    let findSelect = $tableSearchClass.find("select");
+    for (const findSelectElement of findSelect) {
+        //清空select
+        findSelectElement.options.selectedIndex = -1;
+        $(findSelectElement).selectpicker('refresh');
+    }
+    nowTable.bootstrapTable('refresh', {pageNumber: 1, pageSize: 10});
+}
+
 /*行样式*/
 function rowStyle(column) {
     return {
@@ -226,10 +253,13 @@ function genTableOptionA(color, text, icon, onclick) {
         '</a>'
 }
 
+let now$Table;
+
 function refreshTable(tableId) {
     const $table = $("#" + tableId);
     $table.bootstrapTable('refresh')
     $table.bootstrapTable('getOptions').onUncheckAll();
+    now$Table = $table;
 }
 
 /*
