@@ -235,9 +235,8 @@
 }
 
 /*选择框*/
-.dropdown-menu {
-    padding: 0;
-    border-radius: 0;
+.dropdown-menu li a{
+    font-size: 12px;
 }
 
 /*按钮禁用*/
