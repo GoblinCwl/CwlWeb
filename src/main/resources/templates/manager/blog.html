@@ -66,8 +66,8 @@
                             </div>
                             <select id="blogArchiveSelect" data-width='fit' data-size='归档' multiple
                                     data-style="table-search-select">
-                                <option value="0" data-content="<span class='label label-info'>未归档</span>">未归档</option>
-                                <option value="1" data-content="<span class='label label-warning'>已归档</span>">已归档</option>
+                                <option selected value="0" data-content="<span class='label label-info'>正常</span>">正常</option>
+                                <option selected value="1" data-content="<span class='label label-warning'>归档</span>">归档</option>
                             </select>
                         </div>
                         <table id="blog-table" class="table table-condensed text-nowrap my-table"></table>
@@ -151,7 +151,7 @@
                     $multiBtnArray[0].on('click', function () {
                         blogRemove(tableId)
                     });
-                    $queryInputArray[0] = $("#blogTab-query-title")
+                    $queryInputArray[0] = $("#blog-query-title")
                     //自定义参数
                     tableOptions.queryParams = function (params) {
                         return $.extend(queryParams(params), {
