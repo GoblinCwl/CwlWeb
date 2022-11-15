@@ -85,6 +85,10 @@ public class Blog implements Serializable {
      */
     private Integer doArchive;
 
+    /**是否归档(页面查询)*/
+    @TableField(exist = false)
+    private String doArchiveStr;
+
     /**
      * 查询条件
      */
