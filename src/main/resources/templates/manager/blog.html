@@ -64,10 +64,14 @@
                                        id="blog-query-title"
                                        placeholder="文章标题">
                             </div>
-                            <select id="blogArchiveSelect" data-width='fit' data-size='归档' multiple
-                                    data-style="table-search-select">
-                                <option selected value="0" data-content="<span class='label label-info'>正常</span>">正常</option>
-                                <option selected value="1" data-content="<span class='label label-warning'>归档</span>">归档</option>
+                            <select class="selectpicker" id="blogArchiveSelect" data-width='auto' multiple
+                                    data-style="table-search-select" title="归档选项">
+                                <option selected value="0" data-content="<span class='label label-info'>正常</span>">
+                                    正常
+                                </option>
+                                <option selected value="1" data-content="<span class='label label-warning'>归档</span>">
+                                    归档
+                                </option>
                             </select>
                         </div>
                         <table id="blog-table" class="table table-condensed text-nowrap my-table"></table>
@@ -245,8 +249,6 @@
                             }
                         })
                     }
-                    //加载下拉框
-                    $("#blogArchiveSelect").selectpicker()
                     break;
                 case 'blogTabsTab':
                     url = ctx + "/blog/blogTabs/list";
