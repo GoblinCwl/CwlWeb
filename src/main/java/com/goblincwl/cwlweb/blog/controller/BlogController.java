@@ -88,6 +88,9 @@ public class BlogController extends BaseController<Blog> {
                 }
             });
         }
+        if (blog.getDoArchive()!=null){
+            queryWrapper.eq("t.do_archive",blog.getDoArchive());
+        }
         //页面数据
         Page<Blog> page = this.blogService.page(createPage(), queryWrapper);
         //标签赋值
