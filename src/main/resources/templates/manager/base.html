@@ -215,7 +215,6 @@
 </body>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
     <script th:src="@{/js/goblincwl/tablePage.js}" type="text/javascript"></script>
-
     <script>
         $(function () {
             //左侧导航
@@ -225,6 +224,8 @@
             initData('chatMessageTab')
             initData('ossFileTab')
             initData('badWordsTab')
+            //追加重置按钮
+            appendReloadButton(now$Table);
         })
 
         //初始化表格
@@ -264,6 +265,10 @@
                         return $.extend(queryParams(params), {
                             optKey: $queryInputArray[0].val()
                         });
+                    }
+                    //重置
+                    tableOptions.reload = function () {
+                        alert("重置")
                     }
                     columns = [
                         {
@@ -315,6 +320,10 @@
                     ];
                     break;
                 case 'accessRecordTab':
+                    //使用表格视图看访问巨鹿
+                    tableOptions.cardView = true;
+                    tableOptions.clickToSelect = false;
+                    //
                     url = ctx + "/manager/accessRecord/list";
                     tableId = "accessRecord-table";
                     $table = $("#" + tableId);
@@ -595,6 +604,10 @@
             ));
             //刷新按钮状态
             $table.bootstrapTable('getOptions').onUncheckAll();
+
+            if (now$Table === null || now$Table === undefined) {
+                now$Table = $table;
+            }
         }
 
 
@@ -927,8 +940,8 @@
                     '  <div class="form-group">\n' +
                     '    <label for="badWords-add-optValue" class="col-sm-2 control-label xtip-label">类型</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
-                    '      <select class="form-control input-sm table-modal-input required" ' +
-                    '       id="badWords-add-type">' +
+                    '      <select class="required" data-style="table-search-select" data-container=".xtiper_main" data-width="100%"' +
+                    '       id="badWords-add-type" style="z-index: 1000!important;">' +
                     '           <option value="VIOLENCE_COULD">暴恐</option>' +
                     '           <option value="REACTIONARY">反动</option>' +
                     '           <option value="PEOPLE_LIVELIHOOD">民生</option>' +
@@ -961,6 +974,7 @@
                     })
                 }
             });
+            $("#badWords-add-type").selectpicker();
         }
 
         /*修改*/
@@ -1000,7 +1014,7 @@
                             '  <div class="form-group">\n' +
                             '    <label for="badWords-add-type" class="col-sm-2 control-label xtip-label">类型</label>' +
                             '    <div class="col-sm-10 xtip-input">' +
-                            '      <select  class="form-control input-sm table-modal-input required" ' +
+                            '      <select class="required" data-style="table-search-select" data-container=".xtiper_main" data-width="100%" ' +
                             '       id="badWords-add-type">' +
                             '           <option value="VIOLENCE_COULD">暴恐</option>' +
                             '           <option value="REACTIONARY">反动</option>' +
@@ -1040,6 +1054,7 @@
                             $(this).attr("selected", "selected");
                         }
                     })
+                    $("#badWords-add-type").selectpicker();
                 },
             })
         }

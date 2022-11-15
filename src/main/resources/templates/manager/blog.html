@@ -66,10 +66,10 @@
                             </div>
                             <select class="selectpicker" id="blogArchiveSelect" data-width='auto' multiple
                                     data-style="table-search-select" title="归档选项">
-                                <option selected value="0" data-content="<span class='label label-info'>正常</span>">
+                                <option value="0" data-content="<span class='label label-info'>正常</span>">
                                     正常
                                 </option>
-                                <option selected value="1" data-content="<span class='label label-warning'>归档</span>">
+                                <option value="1" data-content="<span class='label label-warning'>归档</span>">
                                     归档
                                 </option>
                             </select>
@@ -119,6 +119,9 @@
             $("#managerBlogLi").addClass("active")
             initData('blogTab')
             initData('blogTabsTab')
+
+            //追加重置按钮
+            appendReloadButton(now$Table);
         })
 
         //初始化表格
@@ -135,6 +138,8 @@
                 $queryInputArray = [];  //查询框
             switch (name) {
                 case 'blogTab':
+                    //博客归档列切换有bug，关闭列筛选
+                    tableOptions.showColumns = false;
                     url = ctx + "/blog/list";
                     tableId = 'blog-table';
                     $table = $("#" + tableId);
@@ -354,6 +359,10 @@
             ));
             //刷新按钮状态
             $table.bootstrapTable('getOptions').onUncheckAll();
+
+            if (now$Table === null || now$Table === undefined) {
+                now$Table = $table;
+            }
         }
 
 
