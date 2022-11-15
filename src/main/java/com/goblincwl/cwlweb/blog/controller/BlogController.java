@@ -62,17 +62,19 @@ public class BlogController extends BaseController<Blog> {
         String sortOrder = ServletUtils.getParameter("sortOrder");
         queryWrapper.orderBy(true, "asc".equals(sortOrder), sortName);
         if (StringUtils.isNotEmpty(queryInput)) {
-            for (String str : queryInput.split(",")) {
-                //带#号查询标签
-                if (str.contains("#")) {
-                    queryWrapper.or().like("t1.name", str.replaceAll("#", ""));
-                } else {
-                    queryWrapper.or().like("t.title", str);
+            queryWrapper.and(wrapper -> {
+                for (String str : queryInput.split(",")) {
+                    //带#号查询标签
+                    if (str.contains("#")) {
+                        wrapper.or().like("t1.name", str.replaceAll("#", ""));
+                    } else {
+                        wrapper.or().like("t.title", str);
+                    }
                 }
-            }
+            });
         }
         if (blog.getDoArchive() != null) {
-            queryWrapper.eq("t.do_archive", blog.getDoArchive());
+            queryWrapper.and(wrapper -> wrapper.eq("t.do_archive", blog.getDoArchive()));
         }
 
         Page<Blog> page = this.blogService.page(createPage(), queryWrapper);
@@ -192,7 +194,7 @@ public class BlogController extends BaseController<Blog> {
                 new UpdateWrapper<Blog>()
                         .lambda().eq(Blog::getId, id)
                         .set(id != null, Blog::getDoArchive, doArchive)
-                        .set(id != null,Blog::getUpdateTime,new Date())
+                        .set(id != null, Blog::getUpdateTime, new Date())
         );
         return updateResult ? Result.genSuccess("归档成功") : Result.genFail("归档失败");
     }
