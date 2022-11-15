@@ -244,3 +244,16 @@
 .button-disabled {
     pointer-events: none;
 }
+
+/*switch*/
+td div.bootstrap-switch-small{
+    border-radius: 0;
+}
+
+td div.bootstrap-switch-small div.bootstrap-switch-container{
+    border-radius: 0;
+}
+
+td div.bootstrap-switch-small div.bootstrap-switch-container span{
+    border-radius: 0!important;
+}

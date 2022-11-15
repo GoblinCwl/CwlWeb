@@ -57,10 +57,13 @@ public class BlogController extends BaseController<Blog> {
         queryWrapper.leftJoin("blog_tabs t1 on find_in_set(t1.id,t.tabs)");
         queryWrapper.select(Blog.class, info -> !"content".equals(info.getColumn()));
         queryWrapper.select("t.id");
+        //分组去重
         queryWrapper.groupBy("t.title", "t.release_time", "t.update_time", "t.tabs", " t.short_content", "t.id", "t.do_archive");
+        //排序
         String sortName = ServletUtils.getParameter("sortName");
         String sortOrder = ServletUtils.getParameter("sortOrder");
         queryWrapper.orderBy(true, "asc".equals(sortOrder), sortName);
+        //博客页面查询
         if (StringUtils.isNotEmpty(queryInput)) {
             queryWrapper.and(wrapper -> {
                 for (String str : queryInput.split(",")) {
@@ -72,6 +75,10 @@ public class BlogController extends BaseController<Blog> {
                     }
                 }
             });
+        }
+        //管理页面查询
+        if (StringUtils.isNotEmpty(blog.getTitle())){
+            queryWrapper.like("t.title",blog.getTitle());
         }
         //归档查询条件查询
         if (StringUtils.isNotEmpty(blog.getDoArchiveStr())) {
