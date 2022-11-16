@@ -1,7 +1,9 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
-<head th:replace="fragment/globalComponent::commonHead(~{::title},~{},~{::style})">
+<head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
     <title>GoblinCwl - 首页</title>
+    <!--手表时钟-->
+    <link th:href="@{/plugins/watchClock/style.css}" rel="stylesheet">
     <style>
         .timeStampSHow {
             color: #929e98;
@@ -143,9 +145,25 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div style="height: 35em;border: 1px solid #6ecadc;margin-top: 2rem">
-                        不知道放点啥，好兄弟看到了可以给点建议🤭
+                <div class="col-lg-5">
+                    <div style="height: 35em;border: 1px solid #000;margin-top: 2rem">
+                        <div id="timeDateDiv" class="col-lg-4"
+                             style="border: 5px solid #6ecadc;width: 38%;height: 33.33%;padding: 0">
+                            <button aria-label="Previous Gadget" class="svelte-1x9sc7x1" onclick="$($('nav button')[0]).trigger('click')"
+                                    style="position: absolute;width: 1em;height: 2em;background: red;left: 80%;top: 25%;border-radius: 1em"></button>
+                        </div>
+                        <div class="col-lg 7" style="border: 1px solid #000;height: 33.33%">
+                            天气/位置
+                        </div>
+                        <div class="col-lg-12" style="border: 1px solid #000;height: 33.33%">
+                            博文更新
+                        </div>
+                        <div class="col-lg-6" style="border: 1px solid #000;height: 33.33%">
+                            清单
+                        </div>
+                        <div class="col-lg-6" style="border: 1px solid #000;height: 33.33%">
+                            外链
+                        </div>
                     </div>
                 </div>
             </div>
@@ -363,5 +381,7 @@
                 + "</span>";
         }
     </script>
+    <!--手表时钟-->
+    <script th:src="@{/plugins/watchClock/script.js}" type="text/javascript"></script>
 </div>
 </html>
