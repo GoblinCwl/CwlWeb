@@ -1,16 +1,27 @@
 package com.goblincwl.cwlweb.manager.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.goblincwl.cwlweb.common.utils.NickNameUtils;
 import com.goblincwl.cwlweb.manager.entity.AccessRecord;
 import com.goblincwl.cwlweb.manager.mapper.AccessRecordMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,6 +42,8 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
     @Resource(name = "redisStringTemplate")
     private RedisTemplate<String, Object> redisTemplate;
     private final AccessRecordMapper accessRecordMapper;
+
+    private final KeyValueOptionsService keyValueOptionsService;
 
     /**
      * 终端面板显示数据
@@ -91,7 +104,48 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
         //昵称
         resultMap.put("nickName", accessRecord.getNickName());
         //IP地址
-        resultMap.put("ipAddress",accessRecord.getIpAddress());
+        resultMap.put("ipAddress", accessRecord.getIpAddress());
+        return resultMap;
+    }
+
+    public Map<String, Object> findWeatherData() {
+        Map<String, Object> resultMap = new HashMap<>();
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try {
+            URI uri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("restapi.amap.com")
+                    .setPath("/v3/weather/weatherInfo")
+                    .setParameter("key", this.keyValueOptionsService.getById("AmapApiKey").getOptValue())
+                    //TODO 动态城市编码
+                    .setParameter("city", "320200")
+                    .build();
+            HttpGet httpGet = new HttpGet(uri);
+            try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+                // 获取响应实体
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    JSONObject jsonObject = JSONObject.parseObject(EntityUtils.toString(entity));
+                    JSONObject lives = jsonObject.getJSONArray("lives").getJSONObject(0);
+                    resultMap.put("province", lives.get("province"));
+                    resultMap.put("city", lives.get("city"));
+                    resultMap.put("weather", lives.get("weather"));
+                    resultMap.put("temperature", lives.get("temperature"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 关闭连接,释放资源
+            try {
+                httpclient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //TODO 获取状态
+        resultMap.put("status", "出差中");
         return resultMap;
     }
 }
