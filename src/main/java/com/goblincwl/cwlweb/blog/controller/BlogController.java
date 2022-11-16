@@ -77,8 +77,8 @@ public class BlogController extends BaseController<Blog> {
             });
         }
         //管理页面查询
-        if (StringUtils.isNotEmpty(blog.getTitle())){
-            queryWrapper.like("t.title",blog.getTitle());
+        if (StringUtils.isNotEmpty(blog.getTitle())) {
+            queryWrapper.like("t.title", blog.getTitle());
         }
         //归档查询条件查询
         if (StringUtils.isNotEmpty(blog.getDoArchiveStr())) {
@@ -88,8 +88,8 @@ public class BlogController extends BaseController<Blog> {
                 }
             });
         }
-        if (blog.getDoArchive()!=null){
-            queryWrapper.eq("t.do_archive",blog.getDoArchive());
+        if (blog.getDoArchive() != null) {
+            queryWrapper.eq("t.do_archive", blog.getDoArchive());
         }
         //页面数据
         Page<Blog> page = this.blogService.page(createPage(), queryWrapper);
@@ -106,6 +106,21 @@ public class BlogController extends BaseController<Blog> {
             }
         }
         return new Result<Page<Blog>>().success(page);
+    }
+
+    /**
+     * 查询最近更新
+     *
+     * @date 2022/11/16 14:33
+     * @author ☪wl
+     */
+    @GetMapping("/recentUpdateList")
+    public Result<Page<Blog>> recentUpdateList() {
+        Page<Blog> page = createPage();
+        page.setSize(6);
+        page.setCurrent(1);
+        Page<Blog> resultPage = this.blogService.page(page, new LambdaQueryWrapper<Blog>().orderByDesc(true, Blog::getUpdateTime));
+        return new Result<Page<Blog>>().success(resultPage);
     }
 
     /**

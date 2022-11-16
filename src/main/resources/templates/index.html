@@ -109,6 +109,32 @@
             }
         }
 
+        .indexRightDiv {
+            padding: 0;
+            border: 5px solid;
+            height: 33.33%;
+        }
+
+        #updateBlogTable {
+            border-collapse: unset;
+        }
+
+        #updateBlogTable tbody tr td {
+            border-bottom: 1px grey solid ;
+
+        }
+
+        #updateBlogTable tbody tr td a {
+            color: #c08734;
+
+        }
+
+        .blogTdTime {
+            text-align: right;
+            font-size: small;
+            color: grey;
+        }
+
     </style>
 </head>
 <body>
@@ -147,22 +173,62 @@
                 </div>
                 <div class="col-lg-5">
                     <div style="height: 35em;border: 1px solid #000;margin-top: 2rem">
-                        <div id="timeDateDiv" class="col-lg-4"
-                             style="border: 5px solid #6ecadc;width: 38%;height: 33.33%;padding: 0">
-                            <button aria-label="Previous Gadget" class="svelte-1x9sc7x1" onclick="$($('nav button')[0]).trigger('click')"
+                        <div id="timeDateDiv" class="col-lg-4 indexRightDiv"
+                             style="border-color:hsl(120, 30%, 58%);width: 38%;height: 33.33%">
+                            <button aria-label="Previous Gadget" class="svelte-1x9sc7x1"
+                                    onclick="$($('nav button')[0]).trigger('click')"
                                     style="position: absolute;width: 1em;height: 2em;background: red;left: 80%;top: 25%;border-radius: 1em"></button>
                         </div>
-                        <div class="col-lg 7" style="border: 1px solid #000;height: 33.33%">
-                            天气/位置
+                        <div class="indexRightDiv" style="border-color: #6edadc">
+                            <div style="border: 1px solid black;height: 100%">
+                                天气/位置
+                            </div>
                         </div>
-                        <div class="col-lg-12" style="border: 1px solid #000;height: 33.33%">
-                            博文更新
+                        <div class="col-lg-12 indexRightDiv" style="border-color: #e1b037;">
+                            <div style="border: 1px solid black;height: 100%;padding: 0.45em">
+                                <table style="width: 100%;height: 100%;" id="updateBlogTable">
+                                    <thead>
+                                    <td style="width: 89%"></td>
+                                    <td style="width: 11%"></td>
+                                    </thead>
+                                    <tbody id=updateBlogTbody>
+                                    <tr>
+                                        <td><a href="/blog/1">钢铁是怎样炼成的</a></td>
+                                        <td class="blogTdTime">3小时前</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="/blog/1">第一篇文章</a></td>
+                                        <td class="blogTdTime">3小时前</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="/blog/1">爱的教育</a></td>
+                                        <td class="blogTdTime">3小时前</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="/blog/1">银色的魔术师</a></td>
+                                        <td class="blogTdTime">3小时前</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="/blog/1">谢米：冰空的花束与奇拉蒂娜</a></td>
+                                        <td class="blogTdTime">3小时前</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="/blog/1">旋风十一人</a></td>
+                                        <td class="blogTdTime">3小时前</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="col-lg-6" style="border: 1px solid #000;height: 33.33%">
-                            清单
+                        <div class="col-lg-6 indexRightDiv" style="border-color: #000;">
+                            <div style="border: 1px solid black;height: 100%">
+                                清单
+                            </div>
                         </div>
-                        <div class="col-lg-6" style="border: 1px solid #000;height: 33.33%">
-                            外链
+                        <div class="col-lg-6 indexRightDiv" style="border-color: #ef9bd5;">
+                            <div style="border: 1px solid black;height: 100%">
+                                外链
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -184,7 +250,10 @@
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
     <script>
         $(function () {
+            //初始化终端
             terminalDataInit();
+            //初始化最近更新博客
+            recentUpdateBlogDataInit();
         });
 
         const $consoleInput = $("#consoleInput");
@@ -226,6 +295,27 @@
                 successFalse: function (res) {
                     insertMessage(res.msg, 50);
                     insertMessage("数据请求失败，有空的话麻烦联系下站长处理~", 100);
+                }
+            });
+        }
+
+        //初始化最近更新博客
+        function recentUpdateBlogDataInit() {
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/blog/recentUpdateList",
+                success: function (res) {
+                    const dataList = res.data.records;
+                    let htmlStr = "";
+                    for (const data of dataList) {
+                        var title = reLengthStr(data.title, 28);
+
+                        htmlStr += "<tr>\n" +
+                            "<td><a href='/blog/content/" + data.id + "'>" + title + "</a></td>" +
+                            "<td class='blogTdTime'>" + dateDif(new Date(data.updateTime).getTime()) + "</td>" +
+                            "</tr>";
+                    }
+                    $("#updateBlogTbody").html(htmlStr)
                 }
             });
         }
@@ -379,6 +469,32 @@
                 + new Date().Format("MM-dd HH:mm")
                 + "] "
                 + "</span>";
+        }
+
+        //计算时间差，获取模糊中文时间
+        function dateDif(startDate) {
+            const date = new Date().getTime() - startDate;
+            const days = date / 1000 / 60 / 60 / 24;
+            const daysRound = Math.floor(days);
+            const hours = date / 1000 / 60 / 60 - (24 * daysRound);
+            const hoursRound = Math.floor(hours);
+            const minutes = date / 1000 / 60 - (24 * 60 * daysRound) - (60 * hoursRound);
+            const minutesRound = Math.floor(minutes);
+            const seconds = date / 1000 - (24 * 60 * 60 * daysRound) - (60 * 60 * hoursRound) - (60 * minutesRound);
+            const secondsRound = Math.floor(seconds);
+            const time = (daysRound + "天" + hoursRound + "时" + minutesRound + "分" + secondsRound + "秒");
+            if (daysRound > 0) {
+                return daysRound + "天前";
+            }
+            if (hoursRound > 0) {
+                return hoursRound + "小时前";
+            }
+            if (minutesRound > 0) {
+                return minutesRound + "分钟前";
+            }
+            if (secondsRound > 0) {
+                return "刚刚";
+            }
         }
     </script>
     <!--手表时钟-->

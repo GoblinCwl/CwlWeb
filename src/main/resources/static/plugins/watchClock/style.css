@@ -36,7 +36,7 @@ section.svelte-1x9sc7x {
 
 main.svelte-1x9sc7x {
     width: 100%;
-    background: #6ECADC;
+    background: hsl(120, 30%, 58%);;
     border: 0.25rem solid hsl(0, 0%, 5%);
     position: relative;
     bottom: 12%;
@@ -102,7 +102,7 @@ svg.svelte-xfw2u4 {
     display: block;
     width: 100%;
     height: auto;
-    background-color: #6ECADC;
+    /*background-color: #6ECADC;*/
 }
 
 .colon.svelte-xfw2u4 {
@@ -122,14 +122,14 @@ svg.svelte-5bte90 {
     display: block;
     width: 100%;
     height: 100%;
-    background-color: #6ECADC;
+    /*background-color: #6ECADC;*/
 }
 
 svg.svelte-q3c1vs {
     display: block;
     width: 100%;
     height: 40%;
-    background-color: #6ECADC;
+    /*background-color: #6ECADC;*/
 }
 
 button.svelte-q3c1vs {

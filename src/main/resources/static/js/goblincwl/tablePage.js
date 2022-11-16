@@ -265,7 +265,7 @@ function refreshTable(tableId) {
 /*
  * 判断备注内容是否长度过长，先截取后，再加上省略号。
  */
-function paramsMatter(value, row, index, showStrNum) {
+function paramsMatter(value, showStrNum) {
 
     value = $.trim(value);
     if (value === "") {
