@@ -207,6 +207,13 @@ jmz.GetLength = function (str) {
 
 };
 
+function reLengthStr(str, length) {
+    if (jmz.GetLength(str) > length) {
+        return str.substr(0, (length - 1)) + "...";
+    }
+    return str;
+}
+
 function getRequest() {
     var url = location.search; //获取url中"?"符后的字串
     var theRequest = new Object();
