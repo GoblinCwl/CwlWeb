@@ -2,6 +2,7 @@ package com.goblincwl.cwlweb.manager.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.goblincwl.cwlweb.common.annotation.TokenCheck;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
@@ -62,6 +63,7 @@ public class KeyValueOptionsController extends BaseController<KeyValueOptions> {
      * @author ☪wl
      */
     @GetMapping("/{optKey}")
+    @TokenCheck
     public Result<KeyValueOptions> query(@PathVariable("optKey") String optKey) {
         Result<KeyValueOptions> result = new Result<>();
         if (StringUtils.isNotEmpty(optKey)) {

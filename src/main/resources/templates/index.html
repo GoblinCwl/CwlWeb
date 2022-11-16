@@ -120,7 +120,7 @@
         }
 
         #updateBlogTable tbody tr td {
-            border-bottom: 1px grey solid ;
+            border-bottom: 1px grey solid;
 
         }
 
@@ -135,6 +135,13 @@
             color: grey;
         }
 
+    </style>
+    <style>
+        .border {
+            /*border: 1px solid #000;*/
+            height: 50%;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
@@ -181,7 +188,35 @@
                         </div>
                         <div class="indexRightDiv" style="border-color: #6edadc">
                             <div style="border: 1px solid black;height: 100%">
-                                天气/位置
+                                <div class="border col-lg-6">
+
+                                </div>
+                                <div class="border col-lg-3"
+                                     style="text-align: center;padding-top: 0.5em;background-color: #c3ecec;border-left:solid 1px #000;border-bottom: 1px #000 solid">
+                                    <div class="col-lg-12">
+                                        <span id="provinceSpan" style="color: #446eb9;font-weight: bold">
+                                            <!--省份信息-->
+                                        </span>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <span id="citySpan" style="color: cornflowerblue">
+                                            <!--城市信息-->
+                                        </span>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <em id="stateSpan" style="color: red;font-size: small">
+                                            <!--状态信息-->
+                                        </em>
+                                    </div>
+                                </div>
+                                <div class="border col-lg-3"
+                                     style="text-align: center;background-color: #c3ecec;border-left:dashed 1px grey;border-bottom: 1px #000 solid">
+                                    <img id="weatherTempImg" style="width: 100%;padding: 0.7em 0.8em 0;">
+                                    <span id="weatherTempSpan"
+                                          style="font-size: small;color: dodgerblue;position: absolute;bottom: 0.5em;transform: translate(-50%);left: 50%;width: 100%;">
+                                        <!--天气-温度-->
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-12 indexRightDiv" style="border-color: #e1b037;">
@@ -192,31 +227,7 @@
                                     <td style="width: 11%"></td>
                                     </thead>
                                     <tbody id=updateBlogTbody>
-                                    <tr>
-                                        <td><a href="/blog/1">钢铁是怎样炼成的</a></td>
-                                        <td class="blogTdTime">3小时前</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/blog/1">第一篇文章</a></td>
-                                        <td class="blogTdTime">3小时前</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/blog/1">爱的教育</a></td>
-                                        <td class="blogTdTime">3小时前</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/blog/1">银色的魔术师</a></td>
-                                        <td class="blogTdTime">3小时前</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/blog/1">谢米：冰空的花束与奇拉蒂娜</a></td>
-                                        <td class="blogTdTime">3小时前</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/blog/1">旋风十一人</a></td>
-                                        <td class="blogTdTime">3小时前</td>
-                                    </tr>
-                                    </tbody>
+                                    <!--最近更新的博客-->
                                 </table>
                             </div>
                         </div>
@@ -254,6 +265,8 @@
             terminalDataInit();
             //初始化最近更新博客
             recentUpdateBlogDataInit();
+            //初始化天气
+            weatherDataInit();
         });
 
         const $consoleInput = $("#consoleInput");
@@ -316,6 +329,23 @@
                             "</tr>";
                     }
                     $("#updateBlogTbody").html(htmlStr)
+                }
+            });
+        }
+
+        //初始化天气
+        //TODO 区域编码动态
+        function weatherDataInit() {
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/findWeatherData",
+                success: function (res) {
+                    let data = res.data;
+                    $("#provinceSpan").text(data.province);
+                    $("#citySpan").text(data.city);
+                    $("#weatherTempSpan").text(data.weather + "-" + data.temperature + "℃");
+                    $("#stateSpan").text(data.status);
+                    $("#weatherTempImg").attr("src", weatherImgJuge(data.weather))
                 }
             });
         }
@@ -495,6 +525,109 @@
             if (secondsRound > 0) {
                 return "刚刚";
             }
+        }
+
+        //判断天气图片
+        function weatherImgJuge(weather) {
+            console.log(weather)
+            switch (weather) {
+                case "平静":
+                    weatherImg = "日";
+                    break;
+                case "晴天":
+                case "热":
+                    weatherImg = "晴天";
+                    break;
+                case "少云":
+                case"晴间多云":
+                case"多云":
+                    weatherImg = "多云";
+                    break;
+                case "阴":
+                    weatherImg = "阴天";
+                    break;
+                case "有风":
+                case "微风":
+                case "和风":
+                case "清风":
+                case "冷":
+                    weatherImg = "阴天-风";
+                    break;
+                case "强风/劲风":
+                case "疾风":
+                case "大风":
+                case "烈风":
+                case "风暴":
+                case "狂爆风":
+                case "飓风":
+                case "热带风暴":
+                case "龙卷风":
+                    weatherImg = "大风";
+                    break;
+                case "霾":
+                case "中度霾":
+                case "重度霾":
+                case "严重霾":
+                    weatherImg = "雾霾";
+                    break;
+                case "阵雨":
+                case "小雨":
+                case "中雨":
+                case "毛毛雨/细雨":
+                case "雨":
+                case "小雨-中雨":
+                case "中雨-大雨":
+                    weatherImg = "小雨";
+                    break;
+                case "大雨":
+                case "暴雨":
+                case "大暴雨":
+                case "特大暴雨":
+                case "强阵雨":
+                case "极端降雨":
+                case "大雨-暴雨":
+                case "暴雨-大暴雨":
+                case "大暴雨-特大暴雨":
+                    weatherImg = "大雨";
+                    break;
+                case "雷阵雨":
+                case "强雷阵雨":
+                    weatherImg = "雷阵雨";
+                    break;
+                case "雨夹雪":
+                case "阵雨夹雪":
+                case "冻雨":
+                case "雨雪天气":
+                    weatherImg = "雨夹雪";
+                    break;
+                case "雷阵雨并伴有冰雹":
+                    weatherImg = "冰雹";
+                    break;
+                case "雪":
+                case "阵雪":
+                case "小雪":
+                case "中雪":
+                case "小雪-中雪":
+                case "中雪-大雪":
+                case "大雪-暴雪":
+                    weatherImg = "小雪";
+                    break;
+                case "大雪":
+                case "暴雪":
+                    weatherImg = "大雪";
+                    break;
+                case "雾":
+                case "浓雾":
+                case "强浓雾":
+                case "轻雾":
+                case "大雾":
+                case "特强浓雾":
+                    weatherImg = "雾";
+                    break;
+                default:
+                    weatherImg = "未知";
+            }
+            return ctx + "/images/weather/" + weatherImg + ".png";
         }
     </script>
     <!--手表时钟-->

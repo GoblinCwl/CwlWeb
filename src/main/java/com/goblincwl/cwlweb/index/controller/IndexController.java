@@ -33,9 +33,23 @@ public class IndexController {
      * @author ☪wl
      */
     @GetMapping("/findTerminalData")
-    private Result<Object> findTerminalData(HttpServletRequest request) {
+    public Result<Object> findTerminalData(HttpServletRequest request) {
         Map<String, Object> resultMap;
         resultMap = this.accessRecordService.findTerminalData(IpUtils.getIpAddress(request));
+        return Result.genSuccess(resultMap, "成功");
+    }
+
+    /**
+     * 获取天气数据
+     *
+     * @return 数据集
+     * @date 2022/11/16 16:54
+     * @author ☪wl
+     */
+    @GetMapping("/findWeatherData")
+    public Result<Object> findWeatherData() {
+        Map<String, Object> resultMap;
+        resultMap = this.accessRecordService.findWeatherData();
         return Result.genSuccess(resultMap, "成功");
     }
 
