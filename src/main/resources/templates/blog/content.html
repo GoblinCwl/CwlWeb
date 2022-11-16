@@ -17,8 +17,9 @@
 
         /*文章内容块*/
         #view-editormd {
-            background-color: #eef7fa;
-            box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            border: 1px solid #000;
+            /*box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);*/
         }
 
         /*分割线*/
@@ -58,8 +59,9 @@
         #custom-toc-container {
             padding: 1rem;
             font-size: 13px;
-            background-color: #e8fbf2;
-            box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
+            background-color: #e8fbfb;
+            border: 1px solid #6ecadc;
+            /*box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);*/
         }
 
         .cancelReply {
@@ -76,6 +78,7 @@
             padding: 0.8rem;
             font-size: 14px;
             box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
+            border: 1px solid green;
             cursor: pointer;
             overflow: hidden;
             margin-top: 0.5rem
@@ -223,19 +226,19 @@
                             <div class="form-group col-lg-4 width-31">
                                 <label class="sr-only" for="email"></label>
                                 <input type="email" class="form-control commentFormInput" id="email"
-                                       placeholder="邮箱(收到回复将会邮件通知)">
+                                       placeholder="联系方式">
                             </div>
                             <div class="form-group col-lg-4 width-31">
                                 <label class="sr-only" for="website"></label>
                                 <input type="text" class="form-control commentFormInput" id="website"
                                        oninput='inputValidate($(this))' pos="b"
-                                       placeholder="网址(可通过点击头像跳转)">
+                                       placeholder="传送门">
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-lg-12">
                                 <label class="sr-only" for="commentContent"></label>
-                                <textarea id="commentContent" class="form-control no-border-radio required" rows="3"
+                                <textarea id="commentContent" class="form-control no-border-radio required" rows="3" placeholder="我有一言，请诸位静听..."
                                           oninput='inputValidate($(this))'
                                           style="resize: vertical"></textarea>
                             </div>
@@ -346,6 +349,9 @@
                 flowChart: true, // 默认不解析
                 sequenceDiagram: true, // 默认不解析
             });
+            if ($(".markdown-toc-list").children().length<=0){
+                $("#custom-toc-container").css('display','none')
+            }
         }
 
         /*加载评论*/
@@ -398,21 +404,12 @@
 
         /*评论*/
         function sendComment() {
-            //校验邮箱
-            const $email = $("#email");
-            if ($email.val() != null && $email.val() !== '') {
-                const emailReg = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
-                if (!emailReg.test($email.val())) {
-                    checkFail($email, '请输入正确的邮箱');
-                    return
-                }
-            }
             //校验网站
             const $website = $("#website");
             if ($website.val() != null && $website.val() !== '') {
                 const websiteReg = /([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[wW]{3}.|[wW][aA][pP].|[fF][tT][pP].|[fF][iI][lL][eE].)[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]/;
                 if (!websiteReg.test($website.val())) {
-                    checkFail($website, "请输入正确的网址-http(s)/www开头")
+                    checkFail($website, "请输入正确的网址(http(s)/www开头)")
                     return;
                 }
                 if (!$website.val().startsWith("http")) {
@@ -452,7 +449,7 @@
                             blogId: blogId,
                             parentId: parentId,
                             nickName: $("#nickName").val(),
-                            email: $email.val(),
+                            email: $("#email").val(),
                             website: $website.val(),
                             content: content,
                             profileUrl: profileUrl,
@@ -493,6 +490,7 @@
                 $("#commentContent").before($(html));
             }
             $("#commentContent").focus();
+            $("#commentContent").attr("placeholder","人们都渴望被理解自己的人回应。")
 
         }
 
