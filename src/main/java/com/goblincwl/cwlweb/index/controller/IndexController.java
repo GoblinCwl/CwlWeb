@@ -1,15 +1,21 @@
 package com.goblincwl.cwlweb.index.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.IpUtils;
 import com.goblincwl.cwlweb.manager.service.AccessRecordService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 首页 Controller
@@ -22,10 +28,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class IndexController {
 
+    @Resource(name = "redisStringTemplate")
+    private RedisTemplate<String, Object> redisTemplate;
+
     private final AccessRecordService accessRecordService;
 
     /**
-     * 终端面板显示数据
+     * 首页看板
      *
      * @param request http请求对象
      * @return 数据集
@@ -35,21 +44,26 @@ public class IndexController {
     @GetMapping("/findTerminalData")
     public Result<Object> findTerminalData(HttpServletRequest request) {
         Map<String, Object> resultMap;
-        resultMap = this.accessRecordService.findTerminalData(IpUtils.getIpAddress(request));
-        return Result.genSuccess(resultMap, "成功");
-    }
+        //先从Redis拿缓存
+        String redisKey = "indexDashboardData";
+        String indexDashboardDataStr = (String) redisTemplate.opsForValue().get(redisKey);
+        if (StringUtils.isEmpty(indexDashboardDataStr)) {
+            //终端数据
+            resultMap = this.accessRecordService.findTerminalData(IpUtils.getIpAddress(request));
+            //天气数据
+            resultMap.putAll(this.accessRecordService.findWeatherData());
+            //编程语言工时数据
+            resultMap.putAll(this.accessRecordService.findWorkLanguageData());
+            //工时数据
+            resultMap.putAll(this.accessRecordService.findWorkTimeData());
 
-    /**
-     * 获取天气数据
-     *
-     * @return 数据集
-     * @date 2022/11/16 16:54
-     * @author ☪wl
-     */
-    @GetMapping("/findWeatherData")
-    public Result<Object> findWeatherData() {
-        Map<String, Object> resultMap;
-        resultMap = this.accessRecordService.findWeatherData();
+            //存到Redis
+            redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
+            //设置有效期
+            redisTemplate.expire(redisKey, 1, TimeUnit.HOURS);
+        } else {
+            resultMap = JSONObject.parseObject(indexDashboardDataStr, Map.class);
+        }
         return Result.genSuccess(resultMap, "成功");
     }
 

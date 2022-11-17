@@ -137,11 +137,180 @@
 
     </style>
     <style>
-        .border {
-            /*border: 1px solid #000;*/
+        .rightWeatherDiv {
             height: 50%;
             padding: 0;
         }
+
+        #recentCodeLagTable{
+            border-collapse: unset;
+        }
+
+        #recentCodeLagTable td {
+            padding: 0.3em;
+        }
+
+        @keyframes typing15 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 15ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+        @keyframes typing14 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 14ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+        @keyframes typing13 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 13ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+        @keyframes typing12 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 12ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+        @keyframes typing11 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 11ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+        @keyframes typing10 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 10ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+        @keyframes typing9 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 9ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+        @keyframes typing8 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 8ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+        @keyframes typing7 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 7ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+
+        @keyframes typing6 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 6ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+        @keyframes typing5 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 5ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+        @keyframes typing4 {
+            from {
+                width: 0;
+            }
+            50% {
+                width: 4ch;
+            }
+            100% {
+                width: 0
+            }
+        }
+
+        @keyframes caret {
+            50% {
+                border-color: transparent;
+            }
+        }
+
+        #autoTypeDiv {
+            width: 0;
+            animation: typing 6s steps(15) infinite, caret 1s steps(1) infinite;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: .05em solid;
+            font-family: Consolas, Monaco, monospace;
+            color: blue;
+        }
+
     </style>
 </head>
 <body>
@@ -186,12 +355,30 @@
                                     onclick="$($('nav button')[0]).trigger('click')"
                                     style="position: absolute;width: 1em;height: 2em;background: red;left: 80%;top: 25%;border-radius: 1em"></button>
                         </div>
-                        <div class="indexRightDiv" style="border-color: #6edadc">
+                        <div class="indexRightDiv" style="border-color: #6eDadc">
                             <div style="border: 1px solid black;height: 100%">
-                                <div class="border col-lg-6">
-
+                                <div class="rightWeatherDiv col-lg-6">
+                                    <div class="rightWeatherDiv col-lg-12"
+                                         style="text-align: center;padding: 0.6em;border-bottom: 1px dashed #000">
+                                        <div id="autoTypeDiv" class="autoTypeDiv">
+                                            <!--打字机动画-->
+                                        </div>
+                                    </div>
+                                    <div class="rightWeatherDiv col-lg-12"
+                                         style="border-bottom: 1px solid;text-align: center;">
+                                        <div class="rightWeatherDiv col-lg-12">
+                                            <span id="yesterdayWorkTimeSpan" style="font-size: 8px;color:rgba(65,127,218,0.68)">
+                                                <!--昨日工时-->
+                                            </span>
+                                        </div>
+                                        <div class="rightWeatherDiv col-lg-12">
+                                            <span id="todayWorkTimeSpan" style="font-size: 15px;font-weight: bold;color: #417fda">
+                                                <!--今日工时-->
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="border col-lg-3"
+                                <div class="rightWeatherDiv col-lg-3"
                                      style="text-align: center;padding-top: 0.5em;background-color: #c3ecec;border-left:solid 1px #000;border-bottom: 1px #000 solid">
                                     <div class="col-lg-12">
                                         <span id="provinceSpan" style="color: #446eb9;font-weight: bold">
@@ -209,13 +396,67 @@
                                         </em>
                                     </div>
                                 </div>
-                                <div class="border col-lg-3"
+                                <div class="rightWeatherDiv col-lg-3"
                                      style="text-align: center;background-color: #c3ecec;border-left:dashed 1px grey;border-bottom: 1px #000 solid">
                                     <img id="weatherTempImg" style="width: 100%;padding: 0.7em 0.8em 0;">
                                     <span id="weatherTempSpan"
                                           style="font-size: small;color: dodgerblue;position: absolute;bottom: 0.5em;transform: translate(-50%);left: 50%;width: 100%;">
                                         <!--天气-温度-->
                                     </span>
+                                </div>
+                                <div class="rightWeatherDiv col-lg-12">
+                                    <table id="recentCodeLagTable" style="height:100%;width:100%;font-size: 12px;">
+                                        <thead style="background-color: #6EdADC;">
+                                        <td style="width: 15%; border-bottom: 1px solid #000"></td>
+                                        <td style="width: 35%; border-bottom: 1px solid #000"></td>
+                                        <td style="width: 15%; border-bottom: 1px solid #000"></td>
+                                        <td style="width: 35%; border-bottom: 1px solid #000"></td>
+                                        </thead>
+                                        <tbody>
+                                        <tr style="white-space: nowrap;text-overflow: ellipsis">
+                                            <td>
+                                                <span id="languageSpan1"></span>
+                                            </td>
+                                            <td>
+                                                <div id="languageDiv1"
+                                                     style="background-color: #6ecadc;display: inline-block;height: 12px;"></div>
+                                            </td>
+                                            <td><span id="languageSpan2"></span></td>
+                                            <td>
+                                                <div id="languageDiv2"
+                                                     style="background-color: #6ecadc;display: inline-block;height: 12px;"></div>
+                                            </td>
+                                        </tr>
+                                        <tr style="white-space: nowrap;text-overflow: ellipsis">
+                                            <td>
+                                                <span id="languageSpan3"></span>
+                                            </td>
+                                            <td>
+                                                <div id="languageDiv3"
+                                                     style="background-color: #6ecadc;display: inline-block;height: 12px;"></div>
+                                            </td>
+                                            <td><span id="languageSpan4"></span></td>
+                                            <td>
+                                                <div id="languageDiv4"
+                                                     style="background-color: #6ecadc;display: inline-block;height: 12px;"></div>
+                                            </td>
+                                        </tr>
+                                        <tr style="white-space: nowrap;text-overflow: ellipsis">
+                                            <td>
+                                                <span id="languageSpan5"></span>
+                                            </td>
+                                            <td>
+                                                <div id="languageDiv5"
+                                                     style="background-color: #6ecadc;display: inline-block;height: 12px;"></div>
+                                            </td>
+                                            <td><span id="languageSpan6"></span></td>
+                                            <td>
+                                                <div id="languageDiv6"
+                                                     style="background-color: #6ecadc;display: inline-block;height: 12px;"></div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -265,8 +506,43 @@
             terminalDataInit();
             //初始化最近更新博客
             recentUpdateBlogDataInit();
-            //初始化天气
-            weatherDataInit();
+
+
+            const arr = ['你好世界！', 'Hello World!', 'こんにちは世界~'];//显示的文本
+            const dom = document.getElementById('autoTypeDiv')
+            const speed = 0.2;
+            let j = 0; //从数组第一个开始展示
+            // 递归函数
+            const func = (j) => {
+                if (j < arr.length) { // 当达到数组长度时，就从头开始继续
+                    const item = arr[j]
+                    const itemLen = jmz.GetLength(item); // 汉字是占两个ch
+                    dom.innerHTML = item; // 显示文字
+                    for (var i = 0, len = itemLen; i < len; i++) { // 添加文本效果
+                        var textLen = dom.textContent.length, s = dom.style;
+                        s.animationTimingFunction = "steps(" + textLen + "),steps(1)"; //动态设置steps
+                        s.animationName = `typing${itemLen}`; //文本长度不同，展示的宽度就不同，所以需要动态设置
+                        s.animationDuration = `${itemLen * speed}s,` + speed + `s`; //这儿设置速度
+                    }
+                    setTimeout(() => {
+                        //输入完暂停
+                        $(dom).css("animation-play-state", "paused");
+                        //暂停几秒继续走删除
+                        setTimeout(() => {
+                            $(dom).css("animation-play-state", "running");
+                            //删除需要时间
+                            setTimeout(() => {
+                                func(j + 1)
+                            }, itemLen * speed * 1010 / 2)
+                        }, 2000);
+
+                    }, itemLen * speed * 1010 / 2)
+
+                } else {
+                    func(0); //就从头开始继续
+                }
+            }
+            func(j);
         });
 
         const $consoleInput = $("#consoleInput");
@@ -304,6 +580,32 @@
                     setTimeout(function () {
                         websocketInit()
                     }, 1000)
+
+                    //天气数据
+                    $("#provinceSpan").text(data.province);
+                    $("#citySpan").text(data.city);
+                    $("#weatherTempSpan").text(data.weather + "-" + data.temperature + "℃");
+                    $("#stateSpan").text(data.status);
+                    $("#weatherTempImg").attr("src", weatherImgJuge(data.weather))
+
+                    //工时数据
+                    $("#yesterdayWorkTimeSpan").text("昨工时：" + data.yesterdayWorkTime);
+                    $("#todayWorkTimeSpan").text("今工时：" + data.todayWorkTime);
+
+                    //编程语言时间
+                    let countTime = data.languagesCountTime;
+                    let languageList = data.languages;
+                    for (let i = 0; i < languageList.length; i++) {
+                        let $languageDiv = $("#languageDiv" + (i + 1));
+                        let $languageSpan = $("#languageSpan" + (i + 1));
+                        const language = languageList[i];
+
+                        $languageSpan.text(languageEmoji(language.name));
+                        let timePercentage = parseFloat(language.time / countTime * 100 + "%");
+                        $languageDiv.css("width", timePercentage);
+                        $languageDiv.parent().attr("title", language.name + " 过去七天：" + language.timeText);
+                        $languageSpan.parent().attr("title", language.name + " 过去七天：" + language.timeText);
+                    }
                 },
                 successFalse: function (res) {
                     insertMessage(res.msg, 50);
@@ -329,23 +631,6 @@
                             "</tr>";
                     }
                     $("#updateBlogTbody").html(htmlStr)
-                }
-            });
-        }
-
-        //初始化天气
-        //TODO 区域编码动态
-        function weatherDataInit() {
-            ajaxHttp({
-                type: "GET",
-                url: ctx + "/findWeatherData",
-                success: function (res) {
-                    let data = res.data;
-                    $("#provinceSpan").text(data.province);
-                    $("#citySpan").text(data.city);
-                    $("#weatherTempSpan").text(data.weather + "-" + data.temperature + "℃");
-                    $("#stateSpan").text(data.status);
-                    $("#weatherTempImg").attr("src", weatherImgJuge(data.weather))
                 }
             });
         }
@@ -629,6 +914,41 @@
             }
             return ctx + "/images/weather/" + weatherImg + ".png";
         }
+
+        //匹配语言表情
+        function languageEmoji(language) {
+            let emoji;
+            switch (language) {
+                case "Java":
+                    emoji = "☕";
+                    break;
+                case "HTML":
+                    emoji = "🖥️";
+                    break;
+                case "JavaScript":
+                    emoji = "👣";
+                    break;
+                case "CSS":
+                    emoji = "🦋";
+                    break;
+                case "HTTP Request":
+                    emoji = "🤝";
+                    break;
+                case "XML":
+                    emoji = "🏷️";
+                    break;
+                case "Web Test":
+                    emoji = "📗";
+                    break;
+                case "SQL":
+                    emoji = "🐬";
+                    break;
+                default:
+                    emoji = "❓";
+            }
+            return emoji + language;
+        }
+
     </script>
     <!--手表时钟-->
     <script th:src="@{/plugins/watchClock/script.js}" type="text/javascript"></script>
