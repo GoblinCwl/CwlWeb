@@ -20,21 +20,21 @@
         }
 
         .web-record {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
+            /*position: absolute;*/
+            /*bottom: 0;*/
+            /*width: 100%;*/
         }
 
         .web-record {
             font-size: 0.8em;
             color: gray;
-            margin-top: 4em;
+            /*margin-top: 4em;*/
         }
 
         .web-record p {
             text-align: center;
             font-family: MyHack;
-            margin-left: 25em;
+            /*margin-left: 25em;*/
         }
 
         .web-record a {
@@ -143,7 +143,7 @@
         }
 
         #recentCodeLagTable{
-            border-collapse: unset;
+            border-collapse: unset
         }
 
         #recentCodeLagTable td {
@@ -472,14 +472,27 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-lg-6 indexRightDiv" style="border-color: #000;">
+                        <div class="col-lg-1 indexRightDiv" style="border-color: #000;width: 36%">
                             <div style="border: 1px solid black;height: 100%">
                                 清单
                             </div>
                         </div>
-                        <div class="col-lg-6 indexRightDiv" style="border-color: #ef9bd5;">
+                        <div class= "indexRightDiv" style="border-color: #ef9bd5;">
                             <div style="border: 1px solid black;height: 100%">
-                                外链
+                                <div>
+                                    <img style="border:solid #000  1px ;width: 7em" src="https://cwl-web.oss-cn-shanghai.aliyuncs.com/blogs/2b054e4a-0894-4b4a-b118-25e799b21c71.png">
+                                    <img style="border:solid #000  1px ;width: 7em" src="https://cwl-web.oss-cn-shanghai.aliyuncs.com/blogs/3de6c9f1-df2a-49f0-8a7e-dd9044706cda.png">
+                                    <img style="border:solid #000  1px ;width: 7em" src="	https://cwl-web.oss-cn-shanghai.aliyuncs.com/blogs/dc123928-f08d-464a-aa72-8cded1f31cc7.png">
+                                </div>
+                                <div style="background: #EF9BD5;height: 5px;border-bottom: 1px #000 solid"></div>
+                                <div>
+                                    <div class="web-record">
+                                        <p>
+                                            © 2021 GoblinCwl 🐉
+                                            <a href="https://beian.miit.gov.cn/" target="_blank">湘ICP备19013886号</a>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -491,12 +504,6 @@
 
 
     </div>
-</div>
-<div class="web-record">
-    <p>
-        © 2021 GoblinCwl 🐉
-        <a href="https://beian.miit.gov.cn/" target="_blank">湘ICP备19013886号</a>
-    </p>
 </div>
 </body>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
