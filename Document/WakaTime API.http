@@ -1,0 +1,9 @@
+GET https://wakatime.com/api/v1/users/current/stats/last_7_days?api_key=b127dbab-de13-4e2e-b948-737086a560f7
+Accept: application/json
+
+###
+
+GET https://wakatime.com/api/v1/users/current/summaries?start=2022-11-16&end=2022-11-17&api_key=b127dbab-de13-4e2e-b948-737086a560f7
+Accept: application/json
+
+###

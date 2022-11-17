@@ -23,9 +23,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -146,6 +144,106 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
 
         //TODO 获取状态
         resultMap.put("status", "出差中");
+        return resultMap;
+    }
+
+    /**
+     * 编程语言工时数据
+     *
+     * @return 结果集
+     * @date 2022/11/17 15:48
+     * @author ☪wl
+     */
+    public Map<String, Object> findWorkLanguageData() {
+        Map<String, Object> resultMap = new HashMap<>();
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try {
+            URI uri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("wakatime.com")
+                    .setPath("/api/v1/users/current/stats/last_7_days")
+                    .setParameter("api_key", this.keyValueOptionsService.getById("WakaTimeKey").getOptValue())
+                    .build();
+            HttpGet httpGet = new HttpGet(uri);
+            try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+                // 获取响应实体
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    JSONObject jsonObject = JSONObject.parseObject(EntityUtils.toString(entity));
+                    JSONObject jsonData = jsonObject.getJSONObject("data");
+                    //语言列表
+                    JSONArray languages = jsonData.getJSONArray("languages");
+                    List<Map<String, Object>> languageMapList = new ArrayList<>();
+                    //计算总时间
+                    double countTime = 0;
+                    //只拿6个
+                    for (int i = 0; i < languages.size() && i < 6; i++) {
+                        Map<String, Object> languagesMap = new HashMap<>(2);
+                        JSONObject languagesJsonObject = languages.getJSONObject(i);
+                        languagesMap.put("name", languagesJsonObject.get("name"));
+                        languagesMap.put("timeText", languagesJsonObject.get("text"));
+                        countTime += languagesJsonObject.getDouble("total_seconds");
+                        languagesMap.put("time", languagesJsonObject.get("total_seconds"));
+                        languageMapList.add(languagesMap);
+                    }
+                    resultMap.put("languages", languageMapList);
+                    //总时间
+                    resultMap.put("languagesCountTime", countTime);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 关闭连接,释放资源
+            try {
+                httpclient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return resultMap;
+    }
+
+    public Map<String, Object> findWorkTimeData() {
+        Map<String, Object> resultMap = new HashMap<>();
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            //昨天的日期
+            Calendar yesterdayCal = Calendar.getInstance();
+            yesterdayCal.add(Calendar.DATE, -1);
+
+            URI uri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("wakatime.com")
+                    .setPath("/api/v1/users/current/summaries")
+                    .setParameter("start", sdf.format(yesterdayCal.getTime()))
+                    .setParameter("end", sdf.format(new Date()))
+                    .setParameter("api_key", this.keyValueOptionsService.getById("WakaTimeKey").getOptValue())
+                    .build();
+            HttpGet httpGet = new HttpGet(uri);
+            try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+                // 获取响应实体
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    JSONObject jsonObject = JSONObject.parseObject(EntityUtils.toString(entity));
+                    JSONArray jsonDataArray = jsonObject.getJSONArray("data");
+                    resultMap.put("yesterdayWorkTime", jsonDataArray.getJSONObject(0).getJSONObject("grand_total").get("text"));
+                    resultMap.put("todayWorkTime", jsonDataArray.getJSONObject(1).getJSONObject("grand_total").get("text"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 关闭连接,释放资源
+            try {
+                httpclient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         return resultMap;
     }
 }
