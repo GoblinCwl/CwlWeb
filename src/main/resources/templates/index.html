@@ -316,6 +316,98 @@
             cursor: pointer;
         }
 
+        .flowerPeace {
+            position: absolute;
+        }
+
+        #Marigold_petals, #Marigold_head, #Marigold_mouth, #Marigold_eyebrow1, #Marigold_eyebrow2, #Marigold_blink1, #Marigold_blink2 {
+            animation: flowerHead 0.8s infinite alternate;
+        }
+
+        #PeaShooter_stalk_bottom {
+            animation: flowerRotate 0.8s infinite alternate;
+        }
+
+        #PeaShooter_frontleaf_righttip, #PeaShooter_backleaf_righttip {
+            animation: flowerRotate2 0.8s infinite alternate;
+        }
+
+        #PeaShooter_frontleaf_lefttip, #PeaShooter_backleaf_lefttip {
+            animation: flowerRotate3 0.8s infinite alternate;
+        }
+
+        #PeaShooter_frontleaf, #PeaShooter_backleaf {
+            animation: flowerScale 0.8s infinite alternate;
+        }
+
+        @keyframes flowerHead {
+            0% {
+                transform: translateX(-2px) translateY(2px);
+            }
+            50% {
+                transform: translateX(0px) translateY(0px);
+            }
+            100% {
+                transform: translateX(2px) translateY(2px)
+            }
+        }
+
+        @keyframes flowerRotate {
+            0% {
+                transform: rotate(-10deg);
+            }
+            50% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(10deg);
+            }
+        }
+
+        @keyframes flowerRotate2 {
+            0% {
+                transform: rotate(5deg) scale(1.05);
+            }
+            25% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(-5deg);
+            }
+            75% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(5deg) scale(1.0);
+            }
+        }
+
+        @keyframes flowerRotate3 {
+            0% {
+                transform: rotate(10deg) scale(1.05);
+            }
+            25% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(-10deg);
+            }
+            75% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(10deg) scale(1.0);
+            }
+        }
+
+        @keyframes flowerScale {
+            0% {
+                transform: scale(1.05)
+            }
+            100% {
+                transform: scale(1.0)
+            }
+        }
     </style>
 </head>
 <body>
@@ -486,9 +578,56 @@
                                 <span style="font-family: SpacePixel,serif;font-size: 14px">0001</span>
                             </div>
                             <div style="background: #fed547;height: 5px;"></div>
-                            <div style="border: 1px solid black;height: 76.5%">
-                                <img src="https://cwl-web.oss-cn-shanghai.aliyuncs.com/blogs/e374e8ee-7790-41a8-902a-d075dec56629.png"
-                                     style="width: 100%;padding: 0.1em 0.4em 0.4em;">
+                            <div style="border: 1px solid black;height: 76.5%;padding: 0.4em">
+                                <img id="Marigold_petals" style="width: 50px;z-index: 10;left: 12px;top: 37px"
+                                     class="flowerPeace"
+                                     th:src="@{images/flower/Marigold_petals.png}">
+                                <img id="Marigold_head" style="width: 30px;z-index:11;left: 24px;top: 48px;"
+                                     class="flowerPeace"
+                                     th:src="@{images/flower/Marigold_head.png}">
+                                <img id="Marigold_blink1"
+                                     style="width: 24px;z-index:11;left: 28px;top: 53px;visibility: hidden"
+                                     class="flowerPeace"
+                                     th:src="@{images/flower/Marigold_blink1.png}">
+                                <img id="Marigold_blink2"
+                                     style="width: 24px;z-index:11;left: 28px;top: 53px;visibility: hidden"
+                                     class="flowerPeace"
+                                     th:src="@{images/flower/Marigold_blink2.png}">
+                                <img id="Marigold_mouth" style="z-index:12;left: 31px;top: 63px;width: 20px;"
+                                     class="flowerPeace"
+                                     th:src="@{images/flower/Marigold_mouth.png}">
+                                <img id="Marigold_eyebrow1" style="z-index:12;top: 52px;left: 27px;width: 8px"
+                                     class="flowerPeace"
+                                     th:src="@{images/flower/Marigold_eyebrow1.png}">
+                                <img id="Marigold_eyebrow2" style="z-index:12;top: 50px;left: 43px;width: 8px"
+                                     class="flowerPeace"
+                                     th:src="@{images/flower/Marigold_eyebrow2.png}">
+                                <img id="PeaShooter_backleaf" style="z-index: 8;width: 25px;top: 86px;left: 22px;"
+                                     class="flowerPeace"
+                                     th:src="@{images/flower/PeaShooter_backleaf.png}">
+                                <img id="PeaShooter_frontleaf" style="z-index: 12;top: 84px;left: 14px;width: 45px;"
+                                     class="flowerPeace"
+                                     th:src="@{images/flower/PeaShooter_frontleaf.png}">
+                                <img id="PeaShooter_stalk_bottom" style="top: 84px;left: 32px;z-index: 8;width: 10px"
+                                     class="flowerPeace"
+                                     th:src="@{images/flower/PeaShooter_stalk_bottom.png}">
+                                <img id="PeaShooter_frontleaf_lefttip"
+                                     style="top: 91px;left: 10px;z-index: 8;width: 16px" class="flowerPeace"
+                                     th:src="@{images/flower/PeaShooter_frontleaf_lefttip.png}">
+                                <img id="PeaShooter_frontleaf_righttip"
+                                     style="top: 85px;left: 55px;z-index: 8;width: 10px" class="flowerPeace"
+                                     th:src="@{images/flower/PeaShooter_frontleaf_righttip.png}">
+                                <img id="PeaShooter_backleaf_lefttip"
+                                     style="top: 86px;left: 19px;z-index: 8;width: 10px" class="flowerPeace"
+                                     th:src="@{images/flower/PeaShooter_backleaf_lefttip.png}">
+                                <img id="PeaShooter_backleaf_righttip"
+                                     style="top: 85px;left: 42px;z-index: 8;width: 10px" class="flowerPeace"
+                                     th:src="@{images/flower/PeaShooter_backleaf_righttip.png}">
+                                <img id="Pot_top" style="top: 83px;left: 8px;z-index: 7;width: 57px" class="flowerPeace"
+                                     th:src="@{images/flower/Pot_top.png}">
+                                <img id="Pot_bottom" style="top: 117px;left: 13px;z-index: 6;width: 48px"
+                                     class="flowerPeace"
+                                     th:src="@{images/flower/Pot_bottom.png}">
 
                             </div>
                         </div>
@@ -534,6 +673,21 @@
             terminalDataInit();
             //初始化最近更新博客
             recentUpdateBlogDataInit();
+
+            let i = 1;
+            setInterval(function () {
+                // i++;
+                // if (i % 2 === 0) {
+                //     i = 0;
+                //     $("#Marigold_blink2").css("visibility", "hidden");
+                // } else {
+                //     $("#Marigold_blink2").css("visibility", "visible");
+                // }
+                $("#Marigold_blink2").css("visibility", "visible");
+                setTimeout(() => {
+                    $("#Marigold_blink2").css("visibility", "hidden");
+                }, 100)
+            }, 2000);
 
 
             const arr = ['你好世界！', 'Hello World!', 'こんにちは世界~'];//显示的文本
