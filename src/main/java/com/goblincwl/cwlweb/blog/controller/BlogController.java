@@ -117,7 +117,7 @@ public class BlogController extends BaseController<Blog> {
     @GetMapping("/recentUpdateList")
     public Result<Page<Blog>> recentUpdateList() {
         Page<Blog> page = createPage();
-        page.setSize(6);
+        page.setSize(7);
         page.setCurrent(1);
         Page<Blog> resultPage = this.blogService.page(page, new LambdaQueryWrapper<Blog>().orderByDesc(true, Blog::getUpdateTime));
         return new Result<Page<Blog>>().success(resultPage);

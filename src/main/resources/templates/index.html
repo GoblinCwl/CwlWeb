@@ -142,7 +142,7 @@
             padding: 0;
         }
 
-        #recentCodeLagTable{
+        #recentCodeLagTable {
             border-collapse: unset
         }
 
@@ -311,6 +311,11 @@
             color: blue;
         }
 
+        .QRCodeImg {
+            width: 7em;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -367,12 +372,14 @@
                                     <div class="rightWeatherDiv col-lg-12"
                                          style="border-bottom: 1px solid;text-align: center;">
                                         <div class="rightWeatherDiv col-lg-12">
-                                            <span id="yesterdayWorkTimeSpan" style="font-size: 8px;color:rgba(65,127,218,0.68)">
+                                            <span id="yesterdayWorkTimeSpan"
+                                                  style="font-size: 8px;color:rgba(65,127,218,0.68)">
                                                 <!--昨日工时-->
                                             </span>
                                         </div>
                                         <div class="rightWeatherDiv col-lg-12">
-                                            <span id="todayWorkTimeSpan" style="font-size: 15px;font-weight: bold;color: #417fda">
+                                            <span id="todayWorkTimeSpan"
+                                                  style="font-size: 15px;font-weight: bold;color: #417fda">
                                                 <!--今日工时-->
                                             </span>
                                         </div>
@@ -460,7 +467,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-12 indexRightDiv" style="border-color: #e1b037;">
+                        <div class="col-lg-12 indexRightDiv" style="border-color: #e1b037;height: 40%">
                             <div style="border: 1px solid black;height: 100%;padding: 0.45em">
                                 <table style="width: 100%;height: 100%;" id="updateBlogTable">
                                     <thead>
@@ -472,23 +479,37 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-lg-1 indexRightDiv" style="border-color: #000;width: 36%">
-                            <div style="border: 1px solid black;height: 100%">
-                                清单
+                        <div class="col-lg-1 indexRightDiv" style="border-color: #fed547;width: 15.1%;height: 26.6%">
+                            <div style="height: 20%;border: 1px solid #000;padding: 0.1em">
+                                <img th:src="@{images/flower/Gold.png}"
+                                     style="height: 100%;">
+                                <span style="font-family: SpacePixel,serif;font-size: 14px">0001</span>
+                            </div>
+                            <div style="background: #fed547;height: 5px;"></div>
+                            <div style="border: 1px solid black;height: 76.5%">
+                                <img src="https://cwl-web.oss-cn-shanghai.aliyuncs.com/blogs/e374e8ee-7790-41a8-902a-d075dec56629.png"
+                                     style="width: 100%;padding: 0.1em 0.4em 0.4em;">
+
                             </div>
                         </div>
-                        <div class= "indexRightDiv" style="border-color: #ef9bd5;">
+                        <div class="indexRightDiv" style="border-color: #ef9bd5;;height: 26.6%">
                             <div style="border: 1px solid black;height: 100%">
                                 <div>
-                                    <img style="border:solid #000  1px ;width: 7em" src="https://cwl-web.oss-cn-shanghai.aliyuncs.com/blogs/2b054e4a-0894-4b4a-b118-25e799b21c71.png">
-                                    <img style="border:solid #000  1px ;width: 7em" src="https://cwl-web.oss-cn-shanghai.aliyuncs.com/blogs/3de6c9f1-df2a-49f0-8a7e-dd9044706cda.png">
-                                    <img style="border:solid #000  1px ;width: 7em" src="	https://cwl-web.oss-cn-shanghai.aliyuncs.com/blogs/dc123928-f08d-464a-aa72-8cded1f31cc7.png">
+                                    <a target="_blank"
+                                       href="https://qm.qq.com/cgi-bin/qm/qr?k=39jFphuNXTzdb_aHQaUMKj9DARpvfRf7&noverify=0&personal_qrcode_source=4"><img
+                                            class="QRCodeImg" th:src="@{/images/QRCode/QQ.png}"></a>
+                                    <a target="_blank" href="https://u.wechat.com/MHcajFb03bKan0E5HfO06wc"><img
+                                            class="QRCodeImg" th:src="@{/images/QRCode/WeChat.png}"></a>
+                                    <a target="_blank" href="https://space.bilibili.com/13536815"><img class="QRCodeImg"
+                                                                                                       th:src="@{/images/QRCode/Bilibili.png}"></a>
+                                    <a target="_blank" href="https://github.com/GoblinCwl"><img class="QRCodeImg"
+                                                                                                th:src="@{/images/QRCode/GitHub.png}"></a>
                                 </div>
-                                <div style="background: #EF9BD5;height: 5px;border-bottom: 1px #000 solid"></div>
+                                <div style="background: #EF9BD5;height: 5px;border-bottom: 1px #000 solid;border-top: 1px #000 solid;"></div>
                                 <div>
                                     <div class="web-record">
                                         <p>
-                                            © 2021 GoblinCwl 🐉
+                                            © 2022 GoblinCwl 💎
                                             <a href="https://beian.miit.gov.cn/" target="_blank">湘ICP备19013886号</a>
                                         </p>
                                     </div>
@@ -591,7 +612,7 @@
                     //天气数据
                     $("#provinceSpan").text(data.province);
                     $("#citySpan").text(data.city);
-                    $("#weatherTempSpan").text(data.weather + "-" + data.temperature + "℃");
+                    $("#weatherTempSpan").text(data.weather + "  " + data.temperature + "℃");
                     $("#stateSpan").text(data.status);
                     $("#weatherTempImg").attr("src", weatherImgJuge(data.weather))
 
@@ -630,11 +651,20 @@
                     const dataList = res.data.records;
                     let htmlStr = "";
                     for (const data of dataList) {
-                        var title = reLengthStr(data.title, 28);
-
+                        const title = reLengthStr(data.title, 28);
+                        let icon = '';
+                        let iconTitle = '';
+                        if (data.updateTime === data.releaseTime) {
+                            icon = '🌟';
+                            iconTitle = '新发布!';
+                        } else {
+                            icon = '🔔';
+                            iconTitle = '有更新';
+                        }
                         htmlStr += "<tr>\n" +
-                            "<td><a href='/blog/content/" + data.id + "'>" + title + "</a></td>" +
-                            "<td class='blogTdTime'>" + dateDif(new Date(data.updateTime).getTime()) + "</td>" +
+                            "<td><span title='" + iconTitle + "'>" + icon + "</span>" +
+                            "<a title='" + data.title + "' href='/blog/content/" + data.id + "'>" + title + "</a></td>" +
+                            "<td class='blogTdTime'><span title='更新时间：" + data.updateTime + "'>" + dateDif(new Date(data.updateTime).getTime()) + "</span></td>" +
                             "</tr>";
                     }
                     $("#updateBlogTbody").html(htmlStr)
@@ -927,7 +957,7 @@
             let emoji;
             switch (language) {
                 case "Java":
-                    emoji = "☕";
+                    emoji = "♨️";
                     break;
                 case "HTML":
                     emoji = "🖥️";

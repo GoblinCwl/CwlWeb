@@ -3,6 +3,11 @@
     src: url('../../fonts/hack/Hack-Regular.ttf');
 }
 
+@font-face {
+    font-family: 'SpacePixel';
+    src: url('../../fonts/SpacePixel.ttf');
+}
+
 #sideNav {
     border-bottom: 0;
 }
@@ -60,8 +65,13 @@ input:focus {
 }
 
 input.required, textarea.required {
-    border-color: #c59090 ;
+    border-color: #c59090;
 }
-.no-border-radio{
+
+.no-border-radio {
     border-radius: 0;
+}
+
+img {
+    pointer-events: none;
 }
