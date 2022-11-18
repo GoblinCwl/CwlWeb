@@ -578,7 +578,8 @@
                                 <span style="font-family: SpacePixel,serif;font-size: 14px">0001</span>
                             </div>
                             <div style="background: #fed547;height: 5px;"></div>
-                            <div style="border: 1px solid black;height: 76.5%;padding: 0.4em">
+                            <div style="border: 1px solid black;height: 76.5%;padding: 0.4em;background-color: #faff8b"
+                                 onclick="flowerSay()">
                                 <img id="Marigold_petals" style="width: 50px;z-index: 10;left: 12px;top: 37px"
                                      class="flowerPeace"
                                      th:src="@{images/flower/Marigold_petals.png}">
@@ -1138,6 +1139,24 @@
                     emoji = "❓";
             }
             return emoji + language;
+        }
+
+        //花花金句
+        function flowerSay() {
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/flowerSay",
+                success: function (res) {
+                    xtip.tips(res.data, 'Marigold_mouth', {
+                        times: 2,
+                        pos: 't',
+                        bgcolor: 'white',
+                        color: '#e1b037',
+                    });
+                }
+            });
+
+
         }
 
     </script>

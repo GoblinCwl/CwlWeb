@@ -6,14 +6,22 @@ import com.goblincwl.cwlweb.common.utils.IpUtils;
 import com.goblincwl.cwlweb.manager.service.AccessRecordService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -65,6 +73,39 @@ public class IndexController {
             resultMap = JSONObject.parseObject(indexDashboardDataStr, Map.class);
         }
         return Result.genSuccess(resultMap, "成功");
+    }
+
+    @GetMapping("/flowerSay")
+    public Result<String> flowerSay() {
+        String message = "唯独对你，我没有办法开口...";
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try {
+            URI uri = new URIBuilder()
+                    .setScheme("https")
+                    .setHost("v1.hitokoto.cn")
+                    .build();
+            HttpGet httpGet = new HttpGet(uri);
+            try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+                // 获取响应实体
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    JSONObject jsonObject = JSONObject.parseObject(EntityUtils.toString(entity));
+                    message = jsonObject.getString("hitokoto");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 关闭连接,释放资源
+            try {
+                httpclient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return new Result<String>().success(message, "成功");
+
     }
 
 }
