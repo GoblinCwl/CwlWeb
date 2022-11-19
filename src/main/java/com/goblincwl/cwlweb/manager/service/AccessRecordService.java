@@ -59,13 +59,13 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
         accessRecord = (AccessRecord) redisTemplate.opsForValue().get("ipAccessCache:" + ipAddress);
         if (accessRecord == null) {
             //为空，则已超过时间，操作数据库
-            accessRecord = new AccessRecord();
-            accessRecord.setIpAddress(ipAddress);
             accessRecord = this.accessRecordMapper.selectOne(new LambdaQueryWrapper<AccessRecord>().eq(AccessRecord::getIpAddress, accessRecord.getIpAddress()));
 
             //如果是新用户，新增信息
-            if (accessRecord.getId() == null) {
+            if (accessRecord == null) {
                 //保存访客信息
+                accessRecord = new AccessRecord();
+                accessRecord.setIpAddress(ipAddress);
                 accessRecord.setNickName(NickNameUtils.randomName(2));
                 accessRecord.setAccessTime(new Date());
                 accessRecord.setAccessCount(1);
