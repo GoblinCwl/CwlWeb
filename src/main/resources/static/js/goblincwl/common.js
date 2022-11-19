@@ -239,3 +239,16 @@ function splitArrayToString(array) {
     }
     return str;
 }
+
+function PrefixInteger(num, length) {
+    return (Array(length).join('0') + num).slice(-length);
+}
+
+function dateDiffDay(sDate1, sDate2) {  //sDate1和sDate2是yyyy-MM-dd格式  eg:2021-09-09、2021-09-10
+    var startdate = new Date(sDate1);
+    var enddate = new Date(sDate2);
+    //把相差的毫秒数转换为天数
+    var iDays = parseInt(Math.abs(enddate.getTime() - startdate.getTime()) / 1000 / 60 / 60 / 24);
+
+    return iDays;  //返回相差天数
+}

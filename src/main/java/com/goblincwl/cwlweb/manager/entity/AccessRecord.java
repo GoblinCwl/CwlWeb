@@ -49,4 +49,8 @@ public class AccessRecord implements Serializable {
      * 访问总次数
      */
     private Integer accessCount;
+    /**
+     * 上次浇水时间
+     */
+    private Date lastWateringTime;
 }
