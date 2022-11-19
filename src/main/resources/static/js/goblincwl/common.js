@@ -1,3 +1,30 @@
+$(function () {
+    const a = getClientInfo();
+    if (a !== "PC") {
+        alert("移动端暂未开发，请使用电脑浏览！");
+        //关闭此页面
+        window.close();
+    }
+});
+
+//判断访问设备方法
+function getClientInfo() {
+    const userAgentInfo = navigator.userAgent;
+    const Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+    let agentinfo = null;
+    for (let i = 0; i < Agents.length; i++) {
+        if (userAgentInfo.indexOf(Agents[i]) > 0) {
+            agentinfo = userAgentInfo;
+            break;
+        }
+    }
+    if (agentinfo) {
+        return agentinfo;
+    } else {
+        return "PC";
+    }
+}
+
 //日期格式化
 Date.prototype.Format = function (fmt) {
     const o = {
