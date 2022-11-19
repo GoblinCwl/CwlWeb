@@ -3,7 +3,17 @@
 <head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
     <title>GoblinCwl - 管理</title>
     <link th:href="@{/css/manager.css}" rel="stylesheet"/>
-    <style></style>
+    <style>
+        div {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+    </style>
 </head>
 <body>
 <!-- 左侧侧边栏 -->
@@ -15,6 +25,16 @@
         <!-- 顶部导航 -->
         <div th:replace="fragment/globalComponent::topHeader"></div>
 
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div style="border: 1px solid #000;margin-top: 2em;height: 35em">1111</div>
+                </div>
+                <div class="col-lg-5">
+                    <div style="border: 1px solid #000;margin-top: 2em;height: 35em">222</div>
+                </div>
+            </div>
+        </div>
 
     </div>
 </div>
