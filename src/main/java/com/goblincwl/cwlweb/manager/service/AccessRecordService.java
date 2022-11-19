@@ -2,8 +2,9 @@ package com.goblincwl.cwlweb.manager.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.utils.NickNameUtils;
 import com.goblincwl.cwlweb.manager.entity.AccessRecord;
 import com.goblincwl.cwlweb.manager.mapper.AccessRecordMapper;
@@ -53,33 +54,43 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
      */
     public Map<String, Object> findTerminalData(String ipAddress) {
         Map<String, Object> resultMap = new HashMap<>();
-        AccessRecord accessRecord = new AccessRecord();
-        accessRecord.setIpAddress(ipAddress);
+        AccessRecord accessRecord;
+        //首先查询Redis中是否记录
+        accessRecord = (AccessRecord) redisTemplate.opsForValue().get("ipAccessCache:" + ipAddress);
+        if (accessRecord == null) {
+            //为空，则已超过时间，操作数据库
+            accessRecord = new AccessRecord();
+            accessRecord.setIpAddress(ipAddress);
+            accessRecord = this.accessRecordMapper.selectOne(new LambdaQueryWrapper<AccessRecord>().eq(AccessRecord::getIpAddress, accessRecord.getIpAddress()));
 
-        AccessRecord accessRecordResult = this.accessRecordMapper.selectOne(new QueryWrapper<>(accessRecord));
-        if (accessRecordResult == null) {
-            //保存访客信息
-            accessRecord.setNickName(NickNameUtils.randomName(2));
-            accessRecord.setAccessTime(new Date());
-            accessRecord.setAccessCount(1);
-            int saveOneResult = this.accessRecordMapper.insert(accessRecord);
-            if (saveOneResult < 1) {
-                //TODO
-                throw new RuntimeException("新增失败");
-            }
-        } else {
-            accessRecord = accessRecordResult;
-            //记录访问时间和上次访问时间
-            accessRecord.setLastAccessTime(accessRecord.getAccessTime());
-            accessRecord.setAccessTime(new Date());
-            //累加访问次数
-            accessRecord.setAccessCount(accessRecord.getAccessCount() + 1);
-            int updateOneResult = this.accessRecordMapper.updateById(accessRecord);
-            if (updateOneResult < 1) {
-                //TODO
-                throw new RuntimeException("修改失败");
+            //如果是新用户，新增信息
+            if (accessRecord.getId() == null) {
+                //保存访客信息
+                accessRecord.setNickName(NickNameUtils.randomName(2));
+                accessRecord.setAccessTime(new Date());
+                accessRecord.setAccessCount(1);
+                int saveOneResult = this.accessRecordMapper.insert(accessRecord);
+                if (saveOneResult < 1) {
+                    throw new GoblinCwlException("新增失败");
+                }
+            } else {
+                //记录访问时间和上次访问时间
+                accessRecord.setLastAccessTime(accessRecord.getAccessTime());
+                accessRecord.setAccessTime(new Date());
+                //累加访问次数
+                accessRecord.setAccessCount(accessRecord.getAccessCount() + 1);
+                int updateOneResult = this.accessRecordMapper.updateById(accessRecord);
+                if (updateOneResult < 1) {
+                    throw new GoblinCwlException("修改失败");
+                }
+                //新增Redis缓存
+                redisTemplate.opsForValue().set("ipAccessCache:" + ipAddress, accessRecord);
+                //设置有效期为30min
+                redisTemplate.expire("ipAccessCache:" + ipAddress, 30, TimeUnit.MINUTES);
             }
         }
+
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //本次访问
         resultMap.put("accessTime", sdf.format(accessRecord.getAccessTime()));

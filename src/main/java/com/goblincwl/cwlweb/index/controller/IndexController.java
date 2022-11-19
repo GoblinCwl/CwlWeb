@@ -30,6 +30,7 @@ import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -61,13 +62,11 @@ public class IndexController {
      */
     @GetMapping("/findTerminalData")
     public Result<Object> findTerminalData(HttpServletRequest request) {
-        Map<String, Object> resultMap;
+        Map<String, Object> resultMap = new HashMap<>();
         //先从Redis拿缓存
         String redisKey = "indexDashboardData";
         String indexDashboardDataStr = (String) redisTemplate.opsForValue().get(redisKey);
         if (StringUtils.isEmpty(indexDashboardDataStr)) {
-            //终端数据
-            resultMap = this.accessRecordService.findTerminalData(IpUtils.getIpAddress(request));
             //天气数据
             resultMap.putAll(this.accessRecordService.findWeatherData());
             //编程语言工时数据
@@ -83,6 +82,9 @@ public class IndexController {
             resultMap = JSONObject.parseObject(indexDashboardDataStr, Map.class);
             resultMap.remove("lastWateringTime");
         }
+
+        //终端数据,另起缓存
+        resultMap.putAll(this.accessRecordService.findTerminalData(IpUtils.getIpAddress(request)));
 
         //金盏花浇水次数，不缓存
         resultMap.put("NumberOfWatering", this.keyValueOptionsService.getById("NumberOfWatering").getOptValue());
