@@ -58,10 +58,6 @@
                                     class="btn btn-info btn-sm rightSize toolbarBtn">
                                 <i class="glyphicon glyphicon-pencil toolbarIcon" aria-hidden="true"></i>修改
                             </button>
-                            <button id="keyValueOptions-toolbar-remove" type="button"
-                                    class="btn btn-danger btn-sm rightSize toolbarBtn">
-                                <i class="glyphicon glyphicon-remove " aria-hidden="true"></i>删除
-                            </button>
                         </div>
                         <div class="form-inline table-search">
                             <div class="form-group">
@@ -255,10 +251,6 @@
                     $singleBtnArray[0].on('click', function () {
                         keyValueOptionsEdit(tableId)
                     });
-                    $multiBtnArray[0] = $("#keyValueOptions-toolbar-remove");
-                    $multiBtnArray[0].on('click', function () {
-                        keyValueOptionsRemove(tableId)
-                    });
                     $queryInputArray[0] = $("#keyValueOptions-query-optKey")
                     //自定义参数
                     tableOptions.queryParams = function (params) {
@@ -277,8 +269,7 @@
                         {
                             title: '操作',
                             formatter: function (value, row, index) {//赋予的参数
-                                return genTableOptionA('#5bc0de', '修改', 'glyphicon-pencil', 'keyValueOptionsEdit("' + tableId + '",' + JSON.stringify(row) + ')') +
-                                    genTableOptionA('#d9534f', '删除', 'glyphicon-remove', 'keyValueOptionsRemove("' + tableId + '","' + row.optKey + '")');
+                                return genTableOptionA('#5bc0de', '修改', 'glyphicon-pencil', 'keyValueOptionsEdit("' + tableId + '",' + JSON.stringify(row) + ')');
 
                             }, //自定义方法，添加操作按钮,
                             switchable: false,
@@ -744,39 +735,7 @@
             })
         }
 
-        /*删除*/
-        function keyValueOptionsRemove(tableId, optKey) {
-            const $table = getTable(tableId);
-            //获取选择的数据
-            if (optKey == null) {
-                optKey = '';
-                //复选框所选数据
-                const checkIdList = $("#" + tableId).bootstrapTable('getAllSelections');
-                if (checkIdList.length <= 0) {
-                    xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
-                    return;
-                }
-                for (let i = 0; i < checkIdList.length; i++) {
-                    let checkIdListElement = checkIdList[i];
-                    optKey += checkIdListElement.optKey += ",";
-                }
-            }
-            const winId = xtip.confirm('确认删除所选数据？', function () {
-                ajaxHttp({
-                    type: "DELETE",
-                    url: ctx + "/manager/keyValueOptions/remove",
-                    data: {
-                        optKeys: optKey
-                    },
-                    winId: winId,
-                    success: function (res) {
-                        xtip.msg(res.msg, {icon: 's', type: 'w'})
-                        $table.bootstrapTable('refresh');
-                        $table.bootstrapTable('getOptions').onUncheckAll();
-                    }
-                })
-            }, {icon: ['', '#d9534f']});
-        }
+
     </script>
 
     <!--聊天消息-->
