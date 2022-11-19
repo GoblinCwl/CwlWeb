@@ -93,6 +93,9 @@ const ajaxHttp = function (options) {
         dataType: o.dataType,
         async: o.async,
         beforeSend: function () {
+            if (o.doBefore === false) {
+                return;
+            }
             o.beforeSend && o.beforeSend();
         },
         success: function (res) {
@@ -251,4 +254,11 @@ function dateDiffDay(sDate1, sDate2) {  //sDate1和sDate2是yyyy-MM-dd格式  eg
     var iDays = parseInt(Math.abs(enddate.getTime() - startdate.getTime()) / 1000 / 60 / 60 / 24);
 
     return iDays;  //返回相差天数
+}
+
+//生成min_v到max_v之间的随机数
+function generate_rand_num(min_v, max_v) {
+    //min_v下限，max_v上限
+    const rand_num = parseInt(Math.random() * (max_v - min_v + 1) + min_v);
+    return rand_num
 }

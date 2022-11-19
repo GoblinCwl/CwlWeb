@@ -19,9 +19,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +49,34 @@ public class IndexController {
     private final AccessRecordService accessRecordService;
 
     private final KeyValueOptionsService keyValueOptionsService;
+
+    @PostMapping("/httpRequest")
+    public Result<JSONObject> httpRequest(@RequestParam Map<String, Object> param) {
+        JSONObject jsonObject = null;
+
+        String url = (String) param.get("url");
+
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet(url);
+        try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+            // 获取响应实体
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                jsonObject = JSONObject.parseObject(EntityUtils.toString(entity));
+            }
+        } catch (
+                Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 关闭连接,释放资源
+            try {
+                httpClient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return new Result<JSONObject>().success(jsonObject, "成功");
+    }
 
     /**
      * 首页看板

@@ -155,9 +155,10 @@
             bottom: 0.2rem;
         }
 
-        .badge{
+        .badge {
             border: 1px solid white;
         }
+
         .badge:hover {
             border: 1px solid black;
             transform: scale(1.2);
@@ -214,7 +215,7 @@
                             <div class="form-group col-lg-1 width-7">
                                 <img id="formProfileImg" alt="选择头像"
                                      src="https://ui-avatars.com/api/?font-size=0.33&length=2&background=ffffff&name=头像"
-                                     class="commentProfileImg" onclick="chooseProfile()">
+                                     class="commentProfileImg eventImg" onclick="chooseProfile()">
                             </div>
                             <div class="form-group col-lg-3 width-31">
                                 <label class="sr-only" for="nickName"></label>
@@ -238,7 +239,8 @@
                         <div class="row">
                             <div class="form-group col-lg-12">
                                 <label class="sr-only" for="commentContent"></label>
-                                <textarea id="commentContent" class="form-control no-border-radio required" rows="3" placeholder="我有一言，请诸位静听..."
+                                <textarea id="commentContent" class="form-control no-border-radio required" rows="3"
+                                          placeholder="我有一言，请诸位静听..."
                                           oninput='inputValidate($(this))'
                                           style="resize: vertical"></textarea>
                             </div>
@@ -349,8 +351,8 @@
                 flowChart: true, // 默认不解析
                 sequenceDiagram: true, // 默认不解析
             });
-            if ($(".markdown-toc-list").children().length<=0){
-                $("#custom-toc-container").css('display','none')
+            if ($(".markdown-toc-list").children().length <= 0) {
+                $("#custom-toc-container").css('display', 'none')
             }
         }
 
@@ -490,7 +492,7 @@
                 $("#commentContent").before($(html));
             }
             $("#commentContent").focus();
-            $("#commentContent").attr("placeholder","人们都渴望被理解自己的人回应。")
+            $("#commentContent").attr("placeholder", "人们都渴望被理解自己的人回应。")
 
         }
 
@@ -505,19 +507,72 @@
             return "https://q1.qlogo.cn/g?b=qq&nk=" + (qq == null || qq === "" ? '1' : qq) + "&s=100";
         }
 
-        function getTwdneProfileImg() {
-            return "https://www.thiswaifudoesnotexist.net/v2/example-" + randomInt(199999, 0) + ".jpg";
-        }
-
-        function changeTwdneProfileImg() {
-            const $randomComicProfileImage = $(".randomComicProfileImage");
-            $randomComicProfileImage.attr("src", '')
-            for (let i = 0; i < $randomComicProfileImage.length; i++) {
-                const $randomComicProfileImageElement = $($randomComicProfileImage[i]);
-                $randomComicProfileImageElement.attr("src", getTwdneProfileImg())
+        //随机头像
+        function randomImg(sort) {
+            let number = generate_rand_num(1, 2);
+            switch (number) {
+                case 1:
+                    return getRandomImg1(sort);
+                case 2:
+                    return getRandomImg2(sort);
+                default:
+                    return getRandomImg1(sort);
             }
         }
 
+        //随机头像1
+        function getRandomImg1(sort) {
+            let imgUrl = '';
+            ajaxHttp({
+                type: "POST",
+                url: ctx + "/httpRequest",
+                datatype: 'text',
+                async: false,
+                doBefore: false,
+                data: {
+                    url: "https://api.uomg.com/api/rand.avatar?sort=" + sort + "&format=json"
+                },
+                success: function (res) {
+                    imgUrl = res.data.imgurl;
+                }
+            });
+            return imgUrl;
+        }
+
+        //随机头像2
+        function getRandomImg2(sort) {
+            let imgUrl = '';
+            switch (sort) {
+                case '男':
+                    sort = 'a1';
+                    break;
+                case '女':
+                    sort = 'b1';
+                    break;
+                case '动漫男':
+                    sort = 'c3';
+                    break;
+                case '动漫女':
+                    sort = 'c2';
+                    break;
+                default:
+                    sort = 'c1';
+            }
+            ajaxHttp({
+                type: "POST",
+                url: ctx + "/httpRequest",
+                datatype: 'text',
+                async: false,
+                doBefore: false,
+                data: {
+                    url: "http://api.btstu.cn/sjtx/api.php?lx=" + sort + "&format=json"
+                },
+                success: function (res) {
+                    imgUrl = res.data.imgurl;
+                }
+            });
+            return imgUrl;
+        }
 
         /**选择头像*/
         let chooseProfileWinId = null;
@@ -527,9 +582,8 @@
                 chooseProfileWinId = xtip.tips(
                     '<a class="" href="javascript:void(0)" onclick="nickNameGenProfile()">昵称生成</a><br>' +
                     '<a class="" href="javascript:void(0)" onclick="qqGenProfile()">QQ头像</a><br>' +
-                    '<a class="" href="javascript:void(0)" onclick="randomComicProfile()">随机漫头</a><br>' +
-                    '<a class="" href="javascript:void(0)" onclick="urlProfile()">图片地址</a><br>' +
-                    ''
+                    '<a class="" href="javascript:void(0)" onclick="randomComicProfile()">随机头像</a><br>' +
+                    '<a class="" href="javascript:void(0)" onclick="urlProfile()">图片地址</a><br>'
                     , 'formProfileImg', {
                         bgcolor: 'rgb(255,255,255)',
                         times: 3,
@@ -559,11 +613,6 @@
                 chooseProfileWinId = null;
             });
 
-        }
-
-        function closeProfile() {
-            xtip.close(chooseProfileWinId);
-            chooseProfileWinId = null;
         }
 
         //昵称获取头像
@@ -635,18 +684,23 @@
                 icon: ['', '#5bc0de'],
                 tip:
                     '<form class="form-horizontal validateForm">' +
-                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '" onclick="checkRandomComicProfile(this.src)">' +
-                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '" onclick="checkRandomComicProfile(this.src)">' +
-                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '" onclick="checkRandomComicProfile(this.src)">' +
-                    '   <img alt="预览" class="fromProfile randomComicProfileImage" src="' + getTwdneProfileImg() + '" onclick="checkRandomComicProfile(this.src)">' +
+                    '   <img alt="预览" title="男" class="fromProfile randomComicProfileImage eventImg" src="' + randomImg('男') + '" onclick="checkRandomComicProfile(this.src)">' +
+                    '   <img alt="预览"  title="女" class="fromProfile randomComicProfileImage eventImg" src="' + randomImg('女') + '" onclick="checkRandomComicProfile(this.src)">' +
+                    '   <img alt="预览" title="动漫男"  class="fromProfile randomComicProfileImage eventImg" src="' + randomImg('动漫男') + '" onclick="checkRandomComicProfile(this.src)">' +
+                    '   <img alt="预览" title="动漫女"  class="fromProfile randomComicProfileImage eventImg" src="' + randomImg('动漫女') + '" onclick="checkRandomComicProfile(this.src)">' +
                     '</form>'
                 ,
-                title: "随机动漫(女) - 点击选择",
+                title: "随机头像 - 点击选择",
                 width: '310px',
                 maxWidth: '100%',
                 shadeClose: false,
                 btn1: function () {
-                    changeTwdneProfileImg()
+                    const $randomComicProfileImage = $(".randomComicProfileImage");
+                    $randomComicProfileImage.attr("src", '')
+                    $($randomComicProfileImage[0]).attr("src", randomImg('男'))
+                    $($randomComicProfileImage[1]).attr("src", randomImg('女'))
+                    $($randomComicProfileImage[2]).attr("src", randomImg('动漫男'))
+                    $($randomComicProfileImage[3]).attr("src", randomImg('动漫女'))
                 }
             });
         }
