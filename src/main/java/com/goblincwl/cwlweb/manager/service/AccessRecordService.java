@@ -53,42 +53,32 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
      */
     public Map<String, Object> findTerminalData(String ipAddress) {
         Map<String, Object> resultMap = new HashMap<>();
-        AccessRecord accessRecord;
-        //首先查询Redis中是否记录
-        accessRecord = (AccessRecord) redisTemplate.opsForValue().get("ipAccessCache:" + ipAddress);
-        if (accessRecord == null) {
-            //为空，则已超过时间，操作数据库
-            accessRecord = new AccessRecord();
-            accessRecord.setIpAddress(ipAddress);
+        AccessRecord accessRecord = new AccessRecord();
+        accessRecord.setIpAddress(ipAddress);
 
-            AccessRecord accessRecordResult = this.accessRecordMapper.selectOne(new QueryWrapper<>(accessRecord));
-            if (accessRecordResult == null) {
-                //保存访客信息
-                accessRecord.setNickName(NickNameUtils.randomName(2));
-                accessRecord.setAccessTime(new Date());
-                accessRecord.setAccessCount(1);
-                int saveOneResult = this.accessRecordMapper.insert(accessRecord);
-                if (saveOneResult < 1) {
-                    //TODO
-                    throw new RuntimeException("新增失败");
-                }
-            } else {
-                accessRecord = accessRecordResult;
-                //记录访问时间和上次访问时间
-                accessRecord.setLastAccessTime(accessRecord.getAccessTime());
-                accessRecord.setAccessTime(new Date());
-                //累加访问次数
-                accessRecord.setAccessCount(accessRecord.getAccessCount() + 1);
-                int updateOneResult = this.accessRecordMapper.updateById(accessRecord);
-                if (updateOneResult < 1) {
-                    //TODO
-                    throw new RuntimeException("修改失败");
-                }
+        AccessRecord accessRecordResult = this.accessRecordMapper.selectOne(new QueryWrapper<>(accessRecord));
+        if (accessRecordResult == null) {
+            //保存访客信息
+            accessRecord.setNickName(NickNameUtils.randomName(2));
+            accessRecord.setAccessTime(new Date());
+            accessRecord.setAccessCount(1);
+            int saveOneResult = this.accessRecordMapper.insert(accessRecord);
+            if (saveOneResult < 1) {
+                //TODO
+                throw new RuntimeException("新增失败");
             }
-            //新增Redis缓存
-            redisTemplate.opsForValue().set("ipAccessCache:" + ipAddress, accessRecord);
-            //设置有效期为30min
-            redisTemplate.expire("ipAccessCache:" + ipAddress, 30, TimeUnit.MINUTES);
+        } else {
+            accessRecord = accessRecordResult;
+            //记录访问时间和上次访问时间
+            accessRecord.setLastAccessTime(accessRecord.getAccessTime());
+            accessRecord.setAccessTime(new Date());
+            //累加访问次数
+            accessRecord.setAccessCount(accessRecord.getAccessCount() + 1);
+            int updateOneResult = this.accessRecordMapper.updateById(accessRecord);
+            if (updateOneResult < 1) {
+                //TODO
+                throw new RuntimeException("修改失败");
+            }
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //本次访问
@@ -103,6 +93,8 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
         resultMap.put("nickName", accessRecord.getNickName());
         //IP地址
         resultMap.put("ipAddress", accessRecord.getIpAddress());
+        //上次浇水时间
+        resultMap.put("lastWateringTime", accessRecord.getLastWateringTime());
         return resultMap;
     }
 

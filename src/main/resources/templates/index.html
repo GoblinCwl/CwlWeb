@@ -408,6 +408,32 @@
                 transform: scale(1.0)
             }
         }
+
+        #goldImgPick {
+            width: 3em;
+            position: absolute;
+            left: 50%;
+            top: 92%;
+            z-index: 9999;
+            filter: drop-shadow(0px 0px 10px #ffe91f);
+            cursor: pointer;
+            animation: pickGold 0.5s;
+            animation-fill-mode: forwards;
+            visibility: hidden;
+            animation-play-state: paused;
+        }
+
+        @keyframes pickGold {
+            99% {
+                transform: scale(0.5) translateY(-210px) translateX(20px);
+            }
+            100% {
+                transform: scale(0.5) translateY(-210px) translateX(20px);
+                visibility: hidden;
+            }
+
+
+        }
     </style>
 </head>
 <body>
@@ -573,13 +599,16 @@
                         </div>
                         <div class="col-lg-1 indexRightDiv" style="border-color: #fed547;width: 15.1%;height: 26.6%">
                             <div style="height: 20%;border: 1px solid #000;padding: 0.1em">
-                                <img th:src="@{images/flower/Gold.png}"
+                                <img id="goldImg" th:src="@{images/flower/Gold.png}"
                                      style="height: 100%;">
-                                <span style="font-family: SpacePixel,serif;font-size: 14px">0001</span>
+                                <span id="goldCountSpan"
+                                      style="font-family: SpacePixel,serif;font-size: 13px">
+                                    <!--总浇水次数-->
+                                </span>
                             </div>
                             <div style="background: #fed547;height: 5px;"></div>
-                            <div style="border: 1px solid black;height: 76.5%;padding: 0.4em;background-color: #faff8b"
-                                 onclick="flowerSay()">
+                            <div id="flowerDiv"
+                                 style="border: 1px solid black;height: 76.5%;padding: 0.4em;background-color: #faff8b">
                                 <img id="Marigold_petals" style="width: 50px;z-index: 10;left: 12px;top: 37px"
                                      class="flowerPeace"
                                      th:src="@{images/flower/Marigold_petals.png}">
@@ -658,13 +687,20 @@
                         </div>
                     </div>
                 </div>
+                <img id="goldImgPick" th:src="@{images/flower/Gold.png}">
             </div>
-
-
         </div>
 
 
     </div>
+</div>
+
+<div id="flowerWateringPop" class="xtiper xtiper_tips xtiper_tips_left xon"
+     style="width: 48px; left: 989px; top: 519px; z-index: 99999;visibility: hidden;cursor:pointer"
+     title="金盏花想你帮他浇水.."
+     onclick="flowerSay()">
+    <p style="background-color:white; color:#e1b037;">💧</p>
+    <em style="background-color:white;"></em>
 </div>
 </body>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
@@ -675,15 +711,8 @@
             //初始化最近更新博客
             recentUpdateBlogDataInit();
 
-            let i = 1;
+            //金盏花眨眼
             setInterval(function () {
-                // i++;
-                // if (i % 2 === 0) {
-                //     i = 0;
-                //     $("#Marigold_blink2").css("visibility", "hidden");
-                // } else {
-                //     $("#Marigold_blink2").css("visibility", "visible");
-                // }
                 $("#Marigold_blink2").css("visibility", "visible");
                 setTimeout(() => {
                     $("#Marigold_blink2").css("visibility", "hidden");
@@ -788,6 +817,16 @@
                         $languageDiv.css("width", timePercentage);
                         $languageDiv.parent().attr("title", language.name + " 过去七天：" + language.timeText);
                         $languageSpan.parent().attr("title", language.name + " 过去七天：" + language.timeText);
+                    }
+
+                    //金盏花浇水次数
+                    $("#goldCountSpan").text(PrefixInteger(data.NumberOfWatering, 4));
+
+                    //金盏花浇水气泡
+                    if ((dateDiffDay(new Date(data.lastWateringTime).Format('yyyy-MM-dd'), new Date().Format('yyyy-MM-dd')) >= 1)) {
+                        $("#flowerWateringPop").css("visibility", "visible")
+                    } else {
+                        $("#flowerWateringPop").css("display", "none")
                     }
                 },
                 successFalse: function (res) {
@@ -1141,18 +1180,27 @@
             return emoji + language;
         }
 
-        //花花金句
+        //金盏花浇水
         function flowerSay() {
+            //隐藏浇水气泡
+            $("#flowerWateringPop").css("display", "none")
+            //掉落金锭
+            $("#goldImgPick").css("visibility", "visible");
+
             ajaxHttp({
                 type: "GET",
-                url: ctx + "/flowerSay",
+                url: ctx + "/watering",
                 success: function (res) {
-                    xtip.tips(res.data, 'Marigold_mouth', {
+                    xtip.tips(res.data, 'goldCountSpan', {
                         times: 3,
-                        pos: 't',
+                        pos: 'l',
                         bgcolor: 'white',
                         color: '#e1b037',
                     });
+
+                    //金锭+1
+                    $("#goldImgPick").css("animation-play-state", "running");
+                    $("#goldCountSpan").text(PrefixInteger(parseInt($("#goldCountSpan").text()) + 1, 4));
                 }
             });
 
