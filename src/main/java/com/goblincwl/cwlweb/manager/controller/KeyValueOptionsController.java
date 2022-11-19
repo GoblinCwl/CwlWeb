@@ -3,7 +3,6 @@ package com.goblincwl.cwlweb.manager.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
-import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.manager.entity.KeyValueOptions;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 
 /**
  * 键值对配置 Controller
@@ -98,25 +96,6 @@ public class KeyValueOptionsController extends BaseController<KeyValueOptions> {
     public Result<Object> edit(KeyValueOptions keyValueOptions) {
         this.keyValueOptionsService.updateById(keyValueOptions);
         return Result.genSuccess("修改成功");
-    }
-
-    /**
-     * 删除
-     *
-     * @param optKeys 键(逗号拼接)
-     * @return 反馈
-     * @date 2021-05-06 10:56:21
-     * @author ☪wl
-     */
-    @DeleteMapping("/remove")
-    public Result<Object> remove(String optKeys) {
-        if (optKeys.contains("loginPassword")) {
-            throw new GoblinCwlException("此KEY不能被删除!");
-        }
-        if (StringUtils.isNotEmpty(optKeys)) {
-            this.keyValueOptionsService.removeByIds(Arrays.asList(optKeys.split(",")));
-        }
-        return Result.genSuccess("删除成功");
     }
 
 }
