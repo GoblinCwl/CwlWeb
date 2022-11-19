@@ -75,3 +75,7 @@ input.required, textarea.required {
 img {
     pointer-events: none;
 }
+
+.eventImg{
+    pointer-events: auto;
+}
