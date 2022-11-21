@@ -7,6 +7,7 @@ import com.github.yulichang.query.MPJQueryWrapper;
 import com.goblincwl.cwlweb.blog.entity.Comment;
 import com.goblincwl.cwlweb.blog.service.CommentService;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
+import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.BadWordUtil;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
@@ -111,6 +112,12 @@ public class CommentController extends BaseController<Comment> {
      */
     @PostMapping("/add")
     public Result<Object> add(Comment comment) {
+        //检查用户昵称违禁词
+        String nickName = comment.getNickName();
+        if (BadWordUtil.isContaintBadWord(nickName, 1)) {
+            throw new GoblinCwlException("昵称不合法，请修改后重试！");
+        }
+
         //替换违禁词
         String contentSafe = BadWordUtil.replaceBadWord(comment.getContent(), 2, "*");
         comment.setContent(contentSafe);
@@ -122,7 +129,7 @@ public class CommentController extends BaseController<Comment> {
                         .eq(AccessRecord::getIpAddress, comment.getIpAddress())
         );
         if (accessRecord != null) {
-            accessRecord.setNickName(comment.getNickName());
+            accessRecord.setNickName(nickName);
             //更新访问记录
             this.accessRecordService.updateById(accessRecord);
             //更新Redis缓存
