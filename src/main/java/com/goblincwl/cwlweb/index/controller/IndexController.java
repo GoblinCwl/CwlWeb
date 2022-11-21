@@ -93,6 +93,8 @@ public class IndexController {
         String redisKey = "indexDashboardData";
         String indexDashboardDataStr = (String) redisTemplate.opsForValue().get(redisKey);
         if (StringUtils.isEmpty(indexDashboardDataStr)) {
+            //配置数据
+            resultMap.putAll(this.accessRecordService.findConfigData());
             //天气数据
             resultMap.putAll(this.accessRecordService.findWeatherData());
             //编程语言工时数据
@@ -151,7 +153,7 @@ public class IndexController {
         }
 
         //默认消息
-        String message = "唯独对你，我没有办法开口...";
+        String message = this.keyValueOptionsService.getById("DefaultFlowerMessage").getOptValue();
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
             URI uri = new URIBuilder()

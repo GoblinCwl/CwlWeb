@@ -756,7 +756,7 @@
             ajaxHttp({
                 type: "GET",
                 url: ctx + "/findTerminalData",
-                beforeSend: function (request) {
+                beforeSend: function () {
                     insertMessage("<span style='color: #c0a16b'>数据请求中...</span>", 0);
                 },
                 error: function () {

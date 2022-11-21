@@ -165,7 +165,7 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
                     .setScheme("https")
                     .setHost("wakatime.com")
                     .setPath("/api/v1/users/current/stats/last_7_days")
-                    .setParameter("api_key", this.keyValueOptionsService.getById("WakaTimeKey").getOptValue())
+                    .setParameter("api_key", this.keyValueOptionsService.getById("WakaTimeApiKey").getOptValue())
                     .build();
             HttpGet httpGet = new HttpGet(uri);
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
@@ -223,7 +223,7 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
                     .setPath("/api/v1/users/current/summaries")
                     .setParameter("start", sdf.format(yesterdayCal.getTime()))
                     .setParameter("end", sdf.format(new Date()))
-                    .setParameter("api_key", this.keyValueOptionsService.getById("WakaTimeKey").getOptValue())
+                    .setParameter("api_key", this.keyValueOptionsService.getById("WakaTimeApiKey").getOptValue())
                     .build();
             HttpGet httpGet = new HttpGet(uri);
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
@@ -247,6 +247,12 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
             }
         }
 
+        return resultMap;
+    }
+
+    public Map<String, Object> findConfigData() {
+        Map<String,Object> resultMap = new HashMap<>();
+        //TODO
         return resultMap;
     }
 }
