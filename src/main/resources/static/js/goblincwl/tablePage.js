@@ -240,16 +240,20 @@ function pushParamTableOptions(tableOptions,
                 $multiBtnArray[i].addClass("button-disabled");
             }
         },
-        onLoadSuccess: tableOptions.onLoadSuccess
+        onLoadSuccess: tableOptions.onLoadSuccess,
+        onExpandRow: tableOptions.onExpandRow,
+        detailFormatter: tableOptions.detailFormatter,
+        detailViewIcon:"false",
+        detailViewByClick:"true"
     });
 }
 
 /*生成行内操作按钮*/
 function genTableOptionA(color, text, icon, onclick) {
     return '' +
-        '<a class="table-options" style="color: ' + color + '" ' +
+        '<a  title="' + text + '" class="table-options" style="color: ' + color + '" ' +
         'onclick=\'' + onclick + '\'>' +
-        '   <i class="glyphicon ' + icon + '"></i>' + text + ' ' +
+        '   <i style="color: ' + color + '!important;" class="glyphicon ' + icon + '"></i>' + text + ' ' +
         '</a>'
 }
 

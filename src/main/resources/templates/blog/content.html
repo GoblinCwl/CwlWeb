@@ -98,9 +98,14 @@
             height: 3.7rem;
             /*border-radius: 1rem;*/
             transition: 0.5s;
-            border: 1px solid #6ECADC;
+            border: 1px solid green;
             /**/
             background: url("/images/imgLoading.gif") no-repeat center center;
+        }
+
+        /*有URL的头像*/
+        .hasUrlImg{
+            border: 1px solid #6ECADC;
         }
 
         #commentFormId div div #formProfileImg {
@@ -227,13 +232,13 @@
                             <div class="form-group col-lg-4 width-31">
                                 <label class="sr-only" for="email"></label>
                                 <input type="email" class="form-control commentFormInput" id="email"
-                                       placeholder="联系方式">
+                                       placeholder="联系方式(收到回复时邮件提示)">
                             </div>
                             <div class="form-group col-lg-4 width-31">
                                 <label class="sr-only" for="website"></label>
                                 <input type="text" class="form-control commentFormInput" id="website"
                                        oninput='inputValidate($(this))' pos="b"
-                                       placeholder="传送门">
+                                       placeholder="传送门(审核后可点击头像传送)">
                             </div>
                         </div>
                         <div class="row">
@@ -280,6 +285,8 @@
                 $nickName.val(localNickName);
                 $nickName.css("border-color", "green");
             }
+            $("#email").val(localStorage.getItem("email"))
+            $("#website").val(localStorage.getItem("website"))
             //设置头像
             if (localStorage.getItem("profileUrl") != null) {
                 $("#formProfileImg").attr("src", localStorage.getItem("profileUrl"))
@@ -367,10 +374,11 @@
                         let commemntHtml = '';
                         for (let i = 0; i < data.length; i++) {
                             const row = data[i];
+                            const hasUrl = (row.website == null || row.website === '');
                             commemntHtml += '' +
-                                '<div class="col-lg-9 comment">' +
-                                '    <a ' + (row.website == null || row.website === '' ? '' : 'href="' + row.website + '" target="_blank"') + ' class="commentProfile">' +
-                                '        <img class="commentProfileImg" alt="' + row.nickName + '" src=' + (row.profileUrl == null || row.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', row.nickName) : row.profileUrl) + '>' +
+                            '<div class="col-lg-9 comment">' +
+                            '    <a ' + ((row.website == null || row.website === '') ? '' : 'href="' + row.website + '" target="_blank"') + ' class="commentProfile">' +
+                            '        <img class="commentProfileImg ' + (hasUrl ? '' : 'hasUrlImg') + '" alt="' + row.nickName + '" src=' + (row.profileUrl == null || row.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', row.nickName) : row.profileUrl) + '>' +
                                 '    </a>' +
                                 '    <div class="content" onclick="replyComment(\'' + row.id + '\',\'' + row.nickName + '\')">' +
                                 '        <div><span class="commentNickName">' + row.nickName + '</span></div>' +
@@ -382,9 +390,9 @@
                                 for (let j = 0; j < row.childrenList.length; j++) {
                                     const childrenRow = row.childrenList[j];
                                     commemntHtml += '' +
-                                        '<div class="comment" >' +
-                                        '    <a ' + (childrenRow.website == null || childrenRow.website === '' ? '' : 'href="' + childrenRow.website + '" target="_blank"') + 'class="commentProfile">' +
-                                        '        <img class="commentProfileImg" alt="' + childrenRow.nickName + '" src=' + (childrenRow.profileUrl == null || childrenRow.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', childrenRow.nickName) : childrenRow.profileUrl) + '>' +
+                                    '<div class="comment" >' +
+                                    '    <a ' + (childrenRow.website == null || childrenRow.website === '' ? '' : 'href="' + childrenRow.website + '" target="_blank"') + 'class="commentProfile">' +
+                                    '        <img class="commentProfileImg ' + (hasUrl ? '' : 'hasUrlImg') + '" alt="' + childrenRow.nickName + '" src=' + (childrenRow.profileUrl == null || childrenRow.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', childrenRow.nickName) : childrenRow.profileUrl) + '>' +
                                         '    </a>' +
                                         '    <div class="content" onclick="replyComment(\'' + row.id + '\',\'' + childrenRow.nickName + '\')">' +
                                         '        <div><span class="commentNickName">' + childrenRow.nickName + '</span></div>' +
@@ -444,6 +452,10 @@
 
                     //缓存昵称
                     localStorage.setItem("nickName", $("#nickName").val());
+                    //缓存联系方式
+                    localStorage.setItem("email", $("#email").val());
+                    //缓存网址
+                    localStorage.setItem("website", $("#website").val());
                     ajaxHttp({
                         type: "POST",
                         url: ctx + "/blog/comment/add",
@@ -465,6 +477,8 @@
                             //清空表单
                             $("#commentFormId")[0].reset()
                             $("#nickName").val(localStorage.getItem("nickName"))
+                            $("#email").val(localStorage.getItem("email"))
+                            $("#website").val(localStorage.getItem("website"))
                             //取消回复
                             $('#replyComment').remove();
                         },
@@ -581,7 +595,7 @@
 
 
         //动漫女
-        function getRandomImgAnimeGirl(){
+        function getRandomImgAnimeGirl() {
             return "https://www.thiswaifudoesnotexist.net/v2/example-" + randomInt(199999, 0) + ".jpg";
         }
 
