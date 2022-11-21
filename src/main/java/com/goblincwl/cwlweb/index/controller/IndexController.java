@@ -115,7 +115,7 @@ public class IndexController {
         resultMap.putAll(this.accessRecordService.findTerminalData(IpUtils.getIpAddress(request)));
 
         //金盏花浇水次数，不缓存
-        resultMap.put("NumberOfWatering", this.keyValueOptionsService.getById("NumberOfWatering").getOptValue());
+        resultMap.put("numberOfWatering", this.keyValueOptionsService.getById("numberOfWatering").getOptValue());
         //金盏花上次浇水时间
         if (resultMap.get("lastWateringTime") == null) {
             AccessRecord accessRecord = this.accessRecordService.getOne(new LambdaQueryWrapper<AccessRecord>().eq(AccessRecord::getIpAddress, IpUtils.getIpAddress(request)));
@@ -153,7 +153,7 @@ public class IndexController {
         }
 
         //默认消息
-        String message = this.keyValueOptionsService.getById("DefaultFlowerMessage").getOptValue();
+        String message = this.keyValueOptionsService.getById("defaultFlowerMessage").getOptValue();
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
             URI uri = new URIBuilder()
@@ -172,7 +172,7 @@ public class IndexController {
                 //更新浇水信息
                 accessRecord.setLastWateringTime(new Date());
                 this.accessRecordService.updateById(accessRecord);
-                String wateringKey = "NumberOfWatering";
+                String wateringKey = "numberOfWatering";
                 KeyValueOptions keyValueOptions = this.keyValueOptionsService.getById(wateringKey);
                 int number = Integer.parseInt(keyValueOptions.getOptValue());
                 keyValueOptions.setOptValue(String.valueOf(number + 1));

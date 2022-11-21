@@ -117,7 +117,7 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
                     .setScheme("https")
                     .setHost("restapi.amap.com")
                     .setPath("/v3/weather/weatherInfo")
-                    .setParameter("key", this.keyValueOptionsService.getById("AmapApiKey").getOptValue())
+                    .setParameter("key", this.keyValueOptionsService.getById("aMapApiKey").getOptValue())
                     //TODO 动态城市编码
                     .setParameter("city", "320200")
                     .build();
@@ -165,7 +165,7 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
                     .setScheme("https")
                     .setHost("wakatime.com")
                     .setPath("/api/v1/users/current/stats/last_7_days")
-                    .setParameter("api_key", this.keyValueOptionsService.getById("WakaTimeApiKey").getOptValue())
+                    .setParameter("api_key", this.keyValueOptionsService.getById("wakaTimeApiKey").getOptValue())
                     .build();
             HttpGet httpGet = new HttpGet(uri);
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
@@ -223,7 +223,7 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
                     .setPath("/api/v1/users/current/summaries")
                     .setParameter("start", sdf.format(yesterdayCal.getTime()))
                     .setParameter("end", sdf.format(new Date()))
-                    .setParameter("api_key", this.keyValueOptionsService.getById("WakaTimeApiKey").getOptValue())
+                    .setParameter("api_key", this.keyValueOptionsService.getById("wakaTimeApiKey").getOptValue())
                     .build();
             HttpGet httpGet = new HttpGet(uri);
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {

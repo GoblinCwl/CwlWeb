@@ -40,7 +40,7 @@ public class ManagerController {
                                 String password) {
         if (StringUtils.isNotEmpty(password)) {
 
-            KeyValueOptions loginPassword = keyValueOptionsService.getById("LoginPassword");
+            KeyValueOptions loginPassword = keyValueOptionsService.getById("loginPassword");
             //匹配密码
             if (password.equals(loginPassword.getOptValue())) {
                 //使用UUID作为token
