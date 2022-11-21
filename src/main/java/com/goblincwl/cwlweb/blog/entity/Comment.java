@@ -72,6 +72,11 @@ public class Comment {
     private String ipAddress;
 
     /**
+     * 网址审核(0.未审核,1.已审核)
+     */
+    private Integer websiteAudit;
+
+    /**
      * 子评论列表
      */
     @TableField(exist = false)

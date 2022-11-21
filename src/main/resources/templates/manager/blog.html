@@ -16,7 +16,7 @@
             display: none;
         }
 
-        td:has(>.detail-icon),tr .detail{
+        td:has(>.detail-icon), tr .detail {
             display: none;
         }
     </style>
@@ -168,6 +168,7 @@
             switch (name) {
                 case 'blogTab':
                     //博客归档列切换有bug，关闭列筛选
+                    // tableOptions.height= 100;
                     tableOptions.showColumns = false;
                     url = ctx + "/blog/list";
                     tableId = 'blog-table';
@@ -497,8 +498,33 @@
                             sortable: true,
                             sortName: 'ip_address',
                             width: 50
+                        }, {
+                            field: 'websiteAudit',
+                            title: '传送门审核',
+                            sortable: true,
+                            sortName: "website_audit",
+                            width: 110,
+                            align: 'center',
+                            formatter: function (value, row, index) {
+                                let websiteAudit = (value === 1);
+                                return '<input style="display: none" type="checkbox" name="websiteAudit" ' + (websiteAudit ? "checked" : "") + ' value="' + row.id + '"/>';
+                            }
                         }
                     ]
+                    tableOptions.onLoadSuccess = function () {
+                        $("[name='websiteAudit']").bootstrapSwitch({
+                            onText: "已审",
+                            offText: "待审",
+                            size: "small",
+                            inverse: true,
+                            onColor: 'info',
+                            offColor: 'warning',
+                            onSwitchChange: function onSwitchChange(event, state) {
+                                //修改操作
+                                commentAuditWebsite(event.currentTarget.value, state);
+                            }
+                        })
+                    }
                     tableOptions.onExpandRow = function (index, row, $detail) {
                         function expandTable(index, row, $detail) {
                             const cur_table = $detail.html('<table></table>').find('table');
@@ -602,6 +628,16 @@
                                         align: 'center',
                                         width: 50
                                     }
+                                    , {
+                                        field: 'websiteAudit',
+                                        title: '传送门审核',
+                                        width: 110,
+                                        align: 'center',
+                                        formatter: function (value, row, index) {
+                                            let websiteAudit = (value === 1);
+                                            return '<input style="display: none" type="checkbox" name="detailWebsiteAudit" ' + (websiteAudit ? "checked" : "") + ' value="' + row.id + '"/>';
+                                        }
+                                    }
                                 ],
                                 headerStyle: function (column) {
                                     return {
@@ -620,14 +656,26 @@
                                             'border-left': '0px',
                                             'border-right': '0px',
                                             'border-top': '0px',
+                                            'height': '30px',
                                             "font-size": "5px"
                                         }
                                     }
-                                },
+                                }
                             });
                         }
 
                         expandTable(index, row, $detail);
+                        $("[name='detailWebsiteAudit']").bootstrapSwitch({
+                            onText: "已审",
+                            offText: "待审",
+                            size: "small",
+                            inverse: true,
+                            onColor: 'info',
+                            offColor: 'warning',
+                            onSwitchChange: function onSwitchChange(event, state) {
+                                commentAuditWebsite(event.currentTarget.value, state);
+                            }
+                        })
                     }
             }
 
@@ -955,7 +1003,7 @@
     <script>
         //预览头像
         function profileImgPreview(index) {
-            xtip.photo("profileImgPreview", {index: index,height:'150px',width:'200px'})
+            xtip.photo("profileImgPreview", {index: index, height: '150px', width: '200px'})
         }
 
         //跳转链接
@@ -995,6 +1043,20 @@
                     },
                 })
             }, {icon: ['', '#d9534f']});
+        }
+
+        /*修改*/
+        function commentAuditWebsite(id, state) {
+            //修改操作
+            ajaxHttp({
+                type: "PUT",
+                url: ctx + "/blog/comment/doWebsiteAudit/" + id + '/' + (state ? 1 : 0),
+                successFalse: function (res) {
+                    xtip.msg(res.msg, {icon: 'e', type: 'w'});
+                    $table.bootstrapTable('refresh');
+                    $table.bootstrapTable('getOptions').onUncheckAll();
+                }
+            })
         }
     </script>
 </div>
