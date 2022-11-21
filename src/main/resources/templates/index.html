@@ -812,7 +812,7 @@
                     }
 
                     //金盏花浇水次数
-                    $("#goldCountSpan").text(PrefixInteger(data.NumberOfWatering, 4));
+                    $("#goldCountSpan").text(PrefixInteger(data.numberOfWatering, 4));
 
                     //金盏花浇水气泡
                     if ((dateDiffDay(new Date(data.lastWateringTime).Format('yyyy-MM-dd'), new Date().Format('yyyy-MM-dd')) >= 1)) {
