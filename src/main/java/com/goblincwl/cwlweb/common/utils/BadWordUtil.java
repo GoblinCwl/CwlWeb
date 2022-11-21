@@ -32,7 +32,7 @@ public class BadWordUtil {
     public void init() {
         List<BadWords> badWordsList = this.badWordsService.list();
         //添加网站管理密码也作为违禁词，防止失误泄露
-        KeyValueOptions loginPassword = keyValueOptionsService.getById("loginPassword");
+        KeyValueOptions loginPassword = keyValueOptionsService.getById("LoginPassword");
         BadWords loginPasswordWord = new BadWords();
         loginPasswordWord.setWord(loginPassword.getOptValue());
         badWordsList.add(loginPasswordWord);
