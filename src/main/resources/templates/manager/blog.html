@@ -15,6 +15,10 @@
         td.checkbox-custom label {
             display: none;
         }
+
+        td:has(>.detail-icon),tr .detail{
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -37,6 +41,11 @@
                 <li data-name="blogTabsTab">
                     <a data-toggle="tab" href="#blogTabsTab" onclick="refreshTable('blogTabs-table')">
                         标签管理
+                    </a>
+                </li>
+                <li data-name="commentTab">
+                    <a data-toggle="tab" href="#commentTab" onclick="refreshTable('comment-table')">
+                        评论管理
                     </a>
                 </li>
             </ul>
@@ -104,6 +113,25 @@
                         <table id="blogTabs-table" class="table table-condensed text-nowrap my-table"></table>
                     </div>
                 </div>
+                <div id="commentTab" class="tab-pane">
+                    <div class="table-responsive">
+                        <div id="comment-toolbar" class="btn-group">
+                            <button id="comment-toolbar-remove" type="button"
+                                    class="btn btn-danger btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon glyphicon-remove " aria-hidden="true"></i>删除
+                            </button>
+                        </div>
+                        <div class="form-inline table-search">
+                            <div class="form-group">
+                                <label for="comment-query-content"></label>
+                                <input type="text" class="form-control input-sm"
+                                       id="comment-query-content"
+                                       placeholder="内容">
+                            </div>
+                        </div>
+                        <table id="comment-table" class="table table-condensed text-nowrap my-table"></table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -119,6 +147,7 @@
             $("#managerBlogLi").addClass("active")
             initData('blogTab')
             initData('blogTabsTab')
+            initData('commentTab')
 
             //追加重置按钮
             appendReloadButton(now$Table);
@@ -341,6 +370,265 @@
                         }
                     ];
                     break;
+                case 'commentTab':
+                    url = ctx + "/blog/comment/list";
+                    tableId = 'comment-table';
+                    $table = $("#" + tableId);
+                    $toolbar = $("#comment-toolbar");
+                    uniqueId = "id";
+                    tableOptions.detailView = true;
+                    //单选/多选按钮及事件
+                    $multiBtnArray[0] = $("#comment-toolbar-remove");
+                    $multiBtnArray[0].on('click', function () {
+                        commentRemove(tableId)
+                    });
+                    $queryInputArray[0] = $("#comment-query-content")
+                    //自定义参数
+                    tableOptions.queryParams = function (params) {
+                        return $.extend(queryParams(params), {
+                            content: $queryInputArray[0].val()
+                        });
+                    }
+                    columns = [
+                        {
+                            checkbox: true,
+                        },
+                        {
+                            title: '操作',
+                            formatter: function (value, row, index) {//赋予的参数
+                                return genTableOptionA('#d9534f', '删除', 'glyphicon-remove', 'commentRemove("' + tableId + '","' + row.id + '")') +
+                                    "<img src='" + row.profileUrl + "' data-xphoto='profileImgPreview' style='display: none'>"
+                                    ;
+
+                            },
+                            switchable: false,
+                            align: 'center',
+                            width: 50,
+                            cellStyle: function () {
+                                const style = rowStyle(tableOptions);
+                                style.css["border-right"] = "1px solid #ddd"
+                                return style;
+                            },
+                        },
+                        {
+                            field: 'id',
+                            title: '主键',
+                            sortable: true,
+                            align: 'center',
+                            width: 50,
+                        },
+                        {
+                            field: 'blogId',
+                            title: '所属博客',
+                            align: 'left',
+                            formatter: function (value, row, index) {
+                                let title = row.blog.title;
+                                const maxTitleLong = 8;
+                                if (title.length > maxTitleLong) {
+                                    title = title.substr(0, (maxTitleLong - 1)) + "...";
+                                }
+                                return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/blog/content/' + row.blogId) + '")');
+                            },
+                            width: 120,
+                        },
+                        {
+                            field: 'nickName',
+                            title: '昵称',
+                            align: 'center',
+                            formatter: function (value, row, index) {
+                                return paramsMatter(value, 8);
+                            },
+                            width: 120
+                        },
+                        {
+                            field: 'profileUrl',
+                            title: '头像',
+                            align: 'center',
+                            formatter: function (value, row, index) {
+                                return genTableOptionA('#6ecadc', '查看', 'glyphicon-eye-open', 'profileImgPreview(' + (index + 1) + ')');
+                            },
+                            width: 50,
+                        },
+                        {
+                            field: 'website',
+                            title: '传送门',
+                            align: 'center',
+                            formatter: function (value, row, index) {
+                                if (row.website !== null && row.website !== '') {
+                                    return genTableOptionA('#c16edc', '跳转', 'glyphicon-link', 'urlLinkJump("' + row.website + '")');
+                                } else {
+                                    return '';
+                                }
+                            },
+                            width: 50
+                        },
+                        {
+                            field: 'email',
+                            title: '联系方式',
+                            align: 'center',
+                            width: 150,
+                        },
+                        {
+                            field: 'content',
+                            title: '评论内容',
+                            align: 'left',
+                            formatter: function (value, row, index) {
+                                return paramsMatter(value, 35);
+                            },
+                            width: 500
+                        },
+                        {
+                            field: 'childrenList.length',
+                            title: '回复数',
+                            width: 10
+                        },
+                        {
+                            field: 'sendTime',
+                            title: '发送时间',
+                            align: 'center',
+                            sortable: true,
+                            sortName: 'send_time',
+                            width: 50
+                        },
+                        {
+                            field: 'ipAddress',
+                            title: '评论人地址',
+                            align: 'center',
+                            sortable: true,
+                            sortName: 'ip_address',
+                            width: 50
+                        }
+                    ]
+                    tableOptions.onExpandRow = function (index, row, $detail) {
+                        function expandTable(index, row, $detail) {
+                            const cur_table = $detail.html('<table></table>').find('table');
+                            $(cur_table).bootstrapTable({
+                                data: row.childrenList,
+                                uniqueId: 'id',
+                                columns: [
+                                    {
+                                        title: '操作',
+                                        formatter: function (value, row, index) {//赋予的参数
+                                            return genTableOptionA('#d9534f', '删除', 'glyphicon-remove', 'commentRemove("' + tableId + '","' + row.id + '")') +
+                                                "<img src='" + row.profileUrl + "' data-xphoto='profileImgPreview' style='display: none'>"
+                                                ;
+
+                                        },
+                                        switchable: false,
+                                        align: 'center',
+                                        width: 67,
+                                        cellStyle: function () {
+                                            const style = rowStyle(tableOptions);
+                                            style.css["border-right"] = "1px solid #ddd"
+                                            return style;
+                                        },
+                                    },
+                                    {
+                                        field: 'id',
+                                        title: '主键',
+                                        sortable: true,
+                                        align: 'center',
+                                        width: 50,
+                                    },
+                                    {
+                                        field: 'blogId',
+                                        title: '所属博客',
+                                        align: 'left',
+                                        formatter: function (value, rowDetail, index) {
+                                            let title = row.blog.title;
+                                            const maxTitleLong = 8;
+                                            if (title.length > maxTitleLong) {
+                                                title = title.substr(0, (maxTitleLong - 1)) + "...";
+                                            }
+                                            return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/blog/content/' + row.blogId) + '")');
+                                        },
+                                        width: 120,
+                                    },
+                                    {
+                                        field: 'nickName',
+                                        title: '昵称',
+                                        align: 'center',
+                                        formatter: function (value, row, index) {
+                                            return paramsMatter(value, 8);
+                                        },
+                                        width: 120
+                                    },
+                                    {
+                                        field: 'profileUrl',
+                                        title: '头像',
+                                        align: 'center',
+                                        formatter: function (value, row, index) {
+                                            return genTableOptionA('#6ecadc', '查看', 'glyphicon-eye-open', 'profileImgPreview(' + (index + 1) + ')');
+                                        },
+                                        width: 50,
+                                    },
+                                    {
+                                        field: 'website',
+                                        title: '传送门',
+                                        align: 'center',
+                                        formatter: function (value, row, index) {
+                                            if (row.website !== null && row.website !== '') {
+                                                return genTableOptionA('#c16edc', '跳转', 'glyphicon-link', 'urlLinkJump("' + row.website + '")');
+                                            } else {
+                                                return '';
+                                            }
+                                        },
+                                        width: 50
+                                    },
+                                    {
+                                        field: 'email',
+                                        title: '联系方式',
+                                        align: 'center',
+                                        width: 150,
+                                    },
+                                    {
+                                        field: 'content',
+                                        title: '评论内容',
+                                        align: 'left',
+                                        formatter: function (value, row, index) {
+                                            return paramsMatter(value, 35);
+                                        },
+                                        width: 500
+                                    },
+                                    {
+                                        field: 'sendTime',
+                                        title: '发送时间',
+                                        align: 'center',
+                                        width: 50
+                                    },
+                                    {
+                                        field: 'ipAddress',
+                                        title: '评论人地址',
+                                        align: 'center',
+                                        width: 50
+                                    }
+                                ],
+                                headerStyle: function (column) {
+                                    return {
+                                        css: {
+                                            'background': '#fff',
+                                            "color": "#000",
+                                            'border': '0px',
+                                            "font-size": "5px"
+                                        }
+                                    }
+                                },
+                                //行样式
+                                rowStyle: function (column) {
+                                    return {
+                                        css: {
+                                            'border-left': '0px',
+                                            'border-right': '0px',
+                                            'border-top': '0px',
+                                            "font-size": "5px"
+                                        }
+                                    }
+                                },
+                            });
+                        }
+
+                        expandTable(index, row, $detail);
+                    }
             }
 
 
@@ -660,6 +948,53 @@
             }
             $input.css("border-color", "green")
             return true;
+        }
+    </script>
+
+    <!--评论管理-->
+    <script>
+        //预览头像
+        function profileImgPreview(index) {
+            xtip.photo("profileImgPreview", {index: index, iforder: false})
+        }
+
+        //跳转链接
+        function urlLinkJump(url) {
+            openNewWindow(url);
+        }
+
+        /*删除*/
+        function commentRemove(tableId, id) {
+            const $table = getTable(tableId);
+            //获取选择的数据
+            if (id == null) {
+                id = '';
+                //复选框所选数据
+                const checkIdList = $table.bootstrapTable('getAllSelections');
+                if (checkIdList.length <= 0) {
+                    xtip.msg("请选择一行数据", {icon: 'e', type: 'w'})
+                    return;
+                }
+                for (let i = 0; i < checkIdList.length; i++) {
+                    let checkIdListElement = checkIdList[i];
+                    id += checkIdListElement.id += ",";
+                }
+            }
+            const winId = xtip.confirm('确认删除所选数据？', function () {
+                ajaxHttp({
+                    type: "DELETE",
+                    url: ctx + "/blog/comment/remove",
+                    data: {
+                        ids: id
+                    },
+                    winId: winId,
+                    success: function (res) {
+                        xtip.msg(res.msg, {icon: 's', type: 'w'})
+                        $table.bootstrapTable('refresh');
+                        $table.bootstrapTable('getOptions').onUncheckAll();
+                    },
+                })
+            }, {icon: ['', '#d9534f']});
         }
     </script>
 </div>

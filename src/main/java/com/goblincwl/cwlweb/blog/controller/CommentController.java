@@ -3,10 +3,13 @@ package com.goblincwl.cwlweb.blog.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.yulichang.query.MPJQueryWrapper;
 import com.goblincwl.cwlweb.blog.entity.Comment;
 import com.goblincwl.cwlweb.blog.service.CommentService;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
 import com.goblincwl.cwlweb.common.entity.Result;
+import com.goblincwl.cwlweb.common.utils.BadWordUtil;
+import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.manager.entity.AccessRecord;
 import com.goblincwl.cwlweb.manager.service.AccessRecordService;
@@ -46,16 +49,31 @@ public class CommentController extends BaseController<Comment> {
      */
     @GetMapping("/list")
     public Result<Page<Comment>> list(Comment comment) {
-        //仅查询1级评论
-        QueryWrapper<Comment> queryWrapper = createQueryWrapper(comment);
-        queryWrapper.isNull("parent_id");
-        Page<Comment> page = this.commentService.page(createPage(), queryWrapper);
+        MPJQueryWrapper<Comment> mpjQueryWrapper = new MPJQueryWrapper<>();
+        mpjQueryWrapper.selectAll(Comment.class);
+        //查询参数
+        if (StringUtils.isNotEmpty(comment.getContent())) {
+            mpjQueryWrapper.like("t.content", comment.getContent());
+        }
+        mpjQueryWrapper.isNull("t.parent_id");
+        //排序分页
+        String sortName = ServletUtils.getParameter("sortName");
+        String sortOrder = ServletUtils.getParameter("sortOrder");
+        if (sortName != null && sortOrder != null) {
+            mpjQueryWrapper.orderBy(true, "asc".equals(sortOrder), sortName);
+        }
+        //连表
+        mpjQueryWrapper.leftJoin("blog t1 on t1.id = t.blog_id");
+        mpjQueryWrapper.select("t1.title as `blog.title`");
+
+        Page<Comment> page = this.commentService.page(createPage(), mpjQueryWrapper);
         //查询子评论
         for (Comment parentComment : page.getRecords()) {
             QueryWrapper<Comment> childrenQueryMapper = new QueryWrapper<>();
             childrenQueryMapper.eq("parent_id", parentComment.getId());
             parentComment.setChildrenList(this.commentService.list(childrenQueryMapper));
         }
+
         return new Result<Page<Comment>>().success(page, "成功");
     }
 
@@ -93,6 +111,9 @@ public class CommentController extends BaseController<Comment> {
      */
     @PostMapping("/add")
     public Result<Object> add(Comment comment) {
+        //替换违禁词
+        String contentSafe = BadWordUtil.replaceBadWord(comment.getContent(), 2, "*");
+        comment.setContent(contentSafe);
         //保存评论
         this.commentService.save(comment);
         //更新用户信息

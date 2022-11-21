@@ -1,5 +1,7 @@
 package com.goblincwl.cwlweb.blog.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.SqlCondition;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,6 +34,11 @@ public class Comment {
      */
     private Integer blogId;
     /**
+     * 所属文章
+     */
+    @TableField(exist = false)
+    private Blog blog;
+    /**
      * 昵称
      */
     private String nickName;
@@ -42,6 +49,7 @@ public class Comment {
     /**
      * 评论内容
      */
+    @TableField(whereStrategy = FieldStrategy.NOT_EMPTY, condition = SqlCondition.LIKE)
     private String content;
     /**
      * 发送时间

@@ -86,10 +86,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 message = message.substring(0, MAX_MESSAGE_LENGTH + 1) + "...";
             }
             //敏感词处理
-            Set<String> badWords = BadWordUtil.getBadWord(message, 2);
-            for (String badWord : badWords) {
-                message = message.replaceAll(badWord, "**");
-            }
+            message = BadWordUtil.replaceBadWord(message, 2, "*");
             ChatMessageService chatMessageService = BeanUtil.getBean(ChatMessageService.class);
             ChatMessage chatMessage = new ChatMessage(message);
             chatMessageService.save(chatMessage);

@@ -105,6 +105,9 @@ address span {
 .glyphicon:before {
     margin-right: 9px;
     font-size: 14px;
+}
+
+#topHeaderUl .glyphicon:before{
     color: #6ecadc;
 }
 

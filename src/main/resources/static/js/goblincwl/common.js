@@ -289,3 +289,17 @@ function generate_rand_num(min_v, max_v) {
     const rand_num = parseInt(Math.random() * (max_v - min_v + 1) + min_v);
     return rand_num
 }
+
+/* 在新窗口中打开 */
+function openNewWindow(url) {
+    var a = document.createElement('a');
+    a.setAttribute('href', url);
+    a.setAttribute('target', '_blank');
+    var id = Math.random(10000, 99999);
+    a.setAttribute('id', id);
+    // 防止反复添加
+    if (!document.getElementById(id)) {
+        document.body.appendChild(a);
+    }
+    a.click();
+}
