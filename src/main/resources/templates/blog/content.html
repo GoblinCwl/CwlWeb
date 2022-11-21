@@ -389,6 +389,7 @@
                             if (row.childrenList != null) {
                                 for (let j = 0; j < row.childrenList.length; j++) {
                                     const childrenRow = row.childrenList[j];
+                                    const hasUrl = (childrenRow.website == null || childrenRow.website === '');
                                     commemntHtml += '' +
                                     '<div class="comment" >' +
                                     '    <a ' + (childrenRow.website == null || childrenRow.website === '' ? '' : 'href="' + childrenRow.website + '" target="_blank"') + 'class="commentProfile">' +

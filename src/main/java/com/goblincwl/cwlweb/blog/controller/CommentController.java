@@ -2,6 +2,7 @@ package com.goblincwl.cwlweb.blog.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.yulichang.query.MPJQueryWrapper;
 import com.goblincwl.cwlweb.blog.entity.Comment;
@@ -41,7 +42,7 @@ public class CommentController extends BaseController<Comment> {
     private final AccessRecordService accessRecordService;
 
     /**
-     * 分页主查询
+     * 分页主查询 - 用于管理
      *
      * @param comment 查询参数
      * @return 结果集
@@ -79,7 +80,7 @@ public class CommentController extends BaseController<Comment> {
     }
 
     /**
-     * 不分页主查询
+     * 不分页主查询 - 用于页面展示
      *
      * @param comment 查询参数
      * @return 结果集
@@ -94,9 +95,20 @@ public class CommentController extends BaseController<Comment> {
         List<Comment> list = this.commentService.list(queryWrapper);
         //查询子评论
         for (Comment parentComment : list) {
+            //子评论
             QueryWrapper<Comment> childrenQueryMapper = new QueryWrapper<>();
             childrenQueryMapper.eq("parent_id", parentComment.getId());
-            parentComment.setChildrenList(this.commentService.list(childrenQueryMapper));
+            List<Comment> childrenList = this.commentService.list(childrenQueryMapper);
+            //屏蔽未审核的网址
+            if (parentComment.getWebsiteAudit() == 0) {
+                parentComment.setWebsite("");
+            }
+            childrenList.forEach(childrenComment -> {
+                if (childrenComment.getWebsiteAudit() == 0) {
+                    childrenComment.setWebsite("");
+                }
+            });
+            parentComment.setChildrenList(childrenList);
         }
         return new Result<List<Comment>>().success(list, "成功");
     }
@@ -117,10 +129,11 @@ public class CommentController extends BaseController<Comment> {
         if (BadWordUtil.isContaintBadWord(nickName, 1)) {
             throw new GoblinCwlException("昵称不合法，请修改后重试！");
         }
-
         //替换违禁词
         String contentSafe = BadWordUtil.replaceBadWord(comment.getContent(), 2, "*");
         comment.setContent(contentSafe);
+        //如果网址为空，则直接审核通过
+        comment.setWebsiteAudit(StringUtils.isEmpty(comment.getWebsite()) ? 1 : 0);
         //保存评论
         this.commentService.save(comment);
         //更新用户信息
@@ -156,6 +169,26 @@ public class CommentController extends BaseController<Comment> {
             this.commentService.removeByIds(Arrays.asList(ids.split(",")));
         }
         return Result.genSuccess("删除成功");
+    }
+
+    /**
+     * 网址审核
+     *
+     * @param id       数据主键
+     * @param auditFlg 审核标识
+     * @return com.goblincwl.cwlweb.common.entity.Result<java.lang.Object>
+     * @date 2022/11/21 17:43
+     * @author ☪wl
+     */
+    @TokenCheck
+    @PutMapping("/doWebsiteAudit/{id}/{auditFlg}")
+    public Result<Object> doWebsiteAudit(@PathVariable Integer id, @PathVariable Integer auditFlg) {
+        boolean updateResult = this.commentService.update(
+                new UpdateWrapper<Comment>()
+                        .lambda().eq(Comment::getId, id)
+                        .set(id != null, Comment::getWebsiteAudit, auditFlg)
+        );
+        return updateResult ? Result.genSuccess("审核成功") : Result.genFail("审核失败");
     }
 
 }
