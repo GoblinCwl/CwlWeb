@@ -121,7 +121,6 @@ function rowStyle(column) {
             'border-left': '0px',
             'border-right': '0px',
             'border-top': '0px',
-            'height': '30px'
         }
     }
 }
