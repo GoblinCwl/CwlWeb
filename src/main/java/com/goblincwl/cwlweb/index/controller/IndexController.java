@@ -92,7 +92,8 @@ public class IndexController {
         //先从Redis拿缓存
         String redisKey = "indexDashboardData";
         String indexDashboardDataStr = (String) redisTemplate.opsForValue().get(redisKey);
-        if (StringUtils.isEmpty(indexDashboardDataStr)) {
+        Boolean isRedis = !StringUtils.isEmpty(indexDashboardDataStr);
+        if (!isRedis) {
             //配置数据
             resultMap.putAll(this.accessRecordService.findConfigData());
             //天气数据
@@ -108,11 +109,14 @@ public class IndexController {
             redisTemplate.expire(redisKey, 1, TimeUnit.HOURS);
         } else {
             resultMap = JSONObject.parseObject(indexDashboardDataStr, Map.class);
-            resultMap.remove("lastWateringTime");
         }
 
         //终端数据,另起缓存
         resultMap.putAll(this.accessRecordService.findTerminalData(IpUtils.getIpAddress(request)));
+        //清楚旧的浇水时间
+        if (isRedis){
+            resultMap.remove("lastWateringTime");
+        }
 
         //金盏花浇水次数，不缓存
         resultMap.put("numberOfWatering", this.keyValueOptionsService.getById("numberOfWatering").getOptValue());
