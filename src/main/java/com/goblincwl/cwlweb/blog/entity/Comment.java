@@ -77,6 +77,12 @@ public class Comment {
     private Integer websiteAudit;
 
     /**
+     * 网址审核(0.未审核,1.已审核) - 多选
+     */
+    @TableField(exist = false)
+    private String websiteAuditStr;
+
+    /**
      * 子评论列表
      */
     @TableField(exist = false)
