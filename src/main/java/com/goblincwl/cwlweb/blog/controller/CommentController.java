@@ -68,11 +68,34 @@ public class CommentController extends BaseController<Comment> {
         mpjQueryWrapper.leftJoin("blog t1 on t1.id = t.blog_id");
         mpjQueryWrapper.select("t1.title as `blog.title`");
 
+        //连表子评论
+        mpjQueryWrapper.leftJoin("comment t2 on t2.parent_id = t.id");
+        //审核状态查询
+        if (StringUtils.isNotEmpty(comment.getWebsiteAuditStr())) {
+            mpjQueryWrapper.and(queryWrapper -> {
+                for (String websiteAudit : comment.getWebsiteAuditStr().split(",")) {
+                    queryWrapper.or(andWrapper -> {
+                        andWrapper.eq("t.website_audit", websiteAudit).or().eq("t2.website_audit", websiteAudit);
+                    });
+                }
+            });
+        }
+
+        //分组
+        mpjQueryWrapper.groupBy("t.id", " t.parent_id", " t.blog_id", " t.nick_name", " t.profile_url", " t.content", " t.send_time", " t.email", " t.website");
         Page<Comment> page = this.commentService.page(createPage(), mpjQueryWrapper);
         //查询子评论
         for (Comment parentComment : page.getRecords()) {
             QueryWrapper<Comment> childrenQueryMapper = new QueryWrapper<>();
             childrenQueryMapper.eq("parent_id", parentComment.getId());
+            //审核状态查询
+            if (StringUtils.isNotEmpty(comment.getWebsiteAuditStr())) {
+                childrenQueryMapper.and(queryWrapper -> {
+                    for (String websiteAudit : comment.getWebsiteAuditStr().split(",")) {
+                        queryWrapper.or().eq("website_audit", websiteAudit);
+                    }
+                });
+            }
             parentComment.setChildrenList(this.commentService.list(childrenQueryMapper));
         }
 
