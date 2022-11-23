@@ -11,6 +11,7 @@ import com.goblincwl.cwlweb.common.annotation.TokenCheck;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.BadWordUtil;
+import com.goblincwl.cwlweb.common.utils.EmailUtil;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.manager.entity.AccessRecord;
@@ -21,6 +22,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -146,7 +148,7 @@ public class CommentController extends BaseController<Comment> {
      * @author ☪wl
      */
     @PostMapping("/add")
-    public Result<Object> add(Comment comment) {
+    public Result<Object> add(Comment comment) throws GeneralSecurityException {
         //检查用户昵称违禁词
         String nickName = comment.getNickName();
         if (BadWordUtil.isContaintBadWord(nickName, 1)) {
@@ -173,7 +175,7 @@ public class CommentController extends BaseController<Comment> {
             //设置有效期为30min
             redisTemplate.expire("ipAccessCache:" + accessRecord.getIpAddress(), 30, TimeUnit.MINUTES);
         }
-        //TODO 回复发邮件
+        EmailUtil.sendEmail(comment.getEmail());
         return Result.genSuccess("评论成功");
     }
 
