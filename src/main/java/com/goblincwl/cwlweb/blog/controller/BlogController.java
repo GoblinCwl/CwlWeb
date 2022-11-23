@@ -119,7 +119,7 @@ public class BlogController extends BaseController<Blog> {
         Page<Blog> page = createPage();
         page.setSize(7);
         page.setCurrent(1);
-        Page<Blog> resultPage = this.blogService.page(page, new LambdaQueryWrapper<Blog>().orderByDesc(true, Blog::getUpdateTime));
+        Page<Blog> resultPage = this.blogService.page(page, new LambdaQueryWrapper<Blog>().eq(Blog::getDoArchive, "0").orderByDesc(true, Blog::getUpdateTime));
         return new Result<Page<Blog>>().success(resultPage);
     }
 
