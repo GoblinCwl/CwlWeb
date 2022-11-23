@@ -104,7 +104,7 @@
         }
 
         /*有URL的头像*/
-        .hasUrlImg{
+        .hasUrlImg {
             border: 1px solid #6ECADC;
         }
 
@@ -232,12 +232,12 @@
                             <div class="form-group col-lg-4 width-31">
                                 <label class="sr-only" for="email"></label>
                                 <input type="email" class="form-control commentFormInput" id="email"
-                                       placeholder="联系方式(收到回复时邮件提示)">
+                                       onblur ='validateUserInfo($(this))' placeholder="Email(收到回复时邮件提示)">
                             </div>
                             <div class="form-group col-lg-4 width-31">
                                 <label class="sr-only" for="website"></label>
                                 <input type="text" class="form-control commentFormInput" id="website"
-                                       oninput='inputValidate($(this))' pos="b"
+                                       onblur ='validateUserInfo($(this))' pos="b"
                                        placeholder="传送门(审核后可点击头像传送)">
                             </div>
                         </div>
@@ -376,9 +376,9 @@
                             const row = data[i];
                             const hasUrl = (row.website == null || row.website === '');
                             commemntHtml += '' +
-                            '<div class="col-lg-9 comment">' +
-                            '    <a ' + ((row.website == null || row.website === '') ? '' : 'href="' + row.website + '" target="_blank"') + ' class="commentProfile">' +
-                            '        <img class="commentProfileImg ' + (hasUrl ? '' : 'hasUrlImg') + '" alt="' + row.nickName + '" src=' + (row.profileUrl == null || row.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', row.nickName) : row.profileUrl) + '>' +
+                                '<div class="col-lg-9 comment">' +
+                                '    <a ' + ((row.website == null || row.website === '') ? '' : 'href="' + row.website + '" target="_blank"') + ' class="commentProfile">' +
+                                '        <img class="commentProfileImg ' + (hasUrl ? '' : 'hasUrlImg') + '" alt="' + row.nickName + '" src=' + (row.profileUrl == null || row.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', row.nickName) : row.profileUrl) + '>' +
                                 '    </a>' +
                                 '    <div class="content" onclick="replyComment(\'' + row.id + '\',\'' + row.nickName + '\')">' +
                                 '        <div><span class="commentNickName">' + row.nickName + '</span></div>' +
@@ -391,9 +391,9 @@
                                     const childrenRow = row.childrenList[j];
                                     const hasUrl = (childrenRow.website == null || childrenRow.website === '');
                                     commemntHtml += '' +
-                                    '<div class="comment" >' +
-                                    '    <a ' + (childrenRow.website == null || childrenRow.website === '' ? '' : 'href="' + childrenRow.website + '" target="_blank"') + 'class="commentProfile">' +
-                                    '        <img class="commentProfileImg ' + (hasUrl ? '' : 'hasUrlImg') + '" alt="' + childrenRow.nickName + '" src=' + (childrenRow.profileUrl == null || childrenRow.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', childrenRow.nickName) : childrenRow.profileUrl) + '>' +
+                                        '<div class="comment" >' +
+                                        '    <a ' + (childrenRow.website == null || childrenRow.website === '' ? '' : 'href="' + childrenRow.website + '" target="_blank"') + 'class="commentProfile">' +
+                                        '        <img class="commentProfileImg ' + (hasUrl ? '' : 'hasUrlImg') + '" alt="' + childrenRow.nickName + '" src=' + (childrenRow.profileUrl == null || childrenRow.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', childrenRow.nickName) : childrenRow.profileUrl) + '>' +
                                         '    </a>' +
                                         '    <div class="content" onclick="replyComment(\'' + row.id + '\',\'' + childrenRow.nickName + '\')">' +
                                         '        <div><span class="commentNickName">' + childrenRow.nickName + '</span></div>' +
@@ -415,19 +415,13 @@
 
         /*评论*/
         function sendComment() {
-            //校验网站
-            const $website = $("#website");
-            if ($website.val() != null && $website.val() !== '') {
-                const websiteReg = /([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[wW]{3}.|[wW][aA][pP].|[fF][tT][pP].|[fF][iI][lL][eE].)[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]/;
-                if (!websiteReg.test($website.val())) {
-                    checkFail($website, "请输入正确的网址(http(s)/www开头)")
-                    return;
-                }
-                if (!$website.val().startsWith("http")) {
-                    $website.val('http://' + $website.val())
-                }
-            }
 
+            //校验
+            const $email = $("#email");
+            const $website = $("#website");
+            if (!validateUserInfo($email) || !validateUserInfo($website)) {
+                return;
+            }
 
             if (fromValidate($("#commentFormId"))) {
                 const winId = xtip.confirm("确认发送评论？", function () {
@@ -454,9 +448,9 @@
                     //缓存昵称
                     localStorage.setItem("nickName", $("#nickName").val());
                     //缓存联系方式
-                    localStorage.setItem("email", $("#email").val());
+                    localStorage.setItem("email", $email.val());
                     //缓存网址
-                    localStorage.setItem("website", $("#website").val());
+                    localStorage.setItem("website", $website.val());
                     ajaxHttp({
                         type: "POST",
                         url: ctx + "/blog/comment/add",
@@ -464,7 +458,7 @@
                             blogId: blogId,
                             parentId: parentId,
                             nickName: $("#nickName").val(),
-                            email: $("#email").val(),
+                            email: $email.val(),
                             website: $website.val(),
                             content: content,
                             profileUrl: profileUrl,
@@ -478,14 +472,44 @@
                             //清空表单
                             $("#commentFormId")[0].reset()
                             $("#nickName").val(localStorage.getItem("nickName"))
-                            $("#email").val(localStorage.getItem("email"))
-                            $("#website").val(localStorage.getItem("website"))
+                            $email.val(localStorage.getItem("email"))
+                            $website.val(localStorage.getItem("website"))
                             //取消回复
                             $('#replyComment').remove();
                         },
                     });
                 }, {icon: ['', '#5cb85c']});
             }
+        }
+
+        //校验用户信息
+        function validateUserInfo($object) {
+            //校验邮箱
+            if ($object.attr("id") === "email") {
+                const $email = $object;
+                if ($email.val() != null && $email.val() !== '') {
+                    const emailReg = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
+                    if (!emailReg.test($email.val())) {
+                        checkFail($email, '请输入正确的邮箱[或留空]');
+                        return false;
+                    }
+                }
+            } else if ($object.attr("id") === "website") {
+                //校验网站
+                const $website = $object;
+                if ($website.val() != null && $website.val() !== '') {
+                    const websiteReg = /([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[wW]{3}.|[wW][aA][pP].|[fF][tT][pP].|[fF][iI][lL][eE].)[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]/;
+                    if (!websiteReg.test($website.val())) {
+                        checkFail($website, "请输入正确的网址(http(s)/www开头)[或留空]")
+                        return false;
+                    }
+                    if (!$website.val().startsWith("http")) {
+                        $website.val('http://' + $website.val())
+                    }
+                }
+            }
+            $object.css("border-color", "green")
+            return true;
         }
 
         /*回复*/
