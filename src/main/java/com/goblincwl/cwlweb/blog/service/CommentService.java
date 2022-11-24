@@ -7,7 +7,6 @@ import com.goblincwl.cwlweb.blog.mapper.CommentMapper;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.utils.BadWordUtil;
 import com.goblincwl.cwlweb.manager.entity.AccessRecord;
-import com.goblincwl.cwlweb.manager.entity.OssFile;
 import com.goblincwl.cwlweb.manager.service.AccessRecordService;
 import com.goblincwl.cwlweb.manager.service.OssFileService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,19 +53,6 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
         //如果网址为空，则直接审核通过
         comment.setWebsiteAudit(StringUtils.isEmpty(comment.getWebsite()) ? 1 : 0);
 
-        //判断是否需要上传头像
-        /*String ossFileUrl = null;
-        if (!comment.getProfileUrl().contains("https://cwl-web.oss-cn-shanghai.aliyuncs.com")) {
-            File file = this.ossFileService.getUrlFile(comment.getProfileUrl());
-            if (file != null) {
-                OssFile ossFile = this.ossFileService.uploadFile(this.ossFileService.getMultipartFile(file), "profiles");
-                ossFileUrl = ossFile.getFullUrl();
-            }
-        } else {
-            ossFileUrl = comment.getProfileUrl();
-        }
-        comment.setProfileUrl(ossFileUrl);*/
-
         //保存评论
         this.baseMapper.insert(comment);
         //更新用户信息
@@ -89,8 +74,8 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
         if (comment.getParentId() != null && comment.getForId() != null) {
             //获取父评论
             Comment parentComment = this.baseMapper.selectById(comment.getForId());
-            //父评论不是自己
-            if (parentComment != null && !comment.getEmail().equals(parentComment.getEmail())) {
+            //父评论不是自己，父评论邮箱不为空
+            if (parentComment != null && !comment.getEmail().equals(parentComment.getEmail()) && StringUtils.isNotEmpty(parentComment.getEmail())) {
                 Map<String, Comment> commentMap = new HashMap<>(2);
                 commentMap.put("comment", comment);
                 commentMap.put("parentComment", parentComment);
@@ -99,7 +84,6 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
             }
         }
 
-//        return ossFileUrl;
         return null;
     }
 }
