@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -19,8 +20,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Comment {
+public class Comment implements Serializable {
 
+    private static final long serialVersionUID = -4559262025213468597L;
     /**
      * 主键
      */
@@ -29,6 +31,10 @@ public class Comment {
      * 父评论ID
      */
     private Integer parentId;
+    /**
+     * 回复的评论ID
+     */
+    private Integer forId;
     /**
      * 所属文章ID
      */

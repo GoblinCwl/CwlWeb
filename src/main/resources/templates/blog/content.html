@@ -232,12 +232,12 @@
                             <div class="form-group col-lg-4 width-31">
                                 <label class="sr-only" for="email"></label>
                                 <input type="email" class="form-control commentFormInput" id="email"
-                                       onblur ='validateUserInfo($(this))' placeholder="Email(收到回复时邮件提示)">
+                                       onblur='validateUserInfo($(this))' placeholder="Email(收到回复时邮件提示)">
                             </div>
                             <div class="form-group col-lg-4 width-31">
                                 <label class="sr-only" for="website"></label>
                                 <input type="text" class="form-control commentFormInput" id="website"
-                                       onblur ='validateUserInfo($(this))' pos="b"
+                                       onblur='validateUserInfo($(this))' pos="b"
                                        placeholder="传送门(审核后可点击头像传送)">
                             </div>
                         </div>
@@ -380,7 +380,7 @@
                                 '    <a ' + ((row.website == null || row.website === '') ? '' : 'href="' + row.website + '" target="_blank"') + ' class="commentProfile">' +
                                 '        <img class="commentProfileImg ' + (hasUrl ? '' : 'hasUrlImg') + '" alt="' + row.nickName + '" src=' + (row.profileUrl == null || row.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', row.nickName) : row.profileUrl) + '>' +
                                 '    </a>' +
-                                '    <div class="content" onclick="replyComment(\'' + row.id + '\',\'' + row.nickName + '\')">' +
+                                '    <div class="content" onclick="replyComment(\'' + row.id + '\',\'' + row.id + '\',\'' + row.nickName + '\')">' +
                                 '        <div><span class="commentNickName">' + row.nickName + '</span></div>' +
                                 '        <div><span class="commentSendTime">' + row.sendTime + '</span></div>' +
                                 '        <div><span>' + row.content + '</span></div>' +
@@ -395,7 +395,7 @@
                                         '    <a ' + (childrenRow.website == null || childrenRow.website === '' ? '' : 'href="' + childrenRow.website + '" target="_blank"') + 'class="commentProfile">' +
                                         '        <img class="commentProfileImg ' + (hasUrl ? '' : 'hasUrlImg') + '" alt="' + childrenRow.nickName + '" src=' + (childrenRow.profileUrl == null || childrenRow.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', childrenRow.nickName) : childrenRow.profileUrl) + '>' +
                                         '    </a>' +
-                                        '    <div class="content" onclick="replyComment(\'' + row.id + '\',\'' + childrenRow.nickName + '\')">' +
+                                        '    <div class="content" onclick="replyComment(\'' + row.id + '\',\'' + childrenRow.id + '\',\'' + childrenRow.nickName + '\')">' +
                                         '        <div><span class="commentNickName">' + childrenRow.nickName + '</span></div>' +
                                         '        <div><span class="commentSendTime">' + childrenRow.sendTime + '</span></div>' +
                                         '        <div><span>' + childrenRow.content + '</span></div>' +
@@ -451,12 +451,14 @@
                     localStorage.setItem("email", $email.val());
                     //缓存网址
                     localStorage.setItem("website", $website.val());
+
                     ajaxHttp({
                         type: "POST",
                         url: ctx + "/blog/comment/add",
                         data: {
                             blogId: blogId,
                             parentId: parentId,
+                            forId: $("#forId").val(),
                             nickName: $("#nickName").val(),
                             email: $email.val(),
                             website: $website.val(),
@@ -476,6 +478,14 @@
                             $website.val(localStorage.getItem("website"))
                             //取消回复
                             $('#replyComment').remove();
+
+
+
+                            //使用OSS存储头像
+                            /*const ossUrl = res.data;
+                            localStorage.setItem("profileUrl", ossUrl);
+                            $("#formProfileImg").attr("src", ossUrl);
+                            $("#profileUrl").val(ossUrl);*/
                         },
                     });
                 }, {icon: ['', '#5cb85c']});
@@ -513,16 +523,18 @@
         }
 
         /*回复*/
-        function replyComment(id, nickName) {
+        function replyComment(id, childId, nickName) {
             const $replyComment = $("#replyComment");
             if ($replyComment.length > 0) {
                 $("#parentId").val(id);
+                $("#forId").val(childId);
                 $("#replayNickNameSpan").text(nickName);
             } else {
                 const html = '' +
                     '<div id="replyComment" class="row">\n' +
                     '    <div class="form-group col-lg-12">\n' +
                     '        <input type="hidden" id="parentId" value="' + id + '"/>\n' +
+                    '        <input type="hidden" id="forId" value="' + childId + '"/>\n' +
                     '        <span id="replyNickName" style="font-weight: bold">回复：@<span id="replayNickNameSpan">' + nickName + '</span>:</span>\n' +
                     '        <span class="pull-right cancelReply"\n' +
                     '              onclick="$(\'#replyComment\').remove()">取消回复</span>\n' +
@@ -618,7 +630,6 @@
             return imgUrl;
         }
 
-
         //动漫女
         function getRandomImgAnimeGirl() {
             return "https://www.thiswaifudoesnotexist.net/v2/example-" + randomInt(199999, 0) + ".jpg";
@@ -626,7 +637,6 @@
 
         /**选择头像*/
         let chooseProfileWinId = null;
-
         function chooseProfile() {
             if (chooseProfileWinId == null) {
                 chooseProfileWinId = xtip.tips(
