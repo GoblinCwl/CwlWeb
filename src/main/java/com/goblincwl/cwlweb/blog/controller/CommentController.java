@@ -1,6 +1,5 @@
 package com.goblincwl.cwlweb.blog.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,24 +7,18 @@ import com.github.yulichang.query.MPJQueryWrapper;
 import com.goblincwl.cwlweb.blog.entity.Comment;
 import com.goblincwl.cwlweb.blog.service.CommentService;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
-import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
-import com.goblincwl.cwlweb.common.utils.BadWordUtil;
-import com.goblincwl.cwlweb.common.utils.EmailUtil;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
-import com.goblincwl.cwlweb.manager.entity.AccessRecord;
-import com.goblincwl.cwlweb.manager.service.AccessRecordService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 评论 Controller
@@ -36,12 +29,11 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping(BlogController.MODULE_PREFIX + "/comment")
 @RequiredArgsConstructor
+@Transactional(rollbackFor = Exception.class)
 public class CommentController extends BaseController<Comment> {
 
-    @Resource(name = "redisStringTemplate")
-    private RedisTemplate<String, Object> redisTemplate;
     private final CommentService commentService;
-    private final AccessRecordService accessRecordService;
+
 
     /**
      * 分页主查询 - 用于管理
@@ -148,35 +140,9 @@ public class CommentController extends BaseController<Comment> {
      * @author ☪wl
      */
     @PostMapping("/add")
-    public Result<Object> add(Comment comment) throws GeneralSecurityException {
-        //检查用户昵称违禁词
-        String nickName = comment.getNickName();
-        if (BadWordUtil.isContaintBadWord(nickName, 1)) {
-            throw new GoblinCwlException("昵称不合法，请修改后重试！");
-        }
-        //替换违禁词
-        String contentSafe = BadWordUtil.replaceBadWord(comment.getContent(), 2, "*");
-        comment.setContent(contentSafe);
-        //如果网址为空，则直接审核通过
-        comment.setWebsiteAudit(StringUtils.isEmpty(comment.getWebsite()) ? 1 : 0);
-        //保存评论
-        this.commentService.save(comment);
-        //更新用户信息
-        AccessRecord accessRecord = this.accessRecordService.getOne(
-                new LambdaQueryWrapper<AccessRecord>()
-                        .eq(AccessRecord::getIpAddress, comment.getIpAddress())
-        );
-        if (accessRecord != null) {
-            accessRecord.setNickName(nickName);
-            //更新访问记录
-            this.accessRecordService.updateById(accessRecord);
-            //更新Redis缓存
-            redisTemplate.opsForValue().set("ipAccessCache:" + accessRecord.getIpAddress(), accessRecord);
-            //设置有效期为30min
-            redisTemplate.expire("ipAccessCache:" + accessRecord.getIpAddress(), 30, TimeUnit.MINUTES);
-        }
-        EmailUtil.sendEmail(comment.getEmail());
-        return Result.genSuccess("评论成功");
+    public Result<Object> add(Comment comment) throws GeneralSecurityException, IOException {
+        String ossUrl = this.commentService.add(comment);
+        return new Result<>().success(ossUrl, "评论成功");
     }
 
     /**

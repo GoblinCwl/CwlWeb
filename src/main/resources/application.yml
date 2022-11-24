@@ -6,6 +6,7 @@ server:
     include-message: always
 
 spring:
+  name: Cwl-Web
   mvc:
     hiddenmethod:
       filter:
@@ -24,6 +25,12 @@ spring:
     password: ${REDIS-PWD:root}
     #连接超时时间（毫秒）
     timeout: 30000
+  # mq
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   # 数据源
   datasource:
     url: jdbc:mysql://${MYSQL-HOST:localhost}:${MYSQL-PORT:3306}/${MYSQL-DB:cwl-web}?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true

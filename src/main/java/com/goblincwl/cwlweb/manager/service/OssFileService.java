@@ -9,14 +9,21 @@ import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.manager.entity.OssFile;
 import com.goblincwl.cwlweb.manager.mapper.OssFileMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.*;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -226,4 +233,72 @@ public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
         }
     }
 
+    /**
+     * 将url图片转为file
+     *
+     * @param url 图片url
+     * @return File
+     */
+    public File getUrlFile(String url) {
+        //读取图片类型
+        String fileName = url.substring(url.lastIndexOf("."));
+        File file = null;
+
+        URL urlFile;
+        InputStream inStream = null;
+        OutputStream os = null;
+        try {
+            file = File.createTempFile("oss_tmp_file_", fileName);
+            //获取文件
+            urlFile = new URL(url);
+            inStream = urlFile.openStream();
+            os = Files.newOutputStream(file.toPath());
+
+            int bytesRead = 0;
+            byte[] buffer = new byte[8192];
+            while ((bytesRead = inStream.read(buffer, 0, 8192)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (null != os) {
+                    os.close();
+                }
+                if (null != inStream) {
+                    inStream.close();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return file;
+    }
+
+    /**
+     * File转MultipartFile
+     *
+     * @param file File
+     * @return MultipartFile
+     * @date 2022/11/24 10:06
+     * @author ☪wl
+     */
+    public MultipartFile getMultipartFile(File file) {
+        FileItem item = new DiskFileItemFactory().createItem("file"
+                , MediaType.MULTIPART_FORM_DATA_VALUE
+                , true
+                , file.getName());
+        try (InputStream input = Files.newInputStream(file.toPath());
+             OutputStream os = item.getOutputStream()) {
+            // 流转移
+            IOUtils.copy(input, os);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid file: " + e, e);
+        }
+
+        return new CommonsMultipartFile(item);
+    }
 }

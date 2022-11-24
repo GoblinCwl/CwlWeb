@@ -119,6 +119,8 @@ const ajaxHttp = function (options) {
         data: o.data,
         dataType: o.dataType,
         async: o.async,
+        contentType: o.contentType,
+        accept: o.accept,
         beforeSend: function () {
             if (o.doBefore === false) {
                 return;
