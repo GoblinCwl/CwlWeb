@@ -478,14 +478,6 @@
                             $website.val(localStorage.getItem("website"))
                             //取消回复
                             $('#replyComment').remove();
-
-
-
-                            //使用OSS存储头像
-                            /*const ossUrl = res.data;
-                            localStorage.setItem("profileUrl", ossUrl);
-                            $("#formProfileImg").attr("src", ossUrl);
-                            $("#profileUrl").val(ossUrl);*/
                         },
                     });
                 }, {icon: ['', '#5cb85c']});
@@ -566,7 +558,8 @@
             }
             switch (number) {
                 case 1:
-                    return getRandomImg1(sort);
+                    return getRandomImg2(sort);
+                    // return getRandomImg1(sort);
                 case 2:
                     return getRandomImg2(sort);
                 case 3:

@@ -242,7 +242,12 @@
                             sortName: 'title',
                             align: 'left',
                             formatter: function (value, row, index) {
-                                return paramsMatter(value, 55);
+                                let title = value;
+                                const maxTitleLong = 55;
+                                if (title.length > maxTitleLong) {
+                                    title = title.substr(0, (maxTitleLong - 1)) + "...";
+                                }
+                                return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/blog/content/' + row.id) + '")');
                             },
                         }, {
                             field: 'releaseTime',

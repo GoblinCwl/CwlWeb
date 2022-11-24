@@ -121,7 +121,7 @@ public class EmailUtil {
         String sendEmailAccount = emailConfigMap.get("sendEmailAccount");
 
         String[] toMailArr;
-        if (toMails != null && !toMails.equals("")) {
+        if (toMails != null && !"".equals(toMails)) {
             toMailArr = toMails.split(",");
         } else {
             throw new Exception("邮件发送人不能为空");
