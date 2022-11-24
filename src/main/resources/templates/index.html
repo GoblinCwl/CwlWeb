@@ -594,7 +594,8 @@
                                 <img id="goldImg" th:src="@{images/flower/Gold.png}"
                                      style="height: 100%;" title="产自金盏花的贵重黄金！">
                                 <span id="goldCountSpan"
-                                      style="font-family: SpacePixel,serif;font-size: 13px" title="产自金盏花的贵重黄金！">
+                                      style="font-family: SpacePixel,serif;font-size: 13px"
+                                      title="产自金盏花的贵重黄金！">
                                     <!--总浇水次数-->
                                 </span>
                             </div>
@@ -799,13 +800,20 @@
                     //编程语言时间
                     let countTime = data.languagesCountTime;
                     let languageList = data.languages;
+                    //换算倍率，把最大值（第一个）换算为百分百，其他按比例乘算
+                    let ratioOfConversion = 0;
                     for (let i = 0; i < languageList.length; i++) {
                         let $languageDiv = $("#languageDiv" + (i + 1));
                         let $languageSpan = $("#languageSpan" + (i + 1));
                         const language = languageList[i];
 
                         $languageSpan.text(languageEmoji(language.name));
-                        let timePercentage = parseFloat(language.time / countTime * 100 + "%");
+
+                        if (ratioOfConversion === 0) {
+                            ratioOfConversion = 100 / (language.time / countTime * 100);
+                        }
+
+                        let timePercentage = parseFloat(language.time / countTime * 100 * ratioOfConversion + "%");
                         $languageDiv.css("width", timePercentage);
                         $languageDiv.parent().attr("title", language.name + " 过去七天：" + language.timeText);
                         $languageSpan.parent().attr("title", language.name + " 过去七天：" + language.timeText);
@@ -1168,6 +1176,10 @@
                     break;
                 default:
                     emoji = "❓";
+            }
+            //长度判断
+            if (jmz.GetLength(language) > 5) {
+                language = language.substr(0, 4) + "..";
             }
             return emoji + language;
         }
