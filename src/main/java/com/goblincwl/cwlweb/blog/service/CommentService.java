@@ -40,7 +40,7 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
     private final OssFileService ossFileService;
 
 
-    public String add(Comment comment) throws IOException {
+    public Integer add(Comment comment) throws IOException {
         //检查用户昵称违禁词
         String nickName = comment.getNickName();
         if (BadWordUtil.isContaintBadWord(nickName, 1)) {
@@ -84,6 +84,6 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
             }
         }
 
-        return null;
+        return comment.getId();
     }
 }

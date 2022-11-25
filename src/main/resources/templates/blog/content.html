@@ -140,8 +140,8 @@
         .fromProfile {
             width: 3.3rem;
             height: 3.3rem;
-            border-radius: 1rem;
             transition: 0.5s;
+            border: 1px solid #000;
             box-shadow: 0 0.05rem 0.3rem rgba(0, 0, 0, 0.3), 0 0.0005rem 0.005rem rgba(0, 0, 0, 0.2);
             margin: 0.5rem 0.5rem 0.3rem;
             float: left;
@@ -167,6 +167,22 @@
         .badge:hover {
             border: 1px solid black;
             transform: scale(1.2);
+        }
+
+        .locationComment {
+            animation: locationComment 2s;
+        }
+
+        @keyframes locationComment {
+            0% {
+                background-color: white
+            }
+            50% {
+                background-color: #6ecadc
+            }
+            100% {
+                background-color: white
+            }
         }
 
     </style>
@@ -376,7 +392,7 @@
                             const row = data[i];
                             const hasUrl = (row.website == null || row.website === '');
                             commemntHtml += '' +
-                                '<div class="col-lg-9 comment">' +
+                                '<div class="col-lg-9 comment" id="commentLocDivC' + row.id + '">' +
                                 '    <a ' + ((row.website == null || row.website === '') ? '' : 'href="' + row.website + '" target="_blank"') + ' class="commentProfile">' +
                                 '        <img class="commentProfileImg ' + (hasUrl ? '' : 'hasUrlImg') + '" alt="' + row.nickName + '" src=' + (row.profileUrl == null || row.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', row.nickName) : row.profileUrl) + '>' +
                                 '    </a>' +
@@ -391,14 +407,18 @@
                                     const childrenRow = row.childrenList[j];
                                     const hasUrl = (childrenRow.website == null || childrenRow.website === '');
                                     commemntHtml += '' +
-                                        '<div class="comment" >' +
+                                        '<div class="comment childrenComment" id="commentLocDivC' + childrenRow.id + '">' +
                                         '    <a ' + (childrenRow.website == null || childrenRow.website === '' ? '' : 'href="' + childrenRow.website + '" target="_blank"') + 'class="commentProfile">' +
                                         '        <img class="commentProfileImg ' + (hasUrl ? '' : 'hasUrlImg') + '" alt="' + childrenRow.nickName + '" src=' + (childrenRow.profileUrl == null || childrenRow.profileUrl === '' ? getUiAvatarsUrl('random', 'auto', childrenRow.nickName) : childrenRow.profileUrl) + '>' +
                                         '    </a>' +
                                         '    <div class="content" onclick="replyComment(\'' + row.id + '\',\'' + childrenRow.id + '\',\'' + childrenRow.nickName + '\')">' +
                                         '        <div><span class="commentNickName">' + childrenRow.nickName + '</span></div>' +
                                         '        <div><span class="commentSendTime">' + childrenRow.sendTime + '</span></div>' +
-                                        '        <div><span>' + childrenRow.content + '</span></div>' +
+                                        '        <div>' +
+                                        '           <span>回复</span>' +
+                                        '           <a onclick="locationParentComment(' + childrenRow.forId + ')">' + childrenRow.content.substring(2, childrenRow.content.indexOf("：")) + '</a>' +
+                                        '           <span>' + childrenRow.content.substring(childrenRow.content.indexOf("：")) + '</span>' +
+                                        '        </div>' +
                                         '    </div>' +
                                         '</div>';
                                 }
@@ -408,6 +428,15 @@
                         }
 
                         $("#commentDiv").html(commemntHtml);
+                    }
+
+                    //定位#的评论
+                    let locCommentDiv = $('#commentLocDiv' + getRequestHash() + ':eq(0)');
+                    if (locCommentDiv !== undefined && locCommentDiv.length > 0) {
+                        $('html,body').animate({
+                            scrollTop: locCommentDiv.offset().top - $(".childrenComment:eq(0)").height()
+                        }, 500);
+                        locCommentDiv.addClass("locationComment")
                     }
                 },
             });
@@ -469,6 +498,7 @@
                         winId: winId,
                         success: function (res) {
                             xtip.msg(res.msg, {icon: 's', type: 'w'});
+                            location.hash = "C" + res.data;
                             //刷新评论区
                             initComment(blogId);
                             //清空表单
@@ -559,7 +589,7 @@
             switch (number) {
                 case 1:
                     return getRandomImg2(sort);
-                    // return getRandomImg1(sort);
+                // return getRandomImg1(sort);
                 case 2:
                     return getRandomImg2(sort);
                 case 3:
@@ -630,6 +660,7 @@
 
         /**选择头像*/
         let chooseProfileWinId = null;
+
         function chooseProfile() {
             if (chooseProfileWinId == null) {
                 chooseProfileWinId = xtip.tips(
@@ -805,6 +836,20 @@
             $("#profileUrl").val(url)
             xtip.close(winId);
             localStorage.setItem("profileUrl", url)
+        }
+
+        //定位父级元素
+        function locationParentComment(forId) {
+            let $forId = $("#commentLocDivC" + forId);
+            event.stopPropagation();
+            $forId.remove("locationComment")
+            $('html,body').animate({
+                scrollTop: $forId.offset().top - $(".childrenComment:eq(0)").height()
+            }, 500);
+            $forId.addClass("locationComment");
+            setTimeout(function (){
+                $forId.removeClass("locationComment")
+            }, 2000)
         }
     </script>
 </div>

@@ -246,17 +246,26 @@ function reLengthStr(str, length) {
     return str;
 }
 
-function getRequest() {
-    var url = location.search; //获取url中"?"符后的字串
-    var theRequest = new Object();
-    if (url.indexOf("?") != -1) {
-        var str = url.substr(1);
-        var strs = str.split("&");
-        for (var i = 0; i < strs.length; i++) {
+function getRequestParam() {
+    const url = location.search; //获取url中"?"符后的字串
+    const theRequest = {};
+    if (url.indexOf("?") !== -1) {
+        const str = url.substr(1);
+        const strs = str.split("&");
+        for (let i = 0; i < strs.length; i++) {
             theRequest[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
         }
     }
     return theRequest;
+};
+
+function getRequestHash() {
+    const hashUrl = location.hash;
+    var hashVal = "";
+    if (hashUrl.indexOf("#") !== -1) {
+        return hashUrl.substring(1);
+    }
+    return hashVal;
 };
 
 function splitArrayToString(array) {

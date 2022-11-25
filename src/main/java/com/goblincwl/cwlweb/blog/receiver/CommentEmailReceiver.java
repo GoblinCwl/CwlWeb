@@ -27,11 +27,10 @@ public class CommentEmailReceiver {
 
         //构建HTML
         String html = EmailUtil.readHtmlToString("static/other/replyCommentEmailHtmlTemplate.html");
-        //todo toName
         html = html.replace("${name}", parentComment.getNickName());
         html = html.replace("${imgSrc}", parentComment.getProfileUrl());
         html = html.replace("${replyName}", comment.getNickName());
-        html = html.replace("${blogUrl}", "http://localhost:8500/blog/content/" + comment.getBlogId());
+        html = html.replace("${blogUrl}", "http://localhost:8500/blog/content/" + comment.getBlogId() + "#C" + comment.getId());
         //todo
         html = html.replace("${unsubscribeUrl}", "http://localhost:8500/blog/content/" + comment.getBlogId());
 
