@@ -141,8 +141,8 @@ public class CommentController extends BaseController<Comment> {
      */
     @PostMapping("/add")
     public Result<Object> add(Comment comment) throws GeneralSecurityException, IOException {
-        String ossUrl = this.commentService.add(comment);
-        return new Result<>().success(ossUrl, "评论成功");
+        Integer commentId = this.commentService.add(comment);
+        return new Result<>().success(commentId, "评论成功");
     }
 
     /**
