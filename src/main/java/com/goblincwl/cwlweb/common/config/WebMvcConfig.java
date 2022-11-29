@@ -2,6 +2,7 @@ package com.goblincwl.cwlweb.common.config;
 
 import com.goblincwl.cwlweb.common.interceptor.WebManagerInterceptor;
 import com.goblincwl.cwlweb.common.interceptor.WebRedirectInterceptor;
+import com.goblincwl.cwlweb.manager.service.AccessRecordService;
 import com.goblincwl.cwlweb.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -20,11 +21,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final TokenService tokenService;
+    private final AccessRecordService accessRecordService;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //重定向拦截器
-        registry.addInterceptor(new WebRedirectInterceptor(this.tokenService))
+        registry.addInterceptor(new WebRedirectInterceptor(this.tokenService, this.accessRecordService))
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         //首页

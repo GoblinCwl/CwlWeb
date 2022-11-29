@@ -92,7 +92,7 @@ public class IndexController {
         //先从Redis拿缓存
         String redisKey = "indexDashboardData";
         String indexDashboardDataStr = (String) redisTemplate.opsForValue().get(redisKey);
-        Boolean isRedis = !StringUtils.isEmpty(indexDashboardDataStr);
+        boolean isRedis = !StringUtils.isEmpty(indexDashboardDataStr);
         if (!isRedis) {
             //配置数据
             resultMap.putAll(this.accessRecordService.findConfigData());

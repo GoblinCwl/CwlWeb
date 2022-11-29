@@ -27,10 +27,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoblinCwlConfig {
-    /**
-     * webSocket访问节点
-     */
-    private String webSocketEndpoint;
 
     /**
      * webSocket Origin白名单

@@ -4,6 +4,7 @@ import com.goblincwl.cwlweb.common.utils.BadWordUtil;
 import com.goblincwl.cwlweb.common.utils.BeanUtil;
 import com.goblincwl.cwlweb.manager.entity.ChatMessage;
 import com.goblincwl.cwlweb.manager.service.ChatMessageService;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
@@ -12,19 +13,18 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * WebSocket处理器
+ * 首页终端WebSocket处理器
  *
  * @author ☪wl
  * @date 2020-12-20 20:00
  */
-public class WebSocketHandler extends TextWebSocketHandler {
+public class IndexTerminalWebSocketHandler extends TextWebSocketHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WebSocketHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IndexTerminalWebSocketHandler.class);
     /**
      * 在线人数
      */
@@ -45,7 +45,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * @param session 会话
      */
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
+    public void afterConnectionEstablished(@NotNull WebSocketSession session) {
         SESSION_SET.add(session);
         // 在线数加1
         int cnt = ONLINE_COUNT.incrementAndGet();
@@ -66,7 +66,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * @param status  状态
      */
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
         SESSION_SET.remove(session);
         int cnt = ONLINE_COUNT.decrementAndGet();
         LOG.info("There are connections closed，current connections: {}", cnt);
@@ -79,7 +79,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * @param textMessage 消息
      */
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+    protected void handleTextMessage(@NotNull WebSocketSession session, @NotNull TextMessage textMessage) {
         try {
             String message = textMessage.getPayload();
             if (message.length() > 50) {

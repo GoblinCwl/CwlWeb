@@ -159,7 +159,7 @@ public class NickNameUtils {
         int surNameLen = surName.length;
         int wordLen = word.length;
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Random random = new Random();
         sb.append(surName[random.nextInt(surNameLen)]);
         int surLen = sb.toString().length();

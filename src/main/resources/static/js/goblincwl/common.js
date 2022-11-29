@@ -7,6 +7,16 @@ $(function () {
     }
 });
 
+function getWebSocketUrl(){
+    let socketUrl;
+    if (url.indexOf("https") !== -1) {
+        socketUrl = url.replace('https', 'wss');
+    } else {
+        socketUrl = url.replace('http', 'ws');
+    }
+    return socketUrl;
+}
+
 //判断访问设备方法
 function getClientInfo() {
     const userAgentInfo = navigator.userAgent;

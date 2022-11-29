@@ -1,6 +1,5 @@
 goblin-cwl-config:
   # webSocket
-  websocket-endpoint: websocket
   websocket-origin-white-list:
     - "http://localhost:8500"
     - "https://goblincwl.cn"

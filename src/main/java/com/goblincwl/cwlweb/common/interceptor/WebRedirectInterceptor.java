@@ -1,19 +1,20 @@
 package com.goblincwl.cwlweb.common.interceptor;
 
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
-import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.enums.ResultCode;
+import com.goblincwl.cwlweb.common.utils.IpUtils;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
+import com.goblincwl.cwlweb.manager.service.AccessRecordService;
 import com.goblincwl.cwlweb.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * Web重定向 拦截器
@@ -26,9 +27,10 @@ import java.util.List;
 public class WebRedirectInterceptor implements HandlerInterceptor {
 
     private final TokenService tokenService;
+    private final AccessRecordService accessRecordService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, Object handler) throws Exception {
         //请求目标是否存在注解
         boolean isAnnotation = handler.getClass().isAssignableFrom(HandlerMethod.class);
         if (isAnnotation) {
@@ -50,7 +52,9 @@ public class WebRedirectInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+    public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, Exception ex) {
+        //记录访问日志，缓存用户信息
+        this.accessRecordService.saveAccessRecord(IpUtils.getIpAddress(request));
     }
 
 }

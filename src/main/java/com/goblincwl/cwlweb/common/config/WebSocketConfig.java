@@ -2,12 +2,14 @@ package com.goblincwl.cwlweb.common.config;
 
 import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
 import com.goblincwl.cwlweb.common.interceptor.WebSocketInterceptor;
-import com.goblincwl.cwlweb.common.handler.WebSocketHandler;
+import com.goblincwl.cwlweb.common.handler.IndexTerminalWebSocketHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 /**
  * WebSocket配置
@@ -23,6 +25,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     private final GoblinCwlConfig goblinCwlConfig;
 
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter() {
+        return new ServerEndpointExporter();
+    }
+
     /**
      * 注册处理器，拦截器
      *
@@ -31,7 +38,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(), this.goblinCwlConfig.getWebSocketEndpoint())
+        registry.addHandler(new IndexTerminalWebSocketHandler(), "/terminal")
                 .addInterceptors(new WebSocketInterceptor(goblinCwlConfig))
                 .setAllowedOrigins("*");
     }
