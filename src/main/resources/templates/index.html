@@ -868,13 +868,8 @@
 
         //websocket初始化
         function websocketInit() {
-            var socketUrl;
-            if (url.indexOf("https") !== -1) {
-                socketUrl = url.replace('https', 'wss') + 'websocket';
-            } else {
-                socketUrl = url.replace('http', 'ws') + 'websocket';
-            }
-            const webSocket = new WebSocket(socketUrl);
+            let socketUrl = getWebSocketUrl();
+            const webSocket = new WebSocket(socketUrl + "/terminal");
             webSocket.onerror = function (event) {
                 insertMessage("<span style='color: red'>连接发生异常，信息如下：❌</span>");
                 insertMessage("<span style='color: red'>" + event.data + "</span>");

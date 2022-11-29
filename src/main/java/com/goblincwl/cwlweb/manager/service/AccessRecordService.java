@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.utils.NickNameUtils;
+import com.goblincwl.cwlweb.manager.entity.AccessLog;
 import com.goblincwl.cwlweb.manager.entity.AccessRecord;
 import com.goblincwl.cwlweb.manager.mapper.AccessRecordMapper;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +42,8 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
     @Resource(name = "redisStringTemplate")
     private RedisTemplate<String, Object> redisTemplate;
     private final AccessRecordMapper accessRecordMapper;
-
     private final KeyValueOptionsService keyValueOptionsService;
+    private final AccessLogService accessLogService;
 
     /**
      * 终端面板显示数据
@@ -54,6 +55,35 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
      */
     public Map<String, Object> findTerminalData(String ipAddress) {
         Map<String, Object> resultMap = new HashMap<>();
+
+        AccessRecord accessRecord = this.saveAccessRecord(ipAddress);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //本次访问
+        resultMap.put("accessTime", sdf.format(accessRecord.getAccessTime()));
+        //上次访问
+        resultMap.put("lastAccessTime", accessRecord.getLastAccessTime() == null ? "首次访问" : sdf.format(accessRecord.getLastAccessTime()));
+        //总访问次数
+        resultMap.put("accessCount", this.accessRecordMapper.selectAccessCount());
+        //总访问IP数
+        resultMap.put("accessIpCount", accessRecord.getId() == null ? this.accessRecordMapper.selectAccessIpCount() : accessRecord.getId());
+        //昵称
+        resultMap.put("nickName", accessRecord.getNickName());
+        //IP地址
+        resultMap.put("ipAddress", accessRecord.getIpAddress());
+        //上次浇水时间
+        resultMap.put("lastWateringTime", accessRecord.getLastWateringTime());
+        return resultMap;
+    }
+
+    /**
+     * IP保存访问记录
+     * @param ipAddress 请求IP地址
+     * @return 访问记录实体
+     * @date 2022/11/28 9:15
+     * @author ☪wl
+     */
+    public AccessRecord saveAccessRecord(String ipAddress){
         AccessRecord accessRecord;
         //首先查询Redis中是否记录
         accessRecord = (AccessRecord) redisTemplate.opsForValue().get("ipAccessCache:" + ipAddress);
@@ -83,30 +113,15 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
                 if (updateOneResult < 1) {
                     throw new GoblinCwlException("修改失败");
                 }
+                //新增访问日志
+                this.accessLogService.save(new AccessLog(accessRecord.getId()));
                 //新增Redis缓存
                 redisTemplate.opsForValue().set("ipAccessCache:" + ipAddress, accessRecord);
                 //设置有效期为30min
                 redisTemplate.expire("ipAccessCache:" + ipAddress, 30, TimeUnit.MINUTES);
             }
         }
-
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        //本次访问
-        resultMap.put("accessTime", sdf.format(accessRecord.getAccessTime()));
-        //上次访问
-        resultMap.put("lastAccessTime", accessRecord.getLastAccessTime() == null ? "首次访问" : sdf.format(accessRecord.getLastAccessTime()));
-        //总访问次数
-        resultMap.put("accessCount", this.accessRecordMapper.selectAccessCount());
-        //总访问IP数
-        resultMap.put("accessIpCount", accessRecord.getId() == null ? this.accessRecordMapper.selectAccessIpCount() : accessRecord.getId());
-        //昵称
-        resultMap.put("nickName", accessRecord.getNickName());
-        //IP地址
-        resultMap.put("ipAddress", accessRecord.getIpAddress());
-        //上次浇水时间
-        resultMap.put("lastWateringTime", accessRecord.getLastWateringTime());
-        return resultMap;
+        return accessRecord;
     }
 
     public Map<String, Object> findWeatherData() {

@@ -5,8 +5,8 @@ server:
   error:
     include-message: always
 
+
 spring:
-  name: Cwl-Web
   mvc:
     hiddenmethod:
       filter:
@@ -92,7 +92,17 @@ mybatis-plus:
 
 logging:
   level:
-#    root: error
     com.goblincwl.cwlweb: debug
   file:
     name: logs/goblincw-web.log
+
+# Actuator 开放
+management:
+  endpoints:
+    web:
+      base-path: '/manager/actuator'
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

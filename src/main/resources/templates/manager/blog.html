@@ -536,7 +536,7 @@
                             offColor: 'warning',
                             onSwitchChange: function onSwitchChange(event, state) {
                                 //修改操作
-                                commentAuditWebsite(event.currentTarget.value, state);
+                                commentAuditWebsite(event.currentTarget.value, state,tableId);
                             }
                         })
                     }
@@ -687,7 +687,7 @@
                             onColor: 'info',
                             offColor: 'warning',
                             onSwitchChange: function onSwitchChange(event, state) {
-                                commentAuditWebsite(event.currentTarget.value, state);
+                                commentAuditWebsite(event.currentTarget.value, state,tableId);
                             }
                         })
                     }
@@ -1060,7 +1060,8 @@
         }
 
         /*修改*/
-        function commentAuditWebsite(id, state) {
+        function commentAuditWebsite(id, state,tableId) {
+            const $table = getTable(tableId);
             //修改操作
             ajaxHttp({
                 type: "PUT",

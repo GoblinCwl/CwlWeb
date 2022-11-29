@@ -14,6 +14,91 @@
             min-height: 100%;
         }
     </style>
+    <style>
+        .managerRightDiv {
+            padding: 0;
+            border: 5px solid;
+        }
+
+        .blackBorder {
+            border: 1px solid #000;
+        }
+
+        #serverHardwareTable {
+            border-collapse: unset;
+        }
+
+        #serverHardwareTable td {
+            padding: 0.6em;
+        }
+
+        #serverHardwareTable span {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        #serverHardwareTable .serverHardwareStrip {
+            width: 100%;
+        }
+
+        #serverHardwareTable .serverHardwareStrip div {
+            width: 100%;
+            height: 1.3em;
+            background-color: #6ecadc;
+        }
+
+
+        #threadUlDiv {
+            height: 15em;
+            position: relative;
+            border-bottom: 0;
+        }
+
+        #threadUlDiv ul li {
+            float: left;
+            position: absolute;
+            bottom: 0;
+            text-align: center;
+            font-weight: bold;
+            color: black;
+            height: 100%;
+            width: 70px;
+            list-style: none;
+            border: 1px solid #000;
+            border-bottom: 0;
+            font-size: 12px;
+            font-family: SpacePixel, sans-serif;
+        }
+
+        #threadUlDiv ul li.c1 {
+            left: 14px;
+            height: 9%;
+            background-color: #d1e353;
+        }
+
+        #threadUlDiv ul li.c2 {
+            left: 86px;
+            height: 60%;
+            background-color: #5acda5;
+        }
+
+        #threadUlDiv ul li.c3 {
+            left: 158px;
+            height: 99%;
+            background-color: #e83f6e;
+        }
+
+        span {
+            font-family: SpacePixel, serif
+        }
+
+        #consoleDiv {
+            font-size: 1px;
+            font-family: Hack,sans-serif;
+            background-color: black;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 <!-- 左侧侧边栏 -->
@@ -28,10 +113,122 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-6">
-                    <div style="border: 1px solid #000;margin-top: 2em;height: 35em">1111</div>
+                    <div style="border: 1px solid #000;margin-top: 2em;height: 35em">
+                        <div class="col-lg-9 managerRightDiv"
+                             style="height: 15.92em;padding: 1em;border-color: #7aa857">
+                            <div class="blackBorder" style="height: 100%">
+                                //TODO
+                            </div>
+                        </div>
+                        <div class="col-lg-3" style="padding: 0">
+                            <div id="accessCountDiv" style="text-align: center;border-color:#58a1af;"
+                                 class="managerRightDiv">
+                                <div class="blackBorder">
+                                    <div style="background-color: #2C7EEA;border-bottom: 1px solid #000">
+                                        <span style="font-size: 6px;color: #fff;">总访问</span>
+                                        <span style="font-size: 20px;color: #fff;">420</span>
+                                    </div>
+                                    <span style="font-size: 20px;color: #2C7EEA;font-weight: bold;">今</span>
+                                    <span style="font-size: 60px;color: #2C7EEA;font-weight: bold;">32</span>
+                                </div>
+                            </div>
+                            <div id="subscriptionCountDiv" style="text-align: center;border-color: #af7f58"
+                                 class="managerRightDiv">
+                                <div class="blackBorder">
+                                    <div style="background-color: #d06b05;border-bottom: 1px solid #000">
+                                        <span style="font-size: 6px;color: #fff;">总订阅</span>
+                                        <span style="font-size: 20px;color: #fff;">0</span>
+                                    </div>
+                                    <span style="font-size: 20px;color: #ea9e2c;font-weight: bold;">今</span>
+                                    <span style="font-size: 60px;color: #ea9e2c;font-weight: bold;">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-5">
-                    <div style="border: 1px solid #000;margin-top: 2em;height: 35em">222</div>
+                    <div style="border: 1px solid #000;margin-top: 2em;height: 35em">
+                        <div class="col-lg-4" style="width: 45%;padding: 0">
+                            <div id="serverTimeDiv" class="managerRightDiv"
+                                 style="text-align:center;border-color:hsl(120, 30%, 58%)">
+                                <div class="blackBorder">
+                                    <span style="font-size: 16px;color: grey">2022-11-28 9:26:12</span>
+                                    <br>
+                                    <span style="font-size: 35px;color: green;font-weight: bold">1天2时39分</span>
+                                </div>
+                            </div>
+                            <div id="gcDiv blackBorder" class="managerRightDiv"
+                                 style="text-align:center;border-color:hsl(120, 30%, 58%);border-top: 0">
+                                <div class="blackBorder">
+                                    <span style="font-size: 16px;color: red">GC - </span>
+                                    <span style="font-size: 16px;color: grey">5次</span>
+                                    <span style="font-size: 16px;color: green;font-weight: bold">0.239s</span>
+                                </div>
+                            </div>
+                            <div id="threadDiv blackBorder" class="managerRightDiv"
+                                 style="text-align:center;border-color:hsl(120, 30%, 58%);border-top: 0">
+                                <div id="threadUlDiv" class="blackBorder">
+                                    <ul>
+                                        <li title="JVM当前守护线程：10" class="c1">GRD/10</li>
+                                        <li title="JVM当前活跃线程：60" class="c2">ACT/60</li>
+                                        <li title="JVM峰值线程：99" class="c3">PEK/99</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="serverHardwareDiv" class="col-lg-4" style="width: 55%;padding: 0">
+                            <div class="managerRightDiv" style="text-align:center;border-color:hsl(212,73%,52%)">
+                                <table class="blackBorder" id="serverHardwareTable">
+                                    <tbody>
+                                    <tr>
+                                        <td><span>磁盘</span></td>
+                                        <td class="serverHardwareStrip">
+                                            <div title="磁盘使用情况：124.3G/758G" style=""></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>内存</span></td>
+                                        <td class="serverHardwareStrip">
+                                            <div title="内存使用情况：1256M/2048M" style=""></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>CPU</span></td>
+                                        <td class="serverHardwareStrip">
+                                            <div title="CPU使用情况：34.2%" style=""></div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="requestTitleDiv blackBorder" class="managerRightDiv"
+                                 style="text-align:left;border-color:hsla(236,58%,58%,0.73);border-bottom: 0">
+                                <div id="requestTitleUlDiv" class="blackBorder"
+                                     style="padding: 0.2em;text-align: center;color:hsla(236,58%,58%,0.73) ">
+                                    <span>- 最多请求接口 -</span>
+                                </div>
+                            </div>
+                            <div id="requestDiv blackBorder" class="managerRightDiv"
+                                 style="text-align:left;border-color:hsla(236,58%,58%,0.73)">
+                                <div id="requestUlDiv" class="blackBorder">
+                                    <ul style="font-size: 13px;padding: 0.23em">
+                                        <li><a href="#">/blog/recentUpdateList</a></li>
+                                        <li><a href="#">/blog/recentUpdateList/asdfasdfas/sadfasdf/asf</a></li>
+                                        <li><a href="#">/blog/recentUpdateList</a></li>
+                                        <li><a href="#">/blog/recentUpdateList</a></li>
+                                        <li><a href="#">/blog/recentUpdateList</a></li>
+                                        <li><a href="#">/blog/recentUpdateList</a></li>
+                                        <li><a href="#">/blog/recentUpdateList</a></li>
+                                        <li><a href="#">/blog/recentUpdateList</a></li>
+                                        <li><a href="#">/blog/recentUpdateList</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="consoleParentDiv" class="managerRightDiv" style="width: 100%;height: 12.4em">
+                            <div id="consoleDiv" class="blackBorder"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -43,6 +240,15 @@
     <script>
         $(function () {
             $("#managerHomeLi").addClass("active")
+
+            //日志输出
+            const webSocket = new WebSocket("ws://localhost:8500/log");
+            //处理服务器返回的信息
+            webSocket.onmessage = function (event) {
+                let $consoleParentDiv = $("#consoleParentDiv");
+                $("#consoleDiv").append(event.data);
+                $consoleParentDiv.scrollTop($consoleParentDiv.prop("scrollHeight"));
+            };
         })
     </script>
 </div>
