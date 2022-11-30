@@ -33,7 +33,7 @@
         }
 
         #serverHardwareTable span {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: bold;
         }
 
@@ -62,30 +62,30 @@
             font-weight: bold;
             color: black;
             height: 100%;
-            width: 70px;
+            width: 86px;
             list-style: none;
-            border: 1px solid #000;
+            border: 2px solid #696464;
             border-bottom: 0;
             font-size: 12px;
             font-family: SpacePixel, sans-serif;
         }
 
         #threadUlDiv ul li.c1 {
-            left: 14px;
+            left: 0;
             height: 9%;
-            background-color: #d1e353;
+            background-color: #e85151;
         }
 
         #threadUlDiv ul li.c2 {
-            left: 86px;
+            left: 80px;
             height: 60%;
-            background-color: #5acda5;
+            background-color: #65da65;
         }
 
         #threadUlDiv ul li.c3 {
-            left: 158px;
+            left: 160px;
             height: 99%;
-            background-color: #e83f6e;
+            background-color: #5e99e5;
         }
 
         span {
@@ -94,9 +94,44 @@
 
         #consoleDiv {
             font-size: 1px;
-            font-family: Hack,sans-serif;
-            background-color: black;
-            color: white;
+            font-family: Hack, sans-serif;
+            color: black;
+        }
+
+        #consoleDiv p {
+            word-break: break-all;
+        }
+
+        .blogTopHeat, .tabTopHeat {
+            font-size: 1px;
+            text-align: center;
+            color: gray;
+        }
+
+        #tabTopTable td {
+            text-align: center;
+        }
+
+        #blogTopTable td, #tabTopTable td {
+            padding: 0.145em;
+        }
+
+        #blogTopTable span, #tabTopTable span {
+            font-family: sans-serif;
+        }
+
+        .badge-search {
+            cursor: pointer;
+            margin-right: 0.25em;
+            border: 1px solid white;
+        }
+
+        .badge-search:hover {
+            border: 1px solid black;
+            transform: scale(1.2);
+        }
+
+        .serverHardwareTitleSpan{
         }
     </style>
 </head>
@@ -117,7 +152,7 @@
                         <div class="col-lg-9 managerRightDiv"
                              style="height: 15.92em;padding: 1em;border-color: #7aa857">
                             <div class="blackBorder" style="height: 100%">
-                                //TODO
+                                <span>TODO - 访问/订阅 线统计图</span>
                             </div>
                         </div>
                         <div class="col-lg-3" style="padding: 0">
@@ -141,6 +176,92 @@
                                     </div>
                                     <span style="font-size: 20px;color: #ea9e2c;font-weight: bold;">今</span>
                                     <span style="font-size: 60px;color: #ea9e2c;font-weight: bold;">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="managerRightDiv col-lg-6" style="height: 18.95em">
+                            <span>(A place of purity..)</span>
+                        </div>
+                        <div class="col-lg-6" style="padding: 0">
+                            <div class="managerRightDiv" style="border-color: #6ecadc">
+                                <div class="blackBorder">
+                                    <table id="blogTopTable" style="width: 100%">
+                                        <thead >
+                                        <tr>
+                                            <td style="width: 78%"></td>
+                                            <td style="width: 22%"></td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td><a href="#">&nbsp;1.我是一个文章的标题</a></td>
+                                            <td class="blogTopHeat"><p>访问: 123</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#">&nbsp;2.我是一个文章的标题</a></td>
+                                            <td class="blogTopHeat"><p>访问: 123</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#">&nbsp;3.我是一个文章的标题</a></td>
+                                            <td class="blogTopHeat"><p>访问: 123</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#">&nbsp;4.我是一个文章的标题</a></td>
+                                            <td class="blogTopHeat"><p>访问: 123</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#">&nbsp;5.我是一个文章的标题131231313</a></td>
+                                            <td class="blogTopHeat">访问: 123</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="managerRightDiv col-lg-6" style="border-color: #446ab2">
+                                <div class="blackBorder">
+                                    <table id="tabTopTable" style="width: 100%">
+                                        <tbody>
+                                        <tr>
+                                            <td><span class="badge badge-search no-border-radio"
+                                                      onclick="tabSearchAppend('测试文章')"
+                                                      style=" background-color: #4a2eff">测试文章</span></td>
+                                            <td class="tabTopHeat"><p>访问: 123</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge badge-search no-border-radio"
+                                                      onclick="tabSearchAppend('测试文章')"
+                                                      style=" background-color: #18543f">测试文章</span></td>
+                                            <td class="tabTopHeat"><p>访问: 123</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge badge-search no-border-radio"
+                                                      onclick="tabSearchAppend('测试文章')"
+                                                      style=" background-color: #ea2eff">测试文章</span></td>
+                                            <td class="tabTopHeat"><p>访问: 123</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge badge-search no-border-radio"
+                                                      onclick="tabSearchAppend('测试文章')"
+                                                      style=" background-color: #ea2eff">测试文章</span></td>
+                                            <td class="tabTopHeat"><p>访问: 123</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge badge-search no-border-radio"
+                                                      onclick="tabSearchAppend('测试文章')"
+                                                      style=" background-color: #ea2eff">测试文章</span></td>
+                                            <td class="tabTopHeat"><p>访问: 123</p></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="managerRightDiv col-lg-6" style="border-color: #b24482">
+                                <div class="blackBorder" style="height: 8.7em">
+                                    <span>TODO - 功能热度</span>
+                                    <table id="functionTopTable" style="width: 100%">
+                                        <tbody>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -177,25 +298,25 @@
                             </div>
                         </div>
                         <div id="serverHardwareDiv" class="col-lg-4" style="width: 55%;padding: 0">
-                            <div class="managerRightDiv" style="text-align:center;border-color:hsl(212,73%,52%)">
+                            <div class="managerRightDiv" style="text-align:center;border-color:hsl(213,27%,29%)">
                                 <table class="blackBorder" id="serverHardwareTable">
                                     <tbody>
                                     <tr>
-                                        <td><span>磁盘</span></td>
+                                        <td><span style="color: grey" class="serverHardwareTitleSpan">磁盘</span></td>
                                         <td class="serverHardwareStrip">
-                                            <div title="磁盘使用情况：124.3G/758G" style=""></div>
+                                            <div title="磁盘使用情况：124.3G/758G" style="background-color: grey"></div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><span>内存</span></td>
+                                        <td><span style="color: #17a117" class="serverHardwareTitleSpan">内存</span></td>
                                         <td class="serverHardwareStrip">
-                                            <div title="内存使用情况：1256M/2048M" style=""></div>
+                                            <div title="内存使用情况：1256M/2048M" style="background-color: #17a117"></div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><span>CPU</span></td>
+                                        <td><span style="color: coral" class="serverHardwareTitleSpan">CPU</span></td>
                                         <td class="serverHardwareStrip">
-                                            <div title="CPU使用情况：34.2%" style=""></div>
+                                            <div title="CPU使用情况：34.2%" style="background-color: coral"></div>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -225,7 +346,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="consoleParentDiv" class="managerRightDiv" style="width: 100%;height: 12.4em">
+                        <div id="consoleParentDiv" class="managerRightDiv"
+                             style="width: 100%;height: 12.4em;border-color: grey">
                             <div id="consoleDiv" class="blackBorder"></div>
                         </div>
                     </div>
@@ -246,10 +368,23 @@
             //处理服务器返回的信息
             webSocket.onmessage = function (event) {
                 let $consoleParentDiv = $("#consoleParentDiv");
-                $("#consoleDiv").append(event.data);
+                $("#consoleDiv").append(formatConsoleLog(event.data));
                 $consoleParentDiv.scrollTop($consoleParentDiv.prop("scrollHeight"));
             };
         })
+
+        //格式化控制台信息，上色
+        function formatConsoleLog(logContent) {
+            let color = "#000";
+            if (logContent.indexOf("DEBUG") !== -1) {
+                color = "#54cb39";
+            } else if (logContent.indexOf("ERROE") !== -1 || logContent.indexOf("Exception") !== -1 || /at [a-z]{1,6}/g.test(logContent)) {
+                color = "#c73c3c";
+            } else if (logContent.indexOf("INFO") !== -1) {
+                color = "#000";
+            }
+            return "<p style='color: " + color + "'>" + logContent + "</p>";
+        }
     </script>
 </div>
 </html>
