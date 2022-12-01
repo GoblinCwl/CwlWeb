@@ -42,7 +42,6 @@
         }
 
         #serverHardwareTable .serverHardwareStrip div {
-            width: 100%;
             height: 1.3em;
             background-color: #6ecadc;
         }
@@ -72,19 +71,16 @@
 
         #threadUlDiv ul li.c1 {
             left: 0;
-            height: 9%;
             background-color: #e85151;
         }
 
         #threadUlDiv ul li.c2 {
             left: 80px;
-            height: 60%;
             background-color: #65da65;
         }
 
         #threadUlDiv ul li.c3 {
             left: 160px;
-            height: 99%;
             background-color: #5e99e5;
         }
 
@@ -131,7 +127,8 @@
             transform: scale(1.2);
         }
 
-        .serverHardwareTitleSpan{
+        #requestUlDiv li {
+            padding: 0.1em;
         }
     </style>
 </head>
@@ -161,10 +158,15 @@
                                 <div class="blackBorder">
                                     <div style="background-color: #2C7EEA;border-bottom: 1px solid #000">
                                         <span style="font-size: 6px;color: #fff;">总访问</span>
-                                        <span style="font-size: 20px;color: #fff;">420</span>
+                                        <span id="accessAllCountSpan" style="font-size: 20px;color: #fff;">
+                                            <!--总访问数量-->
+                                        </span>
                                     </div>
                                     <span style="font-size: 20px;color: #2C7EEA;font-weight: bold;">今</span>
-                                    <span style="font-size: 60px;color: #2C7EEA;font-weight: bold;">32</span>
+                                    <span id="accessTodayCountSpan"
+                                          style="font-size: 60px;color: #2C7EEA;font-weight: bold;">
+                                        <!--今日访问量-->
+                                    </span>
                                 </div>
                             </div>
                             <div id="subscriptionCountDiv" style="text-align: center;border-color: #af7f58"
@@ -186,7 +188,7 @@
                             <div class="managerRightDiv" style="border-color: #6ecadc">
                                 <div class="blackBorder">
                                     <table id="blogTopTable" style="width: 100%">
-                                        <thead >
+                                        <thead>
                                         <tr>
                                             <td style="width: 78%"></td>
                                             <td style="width: 22%"></td>
@@ -194,23 +196,23 @@
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td><a href="#">&nbsp;1.我是一个文章的标题</a></td>
+                                            <td><a href="#">&nbsp;1.todo</a></td>
                                             <td class="blogTopHeat"><p>访问: 123</p></td>
                                         </tr>
                                         <tr>
-                                            <td><a href="#">&nbsp;2.我是一个文章的标题</a></td>
+                                            <td><a href="#">&nbsp;2.todo</a></td>
                                             <td class="blogTopHeat"><p>访问: 123</p></td>
                                         </tr>
                                         <tr>
-                                            <td><a href="#">&nbsp;3.我是一个文章的标题</a></td>
+                                            <td><a href="#">&nbsp;3.todo</a></td>
                                             <td class="blogTopHeat"><p>访问: 123</p></td>
                                         </tr>
                                         <tr>
-                                            <td><a href="#">&nbsp;4.我是一个文章的标题</a></td>
+                                            <td><a href="#">&nbsp;4.todo</a></td>
                                             <td class="blogTopHeat"><p>访问: 123</p></td>
                                         </tr>
                                         <tr>
-                                            <td><a href="#">&nbsp;5.我是一个文章的标题131231313</a></td>
+                                            <td><a href="#">&nbsp;5.todo</a></td>
                                             <td class="blogTopHeat">访问: 123</td>
                                         </tr>
                                         </tbody>
@@ -224,31 +226,31 @@
                                         <tr>
                                             <td><span class="badge badge-search no-border-radio"
                                                       onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #4a2eff">测试文章</span></td>
+                                                      style=" background-color: #4a2eff">todo</span></td>
                                             <td class="tabTopHeat"><p>访问: 123</p></td>
                                         </tr>
                                         <tr>
                                             <td><span class="badge badge-search no-border-radio"
                                                       onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #18543f">测试文章</span></td>
+                                                      style=" background-color: #18543f">todo</span></td>
                                             <td class="tabTopHeat"><p>访问: 123</p></td>
                                         </tr>
                                         <tr>
                                             <td><span class="badge badge-search no-border-radio"
                                                       onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #ea2eff">测试文章</span></td>
+                                                      style=" background-color: #ea2eff">todo</span></td>
                                             <td class="tabTopHeat"><p>访问: 123</p></td>
                                         </tr>
                                         <tr>
                                             <td><span class="badge badge-search no-border-radio"
                                                       onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #ea2eff">测试文章</span></td>
+                                                      style=" background-color: #ea2eff">todo</span></td>
                                             <td class="tabTopHeat"><p>访问: 123</p></td>
                                         </tr>
                                         <tr>
                                             <td><span class="badge badge-search no-border-radio"
                                                       onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #ea2eff">测试文章</span></td>
+                                                      style=" background-color: #ea2eff">todo</span></td>
                                             <td class="tabTopHeat"><p>访问: 123</p></td>
                                         </tr>
                                         </tbody>
@@ -273,26 +275,35 @@
                             <div id="serverTimeDiv" class="managerRightDiv"
                                  style="text-align:center;border-color:hsl(120, 30%, 58%)">
                                 <div class="blackBorder">
-                                    <span style="font-size: 16px;color: grey">2022-11-28 9:26:12</span>
+                                    <span id="serverStartTimeSpan" style="font-size: 16px;color: grey">
+                                        <!--服务器开始运行时间-->
+                                    </span>
                                     <br>
-                                    <span style="font-size: 35px;color: green;font-weight: bold">1天2时39分</span>
+                                    <span id="serverTimeSpan" style="font-size: 35px;color: green;font-weight: bold">
+                                        <!--服务器运行时间-->
+                                    </span>
                                 </div>
                             </div>
                             <div id="gcDiv blackBorder" class="managerRightDiv"
                                  style="text-align:center;border-color:hsl(120, 30%, 58%);border-top: 0">
                                 <div class="blackBorder">
                                     <span style="font-size: 16px;color: red">GC - </span>
-                                    <span style="font-size: 16px;color: grey">5次</span>
-                                    <span style="font-size: 16px;color: green;font-weight: bold">0.239s</span>
+                                    <span id="gcCountSpan" style="font-size: 16px;color: grey">
+                                        <!--GC次数-->
+                                    </span>
+                                    <span id="gcTimeSpan"
+                                          style="font-size: 16px;color: green;font-weight: bold">
+                                        <!--GC时间-->
+                                    </span>
                                 </div>
                             </div>
                             <div id="threadDiv blackBorder" class="managerRightDiv"
                                  style="text-align:center;border-color:hsl(120, 30%, 58%);border-top: 0">
                                 <div id="threadUlDiv" class="blackBorder">
                                     <ul>
-                                        <li title="JVM当前守护线程：10" class="c1">GRD/10</li>
-                                        <li title="JVM当前活跃线程：60" class="c2">ACT/60</li>
-                                        <li title="JVM峰值线程：99" class="c3">PEK/99</li>
+                                        <li id="jvmGrdThreadLi" class="c1">GRD/</li>
+                                        <li id="jvmActThreadLi" class="c2">ACT/</li>
+                                        <li id="jvmPekThreadLi" class="c3">PEK/</li>
                                     </ul>
                                 </div>
                             </div>
@@ -302,21 +313,25 @@
                                 <table class="blackBorder" id="serverHardwareTable">
                                     <tbody>
                                     <tr>
-                                        <td><span style="color: grey" class="serverHardwareTitleSpan">磁盘</span></td>
+                                        <td><span id="diskUsageSpan" style="color: grey"
+                                                  class="serverHardwareTitleSpan">磁盘</span></td>
                                         <td class="serverHardwareStrip">
-                                            <div title="磁盘使用情况：124.3G/758G" style="background-color: grey"></div>
+                                            <div id="diskUsageDiv" style="background-color: grey"></div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><span style="color: #17a117" class="serverHardwareTitleSpan">内存</span></td>
+                                        <td><span id="memoryUsageSpan" style="color: #17a117"
+                                                  class="serverHardwareTitleSpan">内存</span>
+                                        </td>
                                         <td class="serverHardwareStrip">
-                                            <div title="内存使用情况：1256M/2048M" style="background-color: #17a117"></div>
+                                            <div id="memoryUsageDiv" style="background-color: #17a117"></div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><span style="color: coral" class="serverHardwareTitleSpan">CPU</span></td>
+                                        <td><span id="cpuUsageSpan" style="color: coral"
+                                                  class="serverHardwareTitleSpan">CPU</span></td>
                                         <td class="serverHardwareStrip">
-                                            <div title="CPU使用情况：34.2%" style="background-color: coral"></div>
+                                            <div id="cpuUsageDiv" style="background-color: coral"></div>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -332,22 +347,21 @@
                             <div id="requestDiv blackBorder" class="managerRightDiv"
                                  style="text-align:left;border-color:hsla(236,58%,58%,0.73)">
                                 <div id="requestUlDiv" class="blackBorder">
-                                    <ul style="font-size: 13px;padding: 0.23em">
-                                        <li><a href="#">/blog/recentUpdateList</a></li>
-                                        <li><a href="#">/blog/recentUpdateList/asdfasdfas/sadfasdf/asf</a></li>
-                                        <li><a href="#">/blog/recentUpdateList</a></li>
-                                        <li><a href="#">/blog/recentUpdateList</a></li>
-                                        <li><a href="#">/blog/recentUpdateList</a></li>
-                                        <li><a href="#">/blog/recentUpdateList</a></li>
-                                        <li><a href="#">/blog/recentUpdateList</a></li>
-                                        <li><a href="#">/blog/recentUpdateList</a></li>
-                                        <li><a href="#">/blog/recentUpdateList</a></li>
+                                    <ul style="font-size: 13px;padding: 0.1em;list-style: none">
+                                        <li><a href="#">/todo/todo/todo/todo</a></li>
+                                        <li><a href="#">/todo/todo/todo/todo</a></li>
+                                        <li><a href="#">/todo/todo/todo/todo</a></li>
+                                        <li><a href="#">/todo/todo/todo/todo</a></li>
+                                        <li><a href="#">/todo/todo/todo/todo</a></li>
+                                        <li><a href="#">/todo/todo/todo/todo</a></li>
+                                        <li><a href="#">/todo/todo/todo/todo</a></li>
+                                        <li><a href="#">/todo/todo/todo/todo</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                         <div id="consoleParentDiv" class="managerRightDiv"
-                             style="width: 100%;height: 12.4em;border-color: grey">
+                             style="width: 100%;height: 12.3em;border-color: grey">
                             <div id="consoleDiv" class="blackBorder"></div>
                         </div>
                     </div>
@@ -371,6 +385,13 @@
                 $("#consoleDiv").append(formatConsoleLog(event.data));
                 $consoleParentDiv.scrollTop($consoleParentDiv.prop("scrollHeight"));
             };
+
+            //右侧面板初始化
+            managerRightInit();
+            //每分钟刷新一次
+            setInterval(managerRightInit, 60000)
+            //左侧面板初始化
+            managerLeftInit();
         })
 
         //格式化控制台信息，上色
@@ -384,6 +405,77 @@
                 color = "#000";
             }
             return "<p style='color: " + color + "'>" + logContent + "</p>";
+        }
+
+        //面板左侧初始化
+        function managerLeftInit() {
+            ajaxHttp({
+                type: 'GET',
+                url: ctx + "/manager/managerLeft",
+                success: function (res) {
+                    const data = res.data;
+                    $("#accessAllCountSpan").text(data.accessCount.all);
+                    $("#accessTodayCountSpan").text(data.accessCount.today);
+                }
+            })
+        }
+
+        //面板右侧初始化
+        let serverTimeInterval;
+
+        function managerRightInit() {
+            //硬件信息数据
+            ajaxHttp({
+                type: 'GET',
+                url: ctx + "/manager/managerRight",
+                success: function (res) {
+                    const data = res.data;
+                    //服务器运行时间
+                    $("#serverStartTimeSpan").text(new Date(new Date().getTime() - data.serverUptime * 1000).Format("yyyy-MM-dd HH:mm:ss"))
+                    let nowTime = new Date(data.serverUptime * 1000).getTime();
+                    $("#serverTimeSpan").text(convertMilliSecondToTimeStr(nowTime))
+                    //每秒刷新+1
+                    clearInterval(serverTimeInterval);
+                    serverTimeInterval = setInterval(function () {
+                        nowTime += 1000;
+                        $("#serverTimeSpan").text(convertMilliSecondToTimeStr(nowTime))
+                    }, 1000);
+                    //gc数据
+                    $("#gcCountSpan").text(data.gcTime.count + "次");
+                    $("#gcTimeSpan").text((data.gcTime.time).toFixed(3) + "s");
+                    //线程数据
+                    //峰值线程
+                    let peakCount = data.jvmThread.peakCount;
+                    let heightProportion = 100 / peakCount;
+                    let $jvmGrdThreadLi = $("#jvmGrdThreadLi");
+                    let $jvmActThreadLi = $("#jvmActThreadLi");
+                    let $jvmPekThreadLi = $("#jvmPekThreadLi");
+                    $jvmGrdThreadLi.text("GRD/" + data.jvmThread.daemonCount);
+                    $jvmGrdThreadLi.css("height", data.jvmThread.daemonCount * heightProportion + "%");
+                    $jvmGrdThreadLi.attr("title", "JVM当前守护线程：" + data.jvmThread.daemonCount);
+                    $jvmActThreadLi.text("ACT/" + data.jvmThread.liveCount);
+                    $jvmActThreadLi.css("height", data.jvmThread.liveCount * heightProportion + "%");
+                    $jvmActThreadLi.attr("title", "JVM当前活跃线程：" + data.jvmThread.liveCount);
+                    $jvmPekThreadLi.text("PEK/" + data.jvmThread.peakCount);
+                    $jvmPekThreadLi.css("height", data.jvmThread.peakCount * heightProportion + "%");
+                    $jvmPekThreadLi.attr("title", "JVM峰值线程：" + data.jvmThread.peakCount);
+                    //硬件信息
+                    let $diskUsageDiv = $("#diskUsageDiv");
+                    $diskUsageDiv.css("width", (1 - data.diskSpace.details.free / data.diskSpace.details.total) * 100 + "%")
+                    let diskTitle = "磁盘使用情况：" + ((data.diskSpace.details.total - data.diskSpace.details.free) / 1024 / 1024 / 1024).toFixed(2) + "G/" + (data.diskSpace.details.total / 1024 / 1024 / 1024).toFixed(2) + "G";
+                    $diskUsageDiv.attr("title", diskTitle);
+                    $("#diskUsageSpan").attr("title", diskTitle);
+                    let $memoryUsageDiv = $("#memoryUsageDiv");
+                    $memoryUsageDiv.css("width", (data.jvmMemory.used / (data.jvmMemory.committed + data.jvmMemory.used)) * 100 + "%");
+                    let memoryTitle = "内存使用情况：" + (data.jvmMemory.used / 1024 / 1024).toFixed(2) + "M/" + ((data.jvmMemory.committed + data.jvmMemory.used) / 1024 / 1024).toFixed(2) + "M";
+                    $memoryUsageDiv.attr("title", memoryTitle);
+                    $("#memoryUsageSpan").attr("title", memoryTitle);
+                    let $cpuUsageDiv = $("#cpuUsageDiv");
+                    $cpuUsageDiv.css("width", data.cpuUsage + "%");
+                    $cpuUsageDiv.attr("title", "CPU使用情况：" + (data.cpuUsage).toFixed(2) + "%/100%");
+                    $("#cpuUsageSpan").attr("title", "CPU使用情况：" + (data.cpuUsage).toFixed(2) + "%/100%");
+                }
+            })
         }
     </script>
 </div>

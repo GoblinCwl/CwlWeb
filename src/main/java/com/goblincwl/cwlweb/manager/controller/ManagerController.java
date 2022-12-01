@@ -10,7 +10,6 @@ import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
 import com.goblincwl.cwlweb.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.actuate.health.HealthComponent;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.health.SystemHealth;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
@@ -115,34 +114,29 @@ public class ManagerController {
         if (!isRedis) {
             //从数据库查询数据
             resultMap = new HashMap<>();
-            //昨日访问量
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, -1);
-            Date yesterday = cal.getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String yesterdayDateFormat = sdf.format(yesterday);
-            Long yesterdayAccessCount = this.accessLogService.countByDate(yesterdayDateFormat);
-            resultMap.put("yesterdayAccessCount", yesterdayAccessCount);
+            //访问量
+            Map<String, Object> accessMap = new HashMap<>(2);
+            //总访问量
+            Long allAccessCount = this.accessLogService.count();
+            accessMap.put("all", allAccessCount);
             //今日访问量
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String todayDateFormat = sdf.format(new Date());
             Long todayAccessCount = this.accessLogService.countByDate(todayDateFormat);
-            resultMap.put("todayAccessCount", todayAccessCount);
+            accessMap.put("today", todayAccessCount);
+            resultMap.put("accessCount", accessMap);
             //TODO 昨日订阅量
             //TODO 今日订阅量
             //7天访问数据
             List<Map<String, Object>> weekData = new ArrayList<>();
-            //-- 昨天
-            Map<String, Object> yesterdayMap = new HashMap<>(2);
-            yesterdayMap.put("date", yesterdayDateFormat);
-            yesterdayMap.put("count", yesterdayAccessCount);
-            weekData.add(yesterdayMap);
             //-- 今天
             Map<String, Object> todayMap = new HashMap<>(2);
             todayMap.put("date", todayDateFormat);
-            todayMap.put("count", yesterdayAccessCount);
+            todayMap.put("count", todayAccessCount);
             weekData.add(todayMap);
-            //昨天起往前5天
-            for (int i = 0; i < 5; i++) {
+            //昨天起往前6天
+            Calendar cal = Calendar.getInstance();
+            for (int i = 0; i < 6; i++) {
                 cal.add(Calendar.DATE, -1);
                 String nowFormat = sdf.format(cal.getTime());
                 Long nowCount = this.accessLogService.countByDate(nowFormat);
@@ -158,10 +152,10 @@ public class ManagerController {
             //TODO 最热门5个功能
 
 
-            //存到Redis
-            redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
-            //设置有效期
-            redisTemplate.expire(redisKey, 30, TimeUnit.MINUTES);
+//            //存到Redis
+//            redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
+//            //设置有效期
+//            redisTemplate.expire(redisKey, 30, TimeUnit.MINUTES);
         } else {
             resultMap = JSONObject.parseObject(managerLeftData, Map.class);
         }
@@ -205,14 +199,16 @@ public class ManagerController {
         //内存占用
         MetricsEndpoint.MetricResponse jvmCommittedMemoryMetric = this.metricsEndpoint.metric("jvm.memory.committed", null);
         MetricsEndpoint.MetricResponse jvmUsedMemoryMetric = this.metricsEndpoint.metric("jvm.memory.used", null);
+        MetricsEndpoint.MetricResponse jvmMaxMemoryMetric = this.metricsEndpoint.metric("jvm.memory.max", null);
         Map<String, Object> jvmMemoryMap = new HashMap<>(2);
         jvmMemoryMap.put("committed", jvmCommittedMemoryMetric.getMeasurements().get(0).getValue());
         jvmMemoryMap.put("used", jvmUsedMemoryMetric.getMeasurements().get(0).getValue());
+        jvmMemoryMap.put("max", jvmMaxMemoryMetric.getMeasurements().get(0).getValue());
         resultMap.put("jvmMemory", jvmMemoryMap);
         //CPU占用
         MetricsEndpoint.MetricResponse cpuUsageMetric = this.metricsEndpoint.metric("process.cpu.usage", null);
         resultMap.put("cpuUsage", cpuUsageMetric.getMeasurements().get(0).getValue());
-        //HTTP请求统计
+        //TODO HTTP请求统计
 
         return Result.genSuccess(resultMap, "成功");
     }
