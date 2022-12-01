@@ -340,21 +340,21 @@ function convertMilliSecondToTimeStr(milliSecond) {
     if (milliSecond / 1000 >= 1) {
         sec = milliSecond / 1000;
         if (sec / 60 >= 1) {
-            min = parseInt(sec / 60);
-            sec = parseInt((sec / 60 - min) * 60);
+            min = Math.floor(sec / 60);
+            sec = Math.floor((sec / 60 - min) * 60);
             if (min / 60 >= 1) {
-                hour = parseInt(min / 60);
+                hour = Math.floor(min / 60);
                 min = (min / 60 - hour) * 60;
                 if (hour / 24 >= 1) {
-                    day = parseInt(hour / 24);
+                    day = Math.floor(hour / 24);
                     hour = (hour / 24 - day) * 24;
                     sec = null;
                     if (day / 30 >= 1) {
-                        month = parseInt(day / 30);
+                        month = Math.floor(day / 30);
                         day = (day / 30 - month) * 30;
                         min = null;
                         if (month / 12 >= 1) {
-                            year = parseInt(month / 12);
+                            year = Math.floor(month / 12);
                             month = (month / 12 - year) * 12;
                             hour = null;
                         }
@@ -362,13 +362,13 @@ function convertMilliSecondToTimeStr(milliSecond) {
                 }
             }
         } else {
-            sec = parseInt(milliSecond / 1000);
+            sec = Math.floor(milliSecond / 1000);
         }
     }
-    return (notEmpty(year) ? year + "年" : "")
-    + (notEmpty(month) ? month + "月" : "")
-    + (notEmpty(day) ? day + "日" : "")
-    + (notEmpty(hour) ? hour + "时" : "")
-    + (notEmpty(min) ? min + "分" : "")
-    + (notEmpty(sec) ? sec + "秒" : "")
+    return (notEmpty(year) && year !== 0 ? year.toFixed(0) + "年" : "")
+        + (notEmpty(month) && month !== 0 ? month.toFixed(0) + "月" : "")
+        + (notEmpty(day) && day !== 0 ? day.toFixed(0) + "日" : "")
+        + (notEmpty(hour) && hour !== 0 ? hour.toFixed(0) + "时" : "")
+        + (notEmpty(min) && min !== 0 ? min.toFixed(0) + "分" : "")
+        + (notEmpty(sec) && sec !== 0 ? sec.toFixed(0) + "秒" : "")
 }
