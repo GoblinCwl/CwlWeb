@@ -443,7 +443,7 @@
                                 if (title.length > maxTitleLong) {
                                     title = title.substr(0, (maxTitleLong - 1)) + "...";
                                 }
-                                return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/blog/content/' + row.blogId) + '")');
+                                return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/blog/content/' + row.blogId + '#C' + row.id) + '")');
                             },
                             width: 120,
                         },
@@ -536,7 +536,7 @@
                             offColor: 'warning',
                             onSwitchChange: function onSwitchChange(event, state) {
                                 //修改操作
-                                commentAuditWebsite(event.currentTarget.value, state,tableId);
+                                commentAuditWebsite(event.currentTarget.value, state, tableId);
                             }
                         })
                     }
@@ -581,7 +581,7 @@
                                             if (title.length > maxTitleLong) {
                                                 title = title.substr(0, (maxTitleLong - 1)) + "...";
                                             }
-                                            return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/blog/content/' + row.blogId) + '")');
+                                            return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/blog/content/' + row.blogId + '#C' + rowDetail.id) + '")');
                                         },
                                         width: 120,
                                     },
@@ -687,7 +687,7 @@
                             onColor: 'info',
                             offColor: 'warning',
                             onSwitchChange: function onSwitchChange(event, state) {
-                                commentAuditWebsite(event.currentTarget.value, state,tableId);
+                                commentAuditWebsite(event.currentTarget.value, state, tableId);
                             }
                         })
                     }
@@ -1060,7 +1060,7 @@
         }
 
         /*修改*/
-        function commentAuditWebsite(id, state,tableId) {
+        function commentAuditWebsite(id, state, tableId) {
             const $table = getTable(tableId);
             //修改操作
             ajaxHttp({
