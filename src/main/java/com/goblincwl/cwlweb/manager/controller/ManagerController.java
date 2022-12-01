@@ -4,6 +4,9 @@ import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.goblincwl.cwlweb.blog.entity.Blog;
+import com.goblincwl.cwlweb.blog.service.BlogService;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.IpUtils;
@@ -44,6 +47,7 @@ public class ManagerController {
     private final MetricsEndpoint metricsEndpoint;
     private final HealthEndpoint healthEndpoint;
     private final AccessLogService accessLogService;
+    private final BlogService blogService;
 
     /**
      * 管理员登陆，获取token
@@ -151,6 +155,12 @@ public class ManagerController {
             resultMap.put("accessWeekList", weekData);
             //TODO 7天订阅数据
             //TODO 最热门5篇文章
+            List<Blog> hotBlogList = this.blogService.list(
+                    new LambdaUpdateWrapper<Blog>()
+                            .orderBy(true, false, Blog::getBrowserTimes)
+                            .last("limit 5")
+            );
+            resultMap.put("hotBlogList", hotBlogList);
             //TODO 最热门5个标签
             //TODO 最热门5个功能
 
@@ -211,7 +221,7 @@ public class ManagerController {
         //CPU占用
         MetricsEndpoint.MetricResponse cpuUsageMetric = this.metricsEndpoint.metric("process.cpu.usage", null);
         resultMap.put("cpuUsage", cpuUsageMetric.getMeasurements().get(0).getValue());
-        //TODO HTTP请求统计
+        //HTTP请求统计
         WebAppStatManager webAppStatManager = WebAppStatManager.getInstance();
         List<Map<String, Object>> uriList = webAppStatManager.getURIStatData().stream().filter(data -> {
             String uri = String.valueOf(data.get("URI"));

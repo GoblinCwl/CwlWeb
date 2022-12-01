@@ -362,3 +362,8 @@ function convertMilliSecondToTimeStr(milliSecond) {
         + (notEmpty(min) && min !== 0 ? min.toFixed(0) + "分" : "")
         + (notEmpty(sec) && sec !== 0 ? sec.toFixed(0) + "秒" : "")
 }
+
+//跳转链接
+function urlLinkJump(url) {
+    openNewWindow(url);
+}
