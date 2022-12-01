@@ -9,6 +9,7 @@ import com.goblincwl.cwlweb.blog.entity.BlogTabs;
 import com.goblincwl.cwlweb.blog.service.BlogService;
 import com.goblincwl.cwlweb.blog.service.BlogTabsService;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
+import com.goblincwl.cwlweb.common.annotation.aop.BrowseTimes;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
@@ -154,6 +155,7 @@ public class BlogController extends BaseController<Blog> {
      * @date 2021-05-10 06:59:09
      * @author ☪wl
      */
+    @BrowseTimes
     @GetMapping("/content/{id}")
     public ModelAndView content(@PathVariable("id") String id) throws ServletException, IOException {
         return new ModelAndView("blog/content", Collections.singletonMap("id", id));

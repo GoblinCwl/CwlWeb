@@ -104,9 +104,21 @@
             word-break: break-all;
         }
 
+        .blogTopTitle {
+            width: 82%;
+        }
+
+        .blogTopTitle i {
+            width: 0.7em;
+        }
+
+        .blogTopHeat {
+            width: 18%;
+        }
+
         .blogTopHeat, .tabTopHeat {
             font-size: 1px;
-            text-align: center;
+            text-align: right;
             color: gray;
         }
 
@@ -114,8 +126,19 @@
             text-align: center;
         }
 
+        #blogTopTable {
+            border-collapse: unset;
+            padding-left: 0.2em;
+            padding-right: 0.2em;
+            padding-bottom: 0.1em;
+        }
+
+        #blogTopTable td {
+            border-bottom: 1px solid #000;
+        }
+
         #blogTopTable td, #tabTopTable td {
-            padding: 0.145em;
+            padding: 0.138em;
         }
 
         #blogTopTable span, #tabTopTable span {
@@ -194,33 +217,8 @@
                             <div class="managerRightDiv" style="border-color: #6ecadc">
                                 <div class="blackBorder">
                                     <table id="blogTopTable" style="width: 100%">
-                                        <thead>
-                                        <tr>
-                                            <td style="width: 78%"></td>
-                                            <td style="width: 22%"></td>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td><a href="#">&nbsp;1.todo</a></td>
-                                            <td class="blogTopHeat"><p>访问: 123</p></td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="#">&nbsp;2.todo</a></td>
-                                            <td class="blogTopHeat"><p>访问: 123</p></td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="#">&nbsp;3.todo</a></td>
-                                            <td class="blogTopHeat"><p>访问: 123</p></td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="#">&nbsp;4.todo</a></td>
-                                            <td class="blogTopHeat"><p>访问: 123</p></td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="#">&nbsp;5.todo</a></td>
-                                            <td class="blogTopHeat">访问: 123</td>
-                                        </tr>
+                                        <tbody id="blogTopTbody">
+                                        <!--热度文章列表-->
                                         </tbody>
                                     </table>
                                 </div>
@@ -232,39 +230,39 @@
                                         <tr>
                                             <td><span class="badge badge-search no-border-radio"
                                                       onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #4a2eff">todo</span></td>
-                                            <td class="tabTopHeat"><p>访问: 123</p></td>
+                                                      style=" background-color: #4a2eff">todotodo</span></td>
+                                            <td class="tabTopHeat"><p>订阅: 123</p></td>
                                         </tr>
                                         <tr>
                                             <td><span class="badge badge-search no-border-radio"
                                                       onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #18543f">todo</span></td>
-                                            <td class="tabTopHeat"><p>访问: 123</p></td>
+                                                      style=" background-color: #18543f">todotodo</span></td>
+                                            <td class="tabTopHeat"><p>订阅: 123</p></td>
                                         </tr>
                                         <tr>
                                             <td><span class="badge badge-search no-border-radio"
                                                       onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #ea2eff">todo</span></td>
-                                            <td class="tabTopHeat"><p>访问: 123</p></td>
+                                                      style=" background-color: #ea2eff">todotodo</span></td>
+                                            <td class="tabTopHeat"><p>订阅: 123</p></td>
                                         </tr>
                                         <tr>
                                             <td><span class="badge badge-search no-border-radio"
                                                       onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #ea2eff">todo</span></td>
-                                            <td class="tabTopHeat"><p>访问: 123</p></td>
+                                                      style=" background-color: #ea2eff">todotodo</span></td>
+                                            <td class="tabTopHeat"><p>订阅: 123</p></td>
                                         </tr>
                                         <tr>
                                             <td><span class="badge badge-search no-border-radio"
                                                       onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #ea2eff">todo</span></td>
-                                            <td class="tabTopHeat"><p>访问: 123</p></td>
+                                                      style=" background-color: #ea2eff">todotodo</span></td>
+                                            <td class="tabTopHeat"><p>订阅: 123</p></td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                             <div class="managerRightDiv col-lg-6" style="border-color: #b24482">
-                                <div class="blackBorder" style="height: 8.7em">
+                                <div class="blackBorder" style="height: 8.65em">
                                     <span>TODO - 功能热度</span>
                                     <table id="functionTopTable" style="width: 100%">
                                         <tbody>
@@ -414,8 +412,27 @@
                 url: ctx + "/manager/managerLeft",
                 success: function (res) {
                     const data = res.data;
+                    //访问数
                     $("#accessAllCountSpan").text(data.accessCount.all);
                     $("#accessTodayCountSpan").text(data.accessCount.today);
+
+                    //文章热度top
+                    let hotBlogHtml = "";
+                    let hotBlogList = res.data.hotBlogList;
+                    for (const blog of hotBlogList) {
+                        hotBlogHtml += '<tr>' +
+                            '           <td class="blogTopTitle">' +
+                            '               <a style="color:#c16edc;" target="_blank" href="' + ctx + '/blog/content/' + blog.id + '">' +
+                            '                   <i class="glyphicon glyphicon-link"></i>' +
+                            '                   <span title="' + blog.title + '">' + reLengthStr(blog.title, 15) + '</span>' +
+                            '               </a>' +
+                            '           </td>' +
+                            '           <td class="blogTopHeat">' +
+                            '               <p>访问:' + blog.browserTimes + '</p>' +
+                            '           </td>' +
+                            '       </tr>'
+                    }
+                    $("#blogTopTbody").html(hotBlogHtml);
                 }
             })
         }

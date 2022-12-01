@@ -85,7 +85,14 @@ public class Blog implements Serializable {
      */
     private Integer doArchive;
 
-    /**是否归档(页面查询)*/
+    /**
+     * 浏览次数
+     */
+    private Long browserTimes;
+
+    /**
+     * 是否归档(页面查询)
+     */
     @TableField(exist = false)
     private String doArchiveStr;
 

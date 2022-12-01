@@ -8,7 +8,6 @@ import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.utils.BadWordUtil;
 import com.goblincwl.cwlweb.manager.entity.AccessRecord;
 import com.goblincwl.cwlweb.manager.service.AccessRecordService;
-import com.goblincwl.cwlweb.manager.service.OssFileService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -37,8 +36,6 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
     private RedisTemplate<String, Object> redisTemplate;
     private final RabbitTemplate rabbitTemplate;
     private final AccessRecordService accessRecordService;
-    private final OssFileService ossFileService;
-
 
     public Integer add(Comment comment) throws IOException {
         //检查用户昵称违禁词
