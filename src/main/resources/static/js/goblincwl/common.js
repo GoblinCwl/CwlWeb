@@ -7,7 +7,7 @@ $(function () {
     }
 });
 
-function getWebSocketUrl(){
+function getWebSocketUrl() {
     let socketUrl;
     if (url.indexOf("https") !== -1) {
         socketUrl = url.replace('https', 'wss');
@@ -323,4 +323,52 @@ function openNewWindow(url) {
         document.body.appendChild(a);
     }
     a.click();
+}
+
+function notEmpty(str) {
+    return str != null && str !== '' && str !== undefined;
+}
+
+//将毫秒转换为 X天X时X分X秒
+function convertMilliSecondToTimeStr(milliSecond) {
+    let sec;
+    let min;
+    let hour;
+    let day;
+    let month;
+    let year;
+    if (milliSecond / 1000 >= 1) {
+        sec = milliSecond / 1000;
+        if (sec / 60 >= 1) {
+            min = parseInt(sec / 60);
+            sec = parseInt((sec / 60 - min) * 60);
+            if (min / 60 >= 1) {
+                hour = parseInt(min / 60);
+                min = (min / 60 - hour) * 60;
+                if (hour / 24 >= 1) {
+                    day = parseInt(hour / 24);
+                    hour = (hour / 24 - day) * 24;
+                    sec = null;
+                    if (day / 30 >= 1) {
+                        month = parseInt(day / 30);
+                        day = (day / 30 - month) * 30;
+                        min = null;
+                        if (month / 12 >= 1) {
+                            year = parseInt(month / 12);
+                            month = (month / 12 - year) * 12;
+                            hour = null;
+                        }
+                    }
+                }
+            }
+        } else {
+            sec = parseInt(milliSecond / 1000);
+        }
+    }
+    return (notEmpty(year) ? year + "年" : "")
+    + (notEmpty(month) ? month + "月" : "")
+    + (notEmpty(day) ? day + "日" : "")
+    + (notEmpty(hour) ? hour + "时" : "")
+    + (notEmpty(min) ? min + "分" : "")
+    + (notEmpty(sec) ? sec + "秒" : "")
 }
