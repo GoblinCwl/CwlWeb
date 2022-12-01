@@ -1,21 +1,16 @@
 package com.goblincwl.cwlweb.common.interceptor;
 
-import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.enums.ResultCode;
-import com.goblincwl.cwlweb.common.utils.IpUtils;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * WebMVC 拦截器
