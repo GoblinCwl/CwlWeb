@@ -52,7 +52,7 @@ spring:
       # 连接保持空闲而不被驱逐的最小时间
       min-evictable-idle-timeMillis: 300000
       # 用来检测连接是否有效的sql，要求是一个查询语句
-      validation-query: select 1 FROM DUAL
+      validation-query: select 1
       # 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效
       test-while-idle: true
       # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能

@@ -10,7 +10,8 @@
     <link th:href="@{/webjars/bootstrap/3.4.1/css/bootstrap.min.css}" rel='stylesheet' type='text/css'/>
     <link th:href="@{/webjars/bootstrap-table/1.16.0/bootstrap-table.css}" rel='stylesheet' type='text/css'/>
     <link th:href="@{/webjars/bootstrap-select/1.13.18/css/bootstrap-select.css}" rel='stylesheet' type='text/css'/>
-    <link th:href="@{/webjars/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.css}" rel='stylesheet' type='text/css'/>
+    <link th:href="@{/webjars/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.css}" rel='stylesheet'
+          type='text/css'/>
     <!-- 自定义主题文件 -->
     <link th:href="@{/css/dashboard.css}" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel='stylesheet' type='text/css'/>
@@ -76,10 +77,8 @@
     <script>
         ctx = '[[@{/}]]' == '/' ? '' : '[[@{/}]]';
         isHttps = 'https:' === document.location.protocol;
-        url = '[[ ${#httpServletRequest.getRequestURL()}]]';
-        if (isHttps) {
-            url = url.replace('http', 'https');
-        }
+        projectHomeHttpUrl = window.location.protocol + "//" + window.location.host;
+        projectHomeWebSocketUrl = (window.location.protocol + "//" + window.location.host).replace("https", "wss").replace("http", "ws");
     </script>
 
     <!--管理模块自动显示-->

@@ -44,11 +44,12 @@
         #serverHardwareTable .serverHardwareStrip div {
             height: 1.3em;
             background-color: #6ecadc;
+            width: 0;
         }
 
 
         #threadUlDiv {
-            height: 15em;
+            height: 15.3em;
             position: relative;
             border: 0;
             border-top: 1px solid;
@@ -73,8 +74,8 @@
 
         #threadUlDiv ul li.c1 {
             left: 0;
-            background-color: #e85151;
-            color: #9d3333;
+            background-color: #5e99e5;
+            color: #3f679a;
         }
 
         #threadUlDiv ul li.c2 {
@@ -85,8 +86,8 @@
 
         #threadUlDiv ul li.c3 {
             left: 160px;
-            background-color: #5e99e5;
-            color: #3f679a;
+            background-color: #e85151;
+            color: #9d3333;
         }
 
         span {
@@ -133,7 +134,7 @@
         }
 
         #requestUlDiv li {
-            padding: 0.1em;
+            padding: 0.13em;
         }
     </style>
 </head>
@@ -164,13 +165,13 @@
                                     <div style="background-color: #2C7EEA;border-bottom: 1px solid #000">
                                         <span style="font-size: 6px;color: #fff;">总访问</span>
                                         <span id="accessAllCountSpan" style="font-size: 20px;color: #fff;">
-                                            <!--总访问数量-->
+                                            <!--总访问数量-->-
                                         </span>
                                     </div>
                                     <span style="font-size: 20px;color: #2C7EEA;font-weight: bold;">今</span>
                                     <span id="accessTodayCountSpan"
                                           style="font-size: 60px;color: #2C7EEA;font-weight: bold;">
-                                        <!--今日访问量-->
+                                        <!--今日访问量-->-
                                     </span>
                                 </div>
                             </div>
@@ -282,10 +283,12 @@
                                 <div class="blackBorder">
                                     <span id="serverStartTimeSpan" style="font-size: 16px;color: grey">
                                         <!--服务器开始运行时间-->
+                                        ////-//-// //://://
                                     </span>
                                     <br>
                                     <span id="serverTimeSpan" style="font-size: 32px;color: green;font-weight: bold">
                                         <!--服务器运行时间-->
+                                        -时-分-秒
                                     </span>
                                 </div>
                             </div>
@@ -345,22 +348,14 @@
                             <div id="requestTitleDiv blackBorder" class="managerRightDiv"
                                  style="text-align:left;border-color:hsla(236,58%,58%,0.73);border-bottom: 0">
                                 <div id="requestTitleUlDiv" class="blackBorder"
-                                     style="padding: 0.2em;text-align: center;color:hsla(236,58%,58%,0.73) ">
+                                     style="padding: 0.14em;text-align: center;color:hsla(236,58%,58%,0.73) ">
                                     <span>- 最多请求接口 -</span>
                                 </div>
                             </div>
                             <div id="requestDiv blackBorder" class="managerRightDiv"
                                  style="text-align:left;border-color:hsla(236,58%,58%,0.73)">
                                 <div id="requestUlDiv" class="blackBorder">
-                                    <ul style="font-size: 13px;padding: 0.1em;list-style: none">
-                                        <li><a href="#">/todo/todo/todo/todo</a></li>
-                                        <li><a href="#">/todo/todo/todo/todo</a></li>
-                                        <li><a href="#">/todo/todo/todo/todo</a></li>
-                                        <li><a href="#">/todo/todo/todo/todo</a></li>
-                                        <li><a href="#">/todo/todo/todo/todo</a></li>
-                                        <li><a href="#">/todo/todo/todo/todo</a></li>
-                                        <li><a href="#">/todo/todo/todo/todo</a></li>
-                                        <li><a href="#">/todo/todo/todo/todo</a></li>
+                                    <ul id="requestUl" style="font-size: 13px;;list-style: none">
                                     </ul>
                                 </div>
                             </div>
@@ -383,7 +378,7 @@
             $("#managerHomeLi").addClass("active")
 
             //日志输出
-            const webSocket = new WebSocket("ws://localhost:8500/log");
+            const webSocket = new WebSocket(projectHomeWebSocketUrl + "/log");
             //处理服务器返回的信息
             webSocket.onmessage = function (event) {
                 let $consoleParentDiv = $("#consoleParentDiv");
@@ -479,6 +474,26 @@
                     $cpuUsageDiv.css("width", data.cpuUsage + "%");
                     $cpuUsageDiv.attr("title", "CPU使用情况：" + (data.cpuUsage).toFixed(2) + "%/100%");
                     $("#cpuUsageSpan").attr("title", "CPU使用情况：" + (data.cpuUsage).toFixed(2) + "%/100%");
+                    //请求最多的8个接口
+                    let requestHtml = "";
+                    let topCountLength = null;
+                    for (let i = 0; i < data.uriList.length; i++) {
+                        //只展示8个
+                        if (i > 7) {
+                            break;
+                        }
+                        const requestUri = data.uriList[i];
+                        if (topCountLength == null) {
+                            topCountLength = requestUri.RequestCount.toString().length;
+                        }
+                        requestHtml += "<li>" +
+                            "               <span style='color: hsla(236,58%,58%,0.73)'>" + PrefixInteger(requestUri.RequestCount, topCountLength) + "次：</span>" +
+                            "               <a target='_blank' href=" + projectHomeHttpUrl + "/druid/weburi-detail.html?uri=" + requestUri.URI + ">" +
+                            "                   <span>" + requestUri.URI + "</span>" +
+                            "               </a>" +
+                            "           </li>"
+                    }
+                    $("#requestUl").html(requestHtml)
                 }
             })
         }

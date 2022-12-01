@@ -1,5 +1,8 @@
 package com.goblincwl.cwlweb.manager.controller;
 
+import com.alibaba.druid.stat.DruidStatService;
+import com.alibaba.druid.support.http.stat.WebAppStatManager;
+import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.fastjson.JSONObject;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
@@ -20,7 +23,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Manager 管理模块 Controller
@@ -209,7 +212,18 @@ public class ManagerController {
         MetricsEndpoint.MetricResponse cpuUsageMetric = this.metricsEndpoint.metric("process.cpu.usage", null);
         resultMap.put("cpuUsage", cpuUsageMetric.getMeasurements().get(0).getValue());
         //TODO HTTP请求统计
-
+        WebAppStatManager webAppStatManager = WebAppStatManager.getInstance();
+        List<Map<String, Object>> uriList = webAppStatManager.getURIStatData().stream().filter(data -> {
+            String uri = String.valueOf(data.get("URI"));
+            return !uri.contains("webjars")
+                    && !uri.contains("images")
+                    && !uri.contains("fonts")
+                    && !"/druid".equals(uri)
+                    && !"/favicon.ico".equals(uri)
+                    && !"/log".equals(uri)
+                    && !"/terminal".equals(uri);
+        }).sorted((o1, o2) -> Long.compare((Long) o2.get("RequestCount"), (Long) o1.get("RequestCount"))).collect(Collectors.toList());
+        resultMap.put("uriList", uriList);
         return Result.genSuccess(resultMap, "成功");
     }
 }
