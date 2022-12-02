@@ -40,6 +40,17 @@ public class IndexTerminalWebSocketHandler extends TextWebSocketHandler {
     private static final Integer MAX_MESSAGE_LENGTH = 50;
 
     /**
+     * 获取在线人数
+     *
+     * @return 在线人数
+     * @date 2022/12/2 10:29
+     * @author ☪wl
+     */
+    public static Integer getOnlineCount() {
+        return ONLINE_COUNT.get();
+    }
+
+    /**
      * 连接建立成功调用的方法
      *
      * @param session 会话
