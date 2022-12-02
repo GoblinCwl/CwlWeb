@@ -47,4 +47,9 @@ public class BlogTabs implements Serializable {
      * 2级排序(0~?)
      */
     private Integer sort2;
+
+    /**
+     * 订阅数量
+     */
+    private Long subscribeCount;
 }

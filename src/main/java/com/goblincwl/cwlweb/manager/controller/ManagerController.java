@@ -6,7 +6,9 @@ import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.goblincwl.cwlweb.blog.entity.Blog;
+import com.goblincwl.cwlweb.blog.entity.BlogTabs;
 import com.goblincwl.cwlweb.blog.service.BlogService;
+import com.goblincwl.cwlweb.blog.service.BlogTabsService;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.IpUtils;
@@ -48,6 +50,7 @@ public class ManagerController {
     private final HealthEndpoint healthEndpoint;
     private final AccessLogService accessLogService;
     private final BlogService blogService;
+    private final BlogTabsService blogTabsService;
 
     /**
      * 管理员登陆，获取token
@@ -135,33 +138,48 @@ public class ManagerController {
             //TODO 昨日订阅量
             //TODO 今日订阅量
             //7天访问数据
-            List<Map<String, Object>> weekData = new ArrayList<>();
+            Long[] accessDataArray = new Long[7];
+            String[] dateArray = new String[7];
+            SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd");
             //-- 今天
-            Map<String, Object> todayMap = new HashMap<>(2);
-            todayMap.put("date", todayDateFormat);
-            todayMap.put("count", todayAccessCount);
-            weekData.add(todayMap);
+            accessDataArray[6] = todayAccessCount;
+            dateArray[6] = sdfDate.format(new Date());
             //昨天起往前6天
             Calendar cal = Calendar.getInstance();
-            for (int i = 0; i < 6; i++) {
+            for (int i = 5; i >= 0; i--) {
                 cal.add(Calendar.DATE, -1);
                 String nowFormat = sdf.format(cal.getTime());
                 Long nowCount = this.accessLogService.countByDate(nowFormat);
-                Map<String, Object> nowMap = new HashMap<>(2);
-                nowMap.put("date", nowFormat);
-                nowMap.put("count", nowCount);
-                weekData.add(nowMap);
+                accessDataArray[i] = nowCount;
+                dateArray[i] = sdfDate.format(cal.getTime());
             }
-            resultMap.put("accessWeekList", weekData);
+            resultMap.put("accessDataArray", accessDataArray);
+            //统计日期字符串
+            resultMap.put("dateArray", dateArray);
             //TODO 7天订阅数据
-            //TODO 最热门5篇文章
+            Long[] subscribeDataArray = new Long[7];
+            subscribeDataArray[0] = 0L;
+            subscribeDataArray[1] = 0L;
+            subscribeDataArray[2] = 0L;
+            subscribeDataArray[3] = 0L;
+            subscribeDataArray[4] = 0L;
+            subscribeDataArray[5] = 0L;
+            subscribeDataArray[6] = 0L;
+            resultMap.put("subscribeDataArray", subscribeDataArray);
+            //最热门5篇文章
             List<Blog> hotBlogList = this.blogService.list(
                     new LambdaUpdateWrapper<Blog>()
                             .orderBy(true, false, Blog::getBrowserTimes)
                             .last("limit 5")
             );
             resultMap.put("hotBlogList", hotBlogList);
-            //TODO 最热门5个标签
+            //最热门5个标签
+            List<BlogTabs> hotBlogTabsList = this.blogTabsService.list(
+                    new LambdaUpdateWrapper<BlogTabs>()
+                            .orderBy(true, false, BlogTabs::getSubscribeCount)
+                            .last("limit 5")
+            );
+            resultMap.put("hotBlogTabsList", hotBlogTabsList);
             //TODO 最热门5个功能
 
 

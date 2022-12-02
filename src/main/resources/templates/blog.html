@@ -359,14 +359,16 @@
         //标签搜索
         function tabSearchAppend(name) {
             const $queryInput = $("#queryInput");
-            let appendStr;
-            if ($queryInput.val() === "") {
-                appendStr = "#";
-            } else {
-                appendStr = ",#";
+            if ($queryInput.val().indexOf("#" + name) === -1) {
+                let appendStr;
+                if ($queryInput.val() === "") {
+                    appendStr = "#";
+                } else {
+                    appendStr = ",#";
+                }
+                $queryInput.val($queryInput.val() + appendStr + name);
+                initBlogList(1)
             }
-            $queryInput.val($queryInput.val() + appendStr + name);
-            initBlogList(1)
         }
 
         /**
