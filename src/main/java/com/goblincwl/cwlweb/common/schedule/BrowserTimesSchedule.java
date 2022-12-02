@@ -30,13 +30,12 @@ public class BrowserTimesSchedule {
             for (String key : browserTimesRedisKeySet) {
                 Integer id = Integer.parseInt(key.substring("blogBrowserTimes".length()));
                 Blog blog = blogService.getById(id);
-                Long redisBrowserTimes = (Long) this.redisTemplate.opsForValue().get(key);
-                if (redisBrowserTimes != null) {
-                    if (blog.getBrowserTimes() < redisBrowserTimes) {
-                        blogService.update(
-                                new LambdaUpdateWrapper<Blog>().eq(Blog::getId, id).set(Blog::getBrowserTimes, redisBrowserTimes)
-                        );
-                    }
+                Integer redisValue = (Integer) this.redisTemplate.opsForValue().get(key);
+                Long redisBrowserTimes = redisValue == null ? 0 : redisValue.longValue();
+                if (blog.getBrowserTimes() < redisBrowserTimes) {
+                    blogService.update(
+                            new LambdaUpdateWrapper<Blog>().eq(Blog::getId, id).set(Blog::getBrowserTimes, redisBrowserTimes)
+                    );
                 }
             }
         }

@@ -123,7 +123,7 @@
         }
 
         #tabTopTable td {
-            text-align: center;
+            text-align: left;
         }
 
         #blogTopTable {
@@ -159,6 +159,14 @@
         #requestUlDiv li {
             padding: 0.13em;
         }
+
+        #statisticalTable {
+            width: 100%;
+            height: 100%;
+            border: 4px double seagreen;
+            margin: auto;
+            float: left;
+        }
     </style>
 </head>
 <body>
@@ -176,10 +184,9 @@
                 <div class="col-lg-6">
                     <div style="border: 1px solid #000;margin-top: 2em;height: 35em">
                         <div class="col-lg-9 managerRightDiv"
-                             style="height: 15.92em;padding: 1em;border-color: #7aa857">
-                            <div class="blackBorder" style="height: 100%">
-                                <span>TODO - 访问/订阅 线统计图</span>
-                            </div>
+                             style="height: 15.92em;border-color: #7aa857">
+                            <!--订阅访问统计图-->
+                            <div id="statisticalTable"></div>
                         </div>
                         <div class="col-lg-3" style="padding: 0">
                             <div id="accessCountDiv" style="text-align: center;border-color:#58a1af;"
@@ -226,44 +233,15 @@
                             <div class="managerRightDiv col-lg-6" style="border-color: #446ab2">
                                 <div class="blackBorder">
                                     <table id="tabTopTable" style="width: 100%">
-                                        <tbody>
-                                        <tr>
-                                            <td><span class="badge badge-search no-border-radio"
-                                                      onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #4a2eff">todotodo</span></td>
-                                            <td class="tabTopHeat"><p>订阅: 123</p></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span class="badge badge-search no-border-radio"
-                                                      onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #18543f">todotodo</span></td>
-                                            <td class="tabTopHeat"><p>订阅: 123</p></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span class="badge badge-search no-border-radio"
-                                                      onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #ea2eff">todotodo</span></td>
-                                            <td class="tabTopHeat"><p>订阅: 123</p></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span class="badge badge-search no-border-radio"
-                                                      onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #ea2eff">todotodo</span></td>
-                                            <td class="tabTopHeat"><p>订阅: 123</p></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span class="badge badge-search no-border-radio"
-                                                      onclick="tabSearchAppend('测试文章')"
-                                                      style=" background-color: #ea2eff">todotodo</span></td>
-                                            <td class="tabTopHeat"><p>订阅: 123</p></td>
-                                        </tr>
+                                        <tbody id="blogTabsTopTbody">
+                                        <!--标签订阅top-->
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                             <div class="managerRightDiv col-lg-6" style="border-color: #b24482">
-                                <div class="blackBorder" style="height: 8.65em">
-                                    <span>TODO - 功能热度</span>
+                                <div class="blackBorder" style="height: 8.65em;text-align: center">
+                                    <span style="font-size: 1px;">TODO - 功能热度</span>
                                     <table id="functionTopTable" style="width: 100%">
                                         <tbody>
                                         </tbody>
@@ -351,9 +329,9 @@
                                 </div>
                             </div>
                             <div id="requestDiv blackBorder" class="managerRightDiv"
-                                 style="text-align:left;border-color:hsla(236,58%,58%,0.73)">
+                                 style="text-align:left;border-color:hsla(236,58%,58%,0.73);height: 11.71em">
                                 <div id="requestUlDiv" class="blackBorder">
-                                    <ul id="requestUl" style="font-size: 13px;;list-style: none">
+                                    <ul id="requestUl" style="font-size: 13px;;list-style: none;height: 13.5em">
                                     </ul>
                                 </div>
                             </div>
@@ -371,6 +349,7 @@
 </div>
 </body>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
+    <script th:src="@{/webjars/echarts/5.3.3/dist/echarts.js}"></script>
     <script>
         $(function () {
             $("#managerHomeLi").addClass("active")
@@ -416,6 +395,57 @@
                     $("#accessAllCountSpan").text(data.accessCount.all);
                     $("#accessTodayCountSpan").text(data.accessCount.today);
 
+                    //TODO 订阅数
+
+                    //图表
+                    echarts.init(document.getElementById('statisticalTable')).setOption({
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data: ['访问', '订阅']
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: data.dateArray
+                        },
+                        yAxis: {
+                            type: 'value',
+                            splitLine:{
+                                show:false
+                            }
+                        },
+                        series: [
+                            {
+                                name: '访问',
+                                type: 'line',
+                                stack: 'Access',
+                                emphasis: {
+                                    focus: 'series'
+                                },
+                                color: '#2C7EEA',
+                                data: data.accessDataArray
+                            },
+                            {
+                                name: '订阅',
+                                type: 'line',
+                                stack: 'Subscribe',
+                                emphasis: {
+                                    focus: 'series'
+                                },
+                                color: '#D06B05',
+                                data: data.subscribeDataArray
+                            }
+                        ]
+                    });
+
                     //文章热度top
                     let hotBlogHtml = "";
                     let hotBlogList = res.data.hotBlogList;
@@ -433,6 +463,19 @@
                             '       </tr>'
                     }
                     $("#blogTopTbody").html(hotBlogHtml);
+
+                    //标签订阅top
+                    let hotBlogTabsHtml = "";
+                    let hotBlogTabsList = res.data.hotBlogTabsList;
+                    for (const blogTabs of hotBlogTabsList) {
+                        hotBlogTabsHtml += '<tr>' +
+                            '                   <td><a class="badge badge-search no-border-radio"' +
+                            '                            target="_blank" href="' + ctx + '/blog?query=%23' + blogTabs.name + '"' +
+                            '                             style=" background-color: ' + blogTabs.color + '">' + blogTabs.name + '</a></td>' +
+                            '                   <td class="tabTopHeat"><p>订阅:' + blogTabs.subscribeCount + '</p></td>' +
+                            '               </tr>';
+                    }
+                    $("#blogTabsTopTbody").html(hotBlogTabsHtml);
                 }
             })
         }
