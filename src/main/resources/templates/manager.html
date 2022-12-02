@@ -483,26 +483,26 @@
                             top: '5%',
                             left: '3%',
                             right: '4%',
-                            bottom: '0%',
+                            bottom: '1%',
                             containLabel: true
                         },
                         series: [
                             {
                                 data: [
                                     {
-                                        value: 30,
+                                        value: data.jvmThread.daemonCount,
                                         itemStyle: {
                                             color: '#5E99E5'
                                         }
                                     },
                                     {
-                                        value: 70,
+                                        value: data.jvmThread.liveCount,
                                         itemStyle: {
                                             color: '#65DA65'
                                         }
                                     },
                                     {
-                                        value: 90,
+                                        value: data.jvmThread.peakCount,
                                         itemStyle: {
                                             color: '#E85151'
                                         }
