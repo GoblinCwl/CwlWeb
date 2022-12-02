@@ -1,8 +1,6 @@
 package com.goblincwl.cwlweb.manager.controller;
 
-import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
-import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.goblincwl.cwlweb.blog.entity.Blog;
@@ -29,6 +27,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -184,11 +183,10 @@ public class ManagerController {
             //TODO 最热门5个功能
 
 
-
-//            //存到Redis
-//            redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
-//            //设置有效期
-//            redisTemplate.expire(redisKey, 30, TimeUnit.MINUTES);
+            //存到Redis
+            redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
+            //设置有效期
+            redisTemplate.expire(redisKey, 30, TimeUnit.MINUTES);
         } else {
             resultMap = JSONObject.parseObject(managerLeftData, Map.class);
         }
