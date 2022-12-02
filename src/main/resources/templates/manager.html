@@ -174,9 +174,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="managerRightDiv col-lg-6" style="height: 18.95em">
-                            <span>(A place of purity..)</span>
+                        <div class="col-lg-6" style="padding: 0;">
+                            <span class="managerRightDiv col-lg-12" style="height: 16.8em">(A place of purity..)</span>
+                            <div class="managerRightDiv col-lg-12" style="text-align: center;border-color: #c765c7">
+                                <div class="blackBorder">
+                                    <span style="color: #c765c7">
+                                        聊天室当前在线：『
+                                        <span id="socketOnlineCountSpan" style="color: #00cb00;font-weight: bold">-</span>
+                                        』人
+                                    </span>
+                                </div>
+                            </div>
                         </div>
+
                         <div class="col-lg-6" style="padding: 0">
                             <div class="managerRightDiv" style="border-color: #6ecadc">
                                 <div class="blackBorder">
@@ -196,13 +206,9 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="managerRightDiv col-lg-6" style="border-color: #b24482">
+                            <div class="managerRightDiv col-lg-6" style="border-color: #b2a944">
                                 <div class="blackBorder" style="height: 8.65em;text-align: center">
                                     <span style="font-size: 1px;">TODO - 功能热度</span>
-                                    <table id="functionTopTable" style="width: 100%">
-                                        <tbody>
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -397,7 +403,7 @@
 
                     //文章热度top
                     let hotBlogHtml = "";
-                    let hotBlogList = res.data.hotBlogList;
+                    let hotBlogList = data.hotBlogList;
                     for (const blog of hotBlogList) {
                         hotBlogHtml += '<tr>' +
                             '           <td class="blogTopTitle">' +
@@ -415,7 +421,7 @@
 
                     //标签订阅top
                     let hotBlogTabsHtml = "";
-                    let hotBlogTabsList = res.data.hotBlogTabsList;
+                    let hotBlogTabsList = data.hotBlogTabsList;
                     for (const blogTabs of hotBlogTabsList) {
                         hotBlogTabsHtml += '<tr>' +
                             '                   <td><a class="badge badge-search no-border-radio"' +
@@ -537,6 +543,8 @@
                             "           </li>"
                     }
                     $("#requestUl").html(requestHtml)
+                    //聊天室在线
+                    $("#socketOnlineCountSpan").text(data.socketOnlineCount)
                 }
             })
         }

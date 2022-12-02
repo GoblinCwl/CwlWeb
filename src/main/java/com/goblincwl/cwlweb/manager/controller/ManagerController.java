@@ -11,6 +11,7 @@ import com.goblincwl.cwlweb.blog.service.BlogService;
 import com.goblincwl.cwlweb.blog.service.BlogTabsService;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
+import com.goblincwl.cwlweb.common.handler.IndexTerminalWebSocketHandler;
 import com.goblincwl.cwlweb.common.utils.IpUtils;
 import com.goblincwl.cwlweb.manager.entity.KeyValueOptions;
 import com.goblincwl.cwlweb.manager.service.AccessLogService;
@@ -183,6 +184,7 @@ public class ManagerController {
             //TODO 最热门5个功能
 
 
+
 //            //存到Redis
 //            redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
 //            //设置有效期
@@ -252,6 +254,9 @@ public class ManagerController {
                     && !"/terminal".equals(uri);
         }).sorted((o1, o2) -> Long.compare((Long) o2.get("RequestCount"), (Long) o1.get("RequestCount"))).collect(Collectors.toList());
         resultMap.put("uriList", uriList);
+        //聊天室在线
+        resultMap.put("socketOnlineCount", IndexTerminalWebSocketHandler.getOnlineCount());
+
         return Result.genSuccess(resultMap, "成功");
     }
 }
