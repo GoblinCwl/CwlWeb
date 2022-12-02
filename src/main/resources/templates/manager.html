@@ -47,49 +47,6 @@
             width: 0;
         }
 
-
-        #threadUlDiv {
-            height: 15.3em;
-            position: relative;
-            border: 0;
-            border-top: 1px solid;
-        }
-
-        #threadUlDiv ul li {
-            float: left;
-            position: absolute;
-            bottom: 0;
-            text-align: center;
-            font-weight: bold;
-            color: black;
-            height: 100%;
-            width: 86px;
-            list-style: none;
-            border: 2px solid #696464;
-            border-bottom: 0;
-            font-size: 12px;
-            font-family: SpacePixel, sans-serif;
-            background-image: linear-gradient(-45deg, transparent 0px, #fff 0px, #74b474 10%, transparent 0px, transparent 70%, ghostwhite 0px);
-        }
-
-        #threadUlDiv ul li.c1 {
-            left: 0;
-            background-color: #5e99e5;
-            color: #3f679a;
-        }
-
-        #threadUlDiv ul li.c2 {
-            left: 80px;
-            background-color: #65da65;
-            color: #377337;
-        }
-
-        #threadUlDiv ul li.c3 {
-            left: 160px;
-            background-color: #e85151;
-            color: #9d3333;
-        }
-
         span {
             font-family: SpacePixel, serif
         }
@@ -160,7 +117,7 @@
             padding: 0.13em;
         }
 
-        #statisticalTable {
+        #statisticalTable, #threadBox {
             width: 100%;
             height: 100%;
             border: 4px double seagreen;
@@ -282,14 +239,8 @@
                                 </div>
                             </div>
                             <div id="threadDiv blackBorder" class="managerRightDiv"
-                                 style="text-align:center;border-color:hsl(120, 30%, 58%);border-top: 0">
-                                <div id="threadUlDiv" class="blackBorder">
-                                    <ul>
-                                        <li id="jvmGrdThreadLi" class="c1">GRD/</li>
-                                        <li id="jvmActThreadLi" class="c2">ACT/</li>
-                                        <li id="jvmPekThreadLi" class="c3">PEK/</li>
-                                    </ul>
-                                </div>
+                                 style="text-align:center;border-color:hsl(120, 30%, 58%);border-top: 0;height: 15.61em">
+                                <div id="threadBox"></div>
                             </div>
                         </div>
                         <div id="serverHardwareDiv" class="col-lg-4" style="width: 55%;padding: 0">
@@ -406,7 +357,8 @@
                             data: ['访问', '订阅']
                         },
                         grid: {
-                            left: '3%',
+                            top: '12%',
+                            left: '4%',
                             right: '4%',
                             bottom: '3%',
                             containLabel: true
@@ -418,9 +370,6 @@
                         },
                         yAxis: {
                             type: 'value',
-                            splitLine:{
-                                show:false
-                            }
                         },
                         series: [
                             {
@@ -505,20 +454,54 @@
                     $("#gcTimeSpan").text((data.gcTime.time).toFixed(3) + "s");
                     //线程数据
                     //峰值线程
-                    let peakCount = data.jvmThread.peakCount;
-                    let heightProportion = 100 / peakCount;
-                    let $jvmGrdThreadLi = $("#jvmGrdThreadLi");
-                    let $jvmActThreadLi = $("#jvmActThreadLi");
-                    let $jvmPekThreadLi = $("#jvmPekThreadLi");
-                    $jvmGrdThreadLi.text("GRD/" + data.jvmThread.daemonCount);
-                    $jvmGrdThreadLi.css("height", data.jvmThread.daemonCount * heightProportion + "%");
-                    $jvmGrdThreadLi.attr("title", "JVM当前守护线程：" + data.jvmThread.daemonCount);
-                    $jvmActThreadLi.text("ACT/" + data.jvmThread.liveCount);
-                    $jvmActThreadLi.css("height", data.jvmThread.liveCount * heightProportion + "%");
-                    $jvmActThreadLi.attr("title", "JVM当前活跃线程：" + data.jvmThread.liveCount);
-                    $jvmPekThreadLi.text("PEK/" + data.jvmThread.peakCount);
-                    $jvmPekThreadLi.css("height", data.jvmThread.peakCount * heightProportion + "%");
-                    $jvmPekThreadLi.attr("title", "JVM峰值线程：" + data.jvmThread.peakCount);
+                    echarts.init(document.getElementById('threadBox')).setOption({
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: ['当前守护', '当前活跃', '峰值']
+                        },
+                        yAxis: {
+                            type: 'value',
+                            splitLine: {
+                                show: false
+                            }
+                        },
+                        grid: {
+                            top: '5%',
+                            left: '3%',
+                            right: '4%',
+                            bottom: '0%',
+                            containLabel: true
+                        },
+                        series: [
+                            {
+                                data: [
+                                    {
+                                        value: 30,
+                                        itemStyle: {
+                                            color: '#5E99E5'
+                                        }
+                                    },
+                                    {
+                                        value: 70,
+                                        itemStyle: {
+                                            color: '#65DA65'
+                                        }
+                                    },
+                                    {
+                                        value: 90,
+                                        itemStyle: {
+                                            color: '#E85151'
+                                        }
+                                    },
+                                ],
+                                type: 'bar'
+                            }
+                        ]
+                    })
+
                     //硬件信息
                     let $diskUsageDiv = $("#diskUsageDiv");
                     $diskUsageDiv.css("width", (1 - data.diskSpace.details.free / data.diskSpace.details.total) * 100 + "%")
