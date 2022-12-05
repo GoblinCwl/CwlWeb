@@ -104,7 +104,8 @@ public class IndexController {
             //工时数据
             resultMap.putAll(this.accessRecordService.findWorkTimeData());
 
-            if (!(Boolean) resultMap.get("hasHttpError")) {
+            boolean hasHttpError = resultMap.get("hasHttpError") != null && (Boolean) resultMap.get("hasHttpError");
+            if (!hasHttpError) {
                 //无异常，存到Redis
                 redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
                 //设置有效期
