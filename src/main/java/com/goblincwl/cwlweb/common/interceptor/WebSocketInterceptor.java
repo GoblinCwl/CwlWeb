@@ -1,8 +1,9 @@
 package com.goblincwl.cwlweb.common.interceptor;
 
-import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
-import lombok.AllArgsConstructor;
+import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -20,7 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class WebSocketInterceptor implements HandshakeInterceptor {
 
-    private final GoblinCwlConfig goblinCwlConfig;
+    private final KeyValueOptionsService keyValueOptionsService;
 
     /**
      * 握手前
@@ -34,11 +35,15 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
      * @author ☪wl
      */
     @Override
-    public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, org.springframework.web.socket.WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
+    public boolean beforeHandshake(@NotNull ServerHttpRequest serverHttpRequest, @NotNull ServerHttpResponse serverHttpResponse, @NotNull org.springframework.web.socket.WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
         //验证请求的Origin
         HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
         String origin = request.getHeader("Origin");
-        return this.goblinCwlConfig.getWebSocketOriginWhiteList().contains(origin);
+        String webSocketOriginWhiteList = keyValueOptionsService.getById("webSocketOriginWhiteList").getOptValue();
+        if (StringUtils.isNotEmpty(webSocketOriginWhiteList)) {
+            return webSocketOriginWhiteList.contains(origin);
+        }
+        return true;
     }
 
     /**
@@ -52,6 +57,6 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
      * @author ☪wl
      */
     @Override
-    public void afterHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, org.springframework.web.socket.WebSocketHandler webSocketHandler, Exception e) {
+    public void afterHandshake(@NotNull ServerHttpRequest serverHttpRequest, @NotNull ServerHttpResponse serverHttpResponse, @NotNull org.springframework.web.socket.WebSocketHandler webSocketHandler, Exception e) {
     }
 }

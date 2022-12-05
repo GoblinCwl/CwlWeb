@@ -1,8 +1,8 @@
 package com.goblincwl.cwlweb.common.config;
 
-import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
 import com.goblincwl.cwlweb.common.interceptor.WebSocketInterceptor;
 import com.goblincwl.cwlweb.common.handler.IndexTerminalWebSocketHandler;
+import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketConfigurer {
 
-    private final GoblinCwlConfig goblinCwlConfig;
+    private final KeyValueOptionsService keyValueOptionsService;
 
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
@@ -39,7 +39,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new IndexTerminalWebSocketHandler(), "/terminal")
-                .addInterceptors(new WebSocketInterceptor(goblinCwlConfig))
+                .addInterceptors(new WebSocketInterceptor(keyValueOptionsService))
                 .setAllowedOrigins("*");
     }
 }
