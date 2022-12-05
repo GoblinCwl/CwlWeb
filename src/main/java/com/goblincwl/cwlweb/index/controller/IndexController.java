@@ -104,10 +104,13 @@ public class IndexController {
             //工时数据
             resultMap.putAll(this.accessRecordService.findWorkTimeData());
 
-//            //存到Redis
-//            redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
-//            //设置有效期
-//            redisTemplate.expire(redisKey, 1, TimeUnit.HOURS);
+            if (!(Boolean) resultMap.get("hasHttpError")) {
+                //无异常，存到Redis
+                redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
+                //设置有效期
+                redisTemplate.expire(redisKey, 1, TimeUnit.HOURS);
+            }
+
         } else {
             resultMap = JSONObject.parseObject(indexDashboardDataStr, Map.class);
         }

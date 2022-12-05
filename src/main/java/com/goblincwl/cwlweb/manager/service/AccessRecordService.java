@@ -175,6 +175,8 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
             resultMap.put("weather", "未知");
             resultMap.put("temperature", "-");
             resultMap.put("status", "已失联..");
+            //异常标识
+            resultMap.put("hasHttpError", true);
         } finally {
             // 关闭连接,释放资源
             try {
@@ -232,6 +234,8 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
             }
         } catch (Exception e) {
             LOG.error(e.getMessage());
+            //异常标识
+            resultMap.put("hasHttpError", true);
         } finally {
             // 关闭连接,释放资源
             try {
@@ -276,6 +280,8 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
             LOG.error(e.getMessage());
             resultMap.put("yesterdayWorkTime", 0);
             resultMap.put("todayWorkTime", 0);
+            //异常标识
+            resultMap.put("hasHttpError", true);
         } finally {
             // 关闭连接,释放资源
             try {
