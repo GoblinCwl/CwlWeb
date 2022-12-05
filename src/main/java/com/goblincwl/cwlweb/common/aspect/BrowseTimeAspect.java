@@ -1,9 +1,8 @@
 package com.goblincwl.cwlweb.common.aspect;
 
-import com.goblincwl.cwlweb.blog.entity.Blog;
-import com.goblincwl.cwlweb.blog.service.BlogService;
+import com.goblincwl.cwlweb.modules.blog.entity.Blog;
+import com.goblincwl.cwlweb.modules.blog.service.BlogService;
 import com.goblincwl.cwlweb.common.annotation.aop.BrowseTimes;
-import com.goblincwl.cwlweb.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**

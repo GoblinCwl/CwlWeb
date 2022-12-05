@@ -1,16 +1,15 @@
 package com.goblincwl.cwlweb.common.utils;
 
-import com.goblincwl.cwlweb.manager.entity.BadWords;
-import com.goblincwl.cwlweb.manager.service.BadWordsService;
-import com.goblincwl.cwlweb.manager.entity.KeyValueOptions;
-import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
+import com.goblincwl.cwlweb.modules.manager.entity.BadWords;
+import com.goblincwl.cwlweb.modules.manager.service.BadWordsService;
+import com.goblincwl.cwlweb.modules.manager.entity.KeyValueOptions;
+import com.goblincwl.cwlweb.modules.manager.service.KeyValueOptionsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

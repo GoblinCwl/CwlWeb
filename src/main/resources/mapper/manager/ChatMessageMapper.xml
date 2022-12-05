@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.goblincwl.cwlweb.manager.mapper.ChatMessageMapper">
-	<select id="selectListLimit" resultType="com.goblincwl.cwlweb.manager.entity.ChatMessage">
+<mapper namespace="com.goblincwl.cwlweb.modules.manager.mapper.ChatMessageMapper">
+	<select id="selectListLimit" resultType="com.goblincwl.cwlweb.modules.manager.entity.ChatMessage">
 		SELECT TB.ID AS "id",
 			TB.SEND_TIME AS "sendTime",
 			TB. CONTENT AS "content"

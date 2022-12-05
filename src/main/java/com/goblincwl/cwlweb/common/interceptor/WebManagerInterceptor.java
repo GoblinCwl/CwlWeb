@@ -3,7 +3,7 @@ package com.goblincwl.cwlweb.common.interceptor;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.enums.ResultCode;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
-import com.goblincwl.cwlweb.manager.service.TokenService;
+import com.goblincwl.cwlweb.modules.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;

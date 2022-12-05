@@ -1,8 +1,8 @@
 package com.goblincwl.cwlweb.common.schedule;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.goblincwl.cwlweb.blog.entity.Blog;
-import com.goblincwl.cwlweb.blog.service.BlogService;
+import com.goblincwl.cwlweb.modules.blog.entity.Blog;
+import com.goblincwl.cwlweb.modules.blog.service.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;

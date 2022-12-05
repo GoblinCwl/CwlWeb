@@ -2,8 +2,8 @@ package com.goblincwl.cwlweb.common.handler;
 
 import com.goblincwl.cwlweb.common.utils.BadWordUtil;
 import com.goblincwl.cwlweb.common.utils.BeanUtil;
-import com.goblincwl.cwlweb.manager.entity.ChatMessage;
-import com.goblincwl.cwlweb.manager.service.ChatMessageService;
+import com.goblincwl.cwlweb.modules.manager.entity.ChatMessage;
+import com.goblincwl.cwlweb.modules.manager.service.ChatMessageService;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
