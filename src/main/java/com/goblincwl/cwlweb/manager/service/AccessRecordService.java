@@ -8,8 +8,10 @@ import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.utils.NickNameUtils;
 import com.goblincwl.cwlweb.manager.entity.AccessLog;
 import com.goblincwl.cwlweb.manager.entity.AccessRecord;
+import com.goblincwl.cwlweb.manager.entity.KeyValueOptions;
 import com.goblincwl.cwlweb.manager.mapper.AccessRecordMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -78,12 +80,13 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
 
     /**
      * IP保存访问记录
+     *
      * @param ipAddress 请求IP地址
      * @return 访问记录实体
      * @date 2022/11/28 9:15
      * @author ☪wl
      */
-    public AccessRecord saveAccessRecord(String ipAddress){
+    public AccessRecord saveAccessRecord(String ipAddress) {
         AccessRecord accessRecord;
         //首先查询Redis中是否记录
         accessRecord = (AccessRecord) redisTemplate.opsForValue().get("ipAccessCache:" + ipAddress);
@@ -128,13 +131,22 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
         Map<String, Object> resultMap = new HashMap<>();
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
+            //所处地址和状态
+            String addressCode = null;
+            String status = null;
+            KeyValueOptions addressAndStatus = this.keyValueOptionsService.getById("addressAndStatus");
+            if (addressAndStatus != null && StringUtils.isNotEmpty(addressAndStatus.getOptValue())) {
+                String optValue = addressAndStatus.getOptValue();
+                addressCode = optValue.split("\\|\\|")[0];
+                status = optValue.split("\\|\\|")[1];
+            }
+
             URI uri = new URIBuilder()
                     .setScheme("https")
                     .setHost("restapi.amap.com")
                     .setPath("/v3/weather/weatherInfo")
                     .setParameter("key", this.keyValueOptionsService.getById("aMapApiKey").getOptValue())
-                    //TODO 动态城市编码
-                    .setParameter("city", "320200")
+                    .setParameter("city", addressCode)
                     .build();
             HttpGet httpGet = new HttpGet(uri);
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
@@ -149,6 +161,9 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
                     resultMap.put("temperature", lives.get("temperature"));
                 }
             }
+
+            //状态
+            resultMap.put("status", status);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -159,9 +174,6 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
                 e.printStackTrace();
             }
         }
-
-        //TODO 获取状态
-        resultMap.put("status", "出差中");
         return resultMap;
     }
 
@@ -266,7 +278,7 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
     }
 
     public Map<String, Object> findConfigData() {
-        Map<String,Object> resultMap = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<>();
         //TODO
         return resultMap;
     }
