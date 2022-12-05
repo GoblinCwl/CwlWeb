@@ -9,6 +9,8 @@ import com.goblincwl.cwlweb.modules.manager.service.AccessRecordService;
 import com.goblincwl.cwlweb.modules.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -26,12 +28,14 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class WebRedirectInterceptor implements HandlerInterceptor {
 
+    private final static Logger LOG = LoggerFactory.getLogger(WebRedirectInterceptor.class);
+
     private final TokenService tokenService;
     private final AccessRecordService accessRecordService;
 
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, Object handler) throws Exception {
-        System.out.println(request.getRequestURI());
+        LOG.info("响应请求：" + request.getRequestURI());
         //请求目标是否存在注解
         boolean isAnnotation = handler.getClass().isAssignableFrom(HandlerMethod.class);
         if (isAnnotation) {
@@ -47,7 +51,7 @@ public class WebRedirectInterceptor implements HandlerInterceptor {
         } else {
             String requestUri = request.getRequestURI();
             if ("/favicon.ico".equals(requestUri)
-                    || "/app/jrebel/agent/features".equals(requestUri)
+                    || requestUri.contains("/app/jrebel")
             ) {
                 return true;
             } else {
