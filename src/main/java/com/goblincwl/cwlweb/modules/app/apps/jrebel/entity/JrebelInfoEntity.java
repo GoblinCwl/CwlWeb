@@ -1,4 +1,4 @@
-package com.goblincwl.cwlweb.modules.app.jrebel.entity;
+package com.goblincwl.cwlweb.modules.app.apps.jrebel.entity;
 
 import lombok.Data;
 

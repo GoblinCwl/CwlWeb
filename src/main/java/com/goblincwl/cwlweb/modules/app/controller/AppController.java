@@ -1,0 +1,139 @@
+package com.goblincwl.cwlweb.modules.app.controller;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.goblincwl.cwlweb.common.annotation.TokenCheck;
+import com.goblincwl.cwlweb.common.entity.Result;
+import com.goblincwl.cwlweb.common.web.controller.BaseController;
+import com.goblincwl.cwlweb.modules.app.entitiy.App;
+import com.goblincwl.cwlweb.modules.app.service.AppService;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+
+/**
+ * 应用 Controller
+ *
+ * @author ☪wl
+ * @email goblincwl@qq.com
+ * @date 2022/12/05 16:51
+ */
+@RestController
+@RequestMapping(AppController.MODULE_PREFIX)
+@RequiredArgsConstructor
+public class AppController extends BaseController<App> {
+
+    public final static String MODULE_PREFIX = "/apps";
+    public final static String APP_PREFIX = "/app";
+
+    private final AppService appService;
+
+    /**
+     * 分页主查询
+     *
+     * @param app 查询条件
+     * @return 结果集
+     * @date 2022/12/5 16:57
+     * @author ☪wl
+     */
+    @GetMapping("/list")
+    public Result<Page<App>> list(App app) {
+        QueryWrapper<App> queryWrapper = createQueryWrapper(app);
+        //锁定查询条件查询
+        if (StringUtils.isNotEmpty(app.getIsLockStr())) {
+            queryWrapper.and(wrapper -> {
+                for (String isLock : app.getIsLockStr().split(",")) {
+                    wrapper.or(innerWrapper -> innerWrapper.eq("is_lock", isLock));
+                }
+            });
+        }
+        return new Result<Page<App>>().success(
+                this.appService.page(
+                        createPage(),
+                        queryWrapper
+                ), "成功");
+    }
+
+    /**
+     * 根据主键哦查询
+     *
+     * @param id 主键ID
+     * @return 结果
+     * @date 2022/12/5 16:59
+     * @author ☪wl
+     */
+    @GetMapping("/app/{id}")
+    public Result<App> one(@PathVariable("id") String id) {
+        return new Result<App>().success(this.appService.getById(id), "成功");
+    }
+
+    /**
+     * 新增
+     *
+     * @param app 数据参数
+     * @return 反馈
+     * @date 2022/12/5 17:00
+     * @author ☪wl
+     */
+    @TokenCheck
+    @PostMapping("/add")
+    public Result<Object> add(App app) {
+        this.appService.save(app);
+        return Result.genSuccess("添加成功");
+    }
+
+    /**
+     * 修改
+     *
+     * @param app 数据参数
+     * @return 反馈
+     * @date 2022/12/5 17:01
+     * @author ☪wl
+     */
+    @TokenCheck
+    @PutMapping("/edit")
+    public Result<Object> edit(App app) {
+        this.appService.updateById(app);
+        return Result.genSuccess("修改成功");
+    }
+
+    /**
+     * 删除
+     *
+     * @param ids 主键ID(逗号拼接)
+     * @return 反馈
+     * @date 2022/12/5 17:02
+     * @author ☪wl
+     */
+    @TokenCheck
+    @DeleteMapping("/remove")
+    public Result<Object> remove(String ids) {
+        if (StringUtils.isNotEmpty(ids)) {
+            this.appService.removeByIds(Arrays.asList(ids.split(",")));
+        }
+        return Result.genSuccess("删除成功");
+    }
+
+    /**
+     * 应用开启/关闭
+     *
+     * @param id         主键ID
+     * @param openStatus 开关状态
+     * @return 反馈
+     * @date 2022/12/5 17:06
+     * @author ☪wl
+     */
+    @TokenCheck
+    @PutMapping("/doOpen/{id}/{openStatus}")
+    public Result<Object> doOpen(@PathVariable Integer id, @PathVariable Integer openStatus) {
+        boolean updateResult = this.appService.update(
+                new UpdateWrapper<App>()
+                        .lambda().eq(App::getId, id)
+                        .set(id != null, App::getIsLock, openStatus)
+        );
+        return updateResult ? Result.genSuccess("开关成功") : Result.genSuccess("开关失败");
+    }
+}

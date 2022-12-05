@@ -1,10 +1,11 @@
-package com.goblincwl.cwlweb.modules.app.jrebel;
+package com.goblincwl.cwlweb.modules.app.apps.jrebel;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.goblincwl.cwlweb.modules.app.jrebel.entity.JrebelInfoEntity;
-import com.goblincwl.cwlweb.modules.app.jrebel.entity.XMLResponse;
-import com.goblincwl.cwlweb.modules.app.jrebel.util.jrebel.JrebelSign;
+import com.goblincwl.cwlweb.modules.app.controller.AppController;
+import com.goblincwl.cwlweb.modules.app.apps.jrebel.entity.JrebelInfoEntity;
+import com.goblincwl.cwlweb.modules.app.apps.jrebel.entity.XMLResponse;
+import com.goblincwl.cwlweb.modules.app.apps.jrebel.util.jrebel.JrebelSign;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2022/12/05 10:58
  */
 @RestController
-@RequestMapping("/app/jrebel")
+@RequestMapping(AppController.APP_PREFIX + "/jrebel")
 @RequiredArgsConstructor
 public class JrebelController {
 
