@@ -35,7 +35,7 @@ public class EmailUtil {
 
     @PostConstruct
     public void init() {
-        EmailUtil.emailConfigMap = new HashMap<>(4);
+        EmailUtil.emailConfigMap = new HashMap<>(5);
         emailConfigMap.put("sendEmailAccount", keyValueOptionsService.getById("sendEmailAccount").getOptValue());
         emailConfigMap.put("sendEmailAuthorizationCode", keyValueOptionsService.getById("sendEmailAuthorizationCode").getOptValue());
         emailConfigMap.put("sendEmailTransportProtocol", keyValueOptionsService.getById("sendEmailTransportProtocol").getOptValue());
