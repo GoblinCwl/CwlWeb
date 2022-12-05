@@ -44,9 +44,12 @@ public class WebRedirectInterceptor implements HandlerInterceptor {
                 }
             }
         } else {
-            //没有注解时，无目标，做转发
-            request.getRequestDispatcher(request.getContextPath() + "/redirect" + request.getRequestURI()).forward(request, response);
-            return false;
+            //图标不拦截
+            if (!"/favicon.ico".equals(request.getRequestURI())) {
+                //没有注解时，无目标，做转发
+                request.getRequestDispatcher(request.getContextPath() + "/redirect" + request.getRequestURI()).forward(request, response);
+                return false;
+            }
         }
         return true;
     }
