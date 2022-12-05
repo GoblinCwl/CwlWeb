@@ -1,6 +1,6 @@
 package com.goblincwl.cwlweb.common.utils;
 
-import com.goblincwl.cwlweb.manager.service.TokenService;
+import com.goblincwl.cwlweb.modules.manager.service.TokenService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;

@@ -2,8 +2,8 @@ package com.goblincwl.cwlweb.common.config;
 
 import com.goblincwl.cwlweb.common.interceptor.WebManagerInterceptor;
 import com.goblincwl.cwlweb.common.interceptor.WebRedirectInterceptor;
-import com.goblincwl.cwlweb.manager.service.AccessRecordService;
-import com.goblincwl.cwlweb.manager.service.TokenService;
+import com.goblincwl.cwlweb.modules.manager.service.AccessRecordService;
+import com.goblincwl.cwlweb.modules.manager.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

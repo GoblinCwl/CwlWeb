@@ -3,7 +3,7 @@ package com.goblincwl.cwlweb.common.bean;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.goblincwl.cwlweb.common.utils.BeanUtil;
-import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
+import com.goblincwl.cwlweb.modules.manager.service.KeyValueOptionsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

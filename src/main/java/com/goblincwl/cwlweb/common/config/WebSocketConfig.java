@@ -2,7 +2,7 @@ package com.goblincwl.cwlweb.common.config;
 
 import com.goblincwl.cwlweb.common.interceptor.WebSocketInterceptor;
 import com.goblincwl.cwlweb.common.handler.IndexTerminalWebSocketHandler;
-import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
+import com.goblincwl.cwlweb.modules.manager.service.KeyValueOptionsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
 package com.goblincwl.cwlweb.common.interceptor;
 
-import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
+import com.goblincwl.cwlweb.modules.manager.service.KeyValueOptionsService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;

@@ -1,6 +1,6 @@
 package com.goblincwl.cwlweb.common.utils;
 
-import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
+import com.goblincwl.cwlweb.modules.manager.service.KeyValueOptionsService;
 import com.sun.mail.util.MailSSLSocketFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
