@@ -31,6 +31,7 @@ public class WebRedirectInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, Object handler) throws Exception {
+        System.out.println(request.getRequestURI());
         //请求目标是否存在注解
         boolean isAnnotation = handler.getClass().isAssignableFrom(HandlerMethod.class);
         if (isAnnotation) {
@@ -44,10 +45,14 @@ public class WebRedirectInterceptor implements HandlerInterceptor {
                 }
             }
         } else {
-            //图标不拦截
-            if (!"/favicon.ico".equals(request.getRequestURI())) {
+            String requestUri = request.getRequestURI();
+            if ("/favicon.ico".equals(requestUri)
+                    || "/extras/jrebel/agent/features".equals(requestUri)
+            ) {
+                return true;
+            } else {
                 //没有注解时，无目标，做转发
-                request.getRequestDispatcher(request.getContextPath() + "/redirect" + request.getRequestURI()).forward(request, response);
+                request.getRequestDispatcher(request.getContextPath() + "/redirect" + requestUri).forward(request, response);
                 return false;
             }
         }

@@ -29,6 +29,8 @@
         <fastJson.version>2.0.18</fastJson.version>
         <commonsFileupload.version>1.4</commonsFileupload.version>
         <commonsIO.version>2.11.0</commonsIO.version>
+        <bouncycastle.version>1.58</bouncycastle.version>
+        <mail.version>1.6.2</mail.version>
     </properties>
     <dependencies>
         <!--SpringBoot Web-->
@@ -125,11 +127,10 @@
             <version>${fastJson.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
-            <version>1.6.2</version>
+            <version>${mail.version}</version>
         </dependency>
 
         <!-- Oss对象存储 -->
@@ -188,7 +189,7 @@
             <version>${jquery-cookie.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.webjars.bower/echarts -->
+        <!--JS统计图插件-->
         <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>echarts</artifactId>
@@ -209,6 +210,19 @@
             <artifactId>commons-io</artifactId>
             <version>${commonsIO.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpg-jdk15on</artifactId>
+            <version>${bouncycastle.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
