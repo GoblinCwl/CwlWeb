@@ -114,7 +114,7 @@ public class IndexController {
         //终端数据,另起缓存
         resultMap.putAll(this.accessRecordService.findTerminalData(IpUtils.getIpAddress(request)));
         //清楚旧的浇水时间
-        if (isRedis){
+        if (isRedis) {
             resultMap.remove("lastWateringTime");
         }
 
@@ -182,8 +182,7 @@ public class IndexController {
                 keyValueOptions.setOptValue(String.valueOf(number + 1));
                 this.keyValueOptionsService.updateById(keyValueOptions);
             }
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             // 关闭连接,释放资源
@@ -194,10 +193,7 @@ public class IndexController {
             }
         }
 
-        return new Result<String>().
-
-                success(message, "成功");
-
+        return new Result<String>().success(message, "成功");
     }
 
 }
