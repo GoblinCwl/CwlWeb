@@ -18,6 +18,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/")
 @RequiredArgsConstructor
 public class IndexController {
+    private final static Logger LOG = LoggerFactory.getLogger(IndexController.class);
 
     @Resource(name = "redisStringTemplate")
     private RedisTemplate<String, Object> redisTemplate;
@@ -94,8 +97,6 @@ public class IndexController {
         String indexDashboardDataStr = (String) redisTemplate.opsForValue().get(redisKey);
         boolean isRedis = !StringUtils.isEmpty(indexDashboardDataStr);
         if (!isRedis) {
-            //配置数据
-            resultMap.putAll(this.accessRecordService.findConfigData());
             //天气数据
             resultMap.putAll(this.accessRecordService.findWeatherData());
             //编程语言工时数据
@@ -103,10 +104,10 @@ public class IndexController {
             //工时数据
             resultMap.putAll(this.accessRecordService.findWorkTimeData());
 
-            //存到Redis
-            redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
-            //设置有效期
-            redisTemplate.expire(redisKey, 1, TimeUnit.HOURS);
+//            //存到Redis
+//            redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
+//            //设置有效期
+//            redisTemplate.expire(redisKey, 1, TimeUnit.HOURS);
         } else {
             resultMap = JSONObject.parseObject(indexDashboardDataStr, Map.class);
         }
@@ -183,7 +184,7 @@ public class IndexController {
                 this.keyValueOptionsService.updateById(keyValueOptions);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         } finally {
             // 关闭连接,释放资源
             try {

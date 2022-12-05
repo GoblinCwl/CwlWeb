@@ -19,6 +19,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,8 @@ import java.util.concurrent.TimeUnit;
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
 public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessRecord> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AccessRecordService.class);
 
     @Resource(name = "redisStringTemplate")
     private RedisTemplate<String, Object> redisTemplate;
@@ -165,13 +169,18 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
             //状态
             resultMap.put("status", status);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
+            resultMap.put("province", "太阳系");
+            resultMap.put("city", "地球");
+            resultMap.put("weather", "未知");
+            resultMap.put("temperature", "-");
+            resultMap.put("status", "已失联..");
         } finally {
             // 关闭连接,释放资源
             try {
                 httpclient.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error(e.getMessage());
             }
         }
         return resultMap;
@@ -222,13 +231,13 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         } finally {
             // 关闭连接,释放资源
             try {
                 httpclient.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error(e.getMessage());
             }
         }
 
@@ -264,22 +273,18 @@ public class AccessRecordService extends ServiceImpl<AccessRecordMapper, AccessR
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
+            resultMap.put("yesterdayWorkTime", 0);
+            resultMap.put("todayWorkTime", 0);
         } finally {
             // 关闭连接,释放资源
             try {
                 httpclient.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error(e.getMessage());
             }
         }
 
-        return resultMap;
-    }
-
-    public Map<String, Object> findConfigData() {
-        Map<String, Object> resultMap = new HashMap<>();
-        //TODO
         return resultMap;
     }
 }
