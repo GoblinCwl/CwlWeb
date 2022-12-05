@@ -110,7 +110,7 @@ public class OssFileController extends BaseController<OssFile> {
     public Map<String, Object> editorMdUploadFile(@RequestParam("editormd-image-file") MultipartFile file, String storagePath) {
         Map<String, Object> resultMap = new HashMap<>(3);
         try {
-            OssFile ossFile = this.ossFileService.uploadFile(file, storagePath);
+            OssFile ossFile = this.ossFileService.uploadFile(file, OssFile.builder().path(storagePath).build());
             resultMap.put("success", 1);
             resultMap.put("message", "上传成功");
             resultMap.put("url", ossFile.getFullUrl());

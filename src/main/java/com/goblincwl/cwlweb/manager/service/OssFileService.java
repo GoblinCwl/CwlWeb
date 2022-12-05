@@ -24,9 +24,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -48,35 +45,31 @@ public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
     /**
      * 上传文件
      *
-     * @param originalFilename 原始文件名
-     * @param storagePath      存储路径
-     * @param ossFileName      OSS文件名
-     * @param inputStream      文件流
-     * @param objectMetadata   附加信息
+     * @param ossFile        OSS数据对象
+     * @param inputStream    文件流
+     * @param objectMetadata 附加信息
      * @return OSS文件名
      * @date 2021-05-09 23:47:47
      * @author ☪wl
      */
-    public OssFile uploadFile(String originalFilename,
-                              String storagePath,
-                              String ossFileName,
+    public OssFile uploadFile(OssFile ossFile,
                               InputStream inputStream,
                               ObjectMetadata objectMetadata) {
-        OssFile ossFile = new OssFile();
         //文件后缀分隔符
         String suffixSplit = ".";
         //原始文件名
-        if (originalFilename.lastIndexOf(suffixSplit) > 0) {
+        String ossFileName = ossFile.getOssFileName();
+        String originFileName = ossFile.getOriginFileName();
+        if (originFileName.lastIndexOf(suffixSplit) > 0) {
             //如果有后缀，需要加后缀
-            String suffix = originalFilename.substring(originalFilename.lastIndexOf(suffixSplit));
+            String suffix = originFileName.substring(originFileName.lastIndexOf(suffixSplit));
             ossFileName = ossFileName + suffix;
             ossFile.setSuffix(suffix);
         }
-        ossFile.setOriginFileName(originalFilename);
 
         //最终OSS文件名：追加存储路径(oss根据路径上传)
+        String storagePath = ossFile.getPath();
         ossFileName = StringUtils.isNotEmpty(storagePath) ? storagePath + "/" + ossFileName : ossFileName;
-        ossFile.setPath(storagePath);
         ossFile.setOssFileName(ossFileName);
 
         //最终URL
@@ -97,46 +90,20 @@ public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
     }
 
     /**
-     * 文件流的方式上传文件
+     * 使用UUID作为文件名
+     * 上传文件
      *
-     * @param originalFilename 原始文件名
-     * @param inputStream      文件流
-     * @param contentType      contentType
-     * @param storagePath      存储路径
-     * @param ossFileName      OSS文件名
+     * @param file    文件
+     * @param ossFile oss文件对象
      * @return OSS文件名
-     * @date 2021-04-30 17:54:15
+     * @date 2021-04-30 16:17:31
      * @author ☪wl
      */
-    public OssFile uploadFile(String originalFilename,
-                              String storagePath,
-                              String ossFileName,
-                              InputStream inputStream,
-                              String contentType) throws IOException {
+    public OssFile uploadFile(MultipartFile file, OssFile ossFile) throws IOException {
+        //唯一文件名，保存在OSS服务器上的名字
+        ossFile.setOssFileName(UUID.randomUUID().toString());
+        ossFile.setOriginFileName(file.getOriginalFilename());
 
-        //设置附加信息
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        //设置数据流里有多少个字节可以读取
-        objectMetadata.setContentLength(inputStream.available());
-        objectMetadata.setCacheControl("no-cache");
-        objectMetadata.setHeader("Pragma", "no-cache");
-        objectMetadata.setContentType(contentType);
-        objectMetadata.setContentDisposition("inline;filename=" + ossFileName);
-
-        return this.uploadFile(originalFilename, storagePath, ossFileName, inputStream, objectMetadata);
-    }
-
-    /**
-     * 上传文件（半封装）
-     *
-     * @param file        文件对象
-     * @param storagePath 存储路径
-     * @param ossFileName OSS文件名
-     * @return OSS文件名
-     * @date 2021-05-10 00:11:16
-     * @author ☪wl
-     */
-    public OssFile uploadFile(MultipartFile file, String storagePath, String ossFileName) throws IOException {
         //读取文件流
         InputStream inputStream = file.getInputStream();
 
@@ -147,42 +114,9 @@ public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
         objectMetadata.setCacheControl("no-cache");
         objectMetadata.setHeader("Pragma", "no-cache");
         objectMetadata.setContentType(file.getContentType());
-        objectMetadata.setContentDisposition("inline;filename=" + ossFileName);
+        objectMetadata.setContentDisposition("inline;filename=" + ossFile.getOssFileName());
 
-        //文件上传
-        return this.uploadFile(Objects.requireNonNull(file.getOriginalFilename()), storagePath, ossFileName, inputStream, objectMetadata);
-    }
-
-    /**
-     * 使用UUID作为文件名
-     * 上传文件
-     *
-     * @param file        文件
-     * @param storagePath 存储路径
-     * @return OSS文件名
-     * @date 2021-04-30 16:17:31
-     * @author ☪wl
-     */
-    public OssFile uploadFile(MultipartFile file, String storagePath) throws IOException {
-        //唯一文件名，保存在OSS服务器上的名字
-        return this.uploadFile(file, storagePath, UUID.randomUUID().toString());
-    }
-
-    /**
-     * 上传多个文件
-     *
-     * @param files       文件集
-     * @param storagePath 存储地址
-     * @return 文件名
-     * @date 2021-04-29 17:07:40
-     * @author ☪wl
-     */
-    public List<OssFile> uploadFiles(MultipartFile[] files, String storagePath) throws IOException {
-        List<OssFile> fileList = new ArrayList<>();
-        for (MultipartFile file : files) {
-            fileList.add(this.uploadFile(file, storagePath));
-        }
-        return fileList;
+        return this.uploadFile(ossFile, inputStream, objectMetadata);
     }
 
     /**
