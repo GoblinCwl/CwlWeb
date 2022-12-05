@@ -2,8 +2,9 @@ package com.goblincwl.cwlweb.common.bean;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
 import com.goblincwl.cwlweb.common.utils.BeanUtil;
+import com.goblincwl.cwlweb.manager.service.KeyValueOptionsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2021-05-03 13:44
  */
 @Configuration
+@RequiredArgsConstructor
 public class BeanConfig {
 
     /**
@@ -29,17 +31,17 @@ public class BeanConfig {
     /**
      * 阿里云OSS实例，单例模式
      *
-     * @param goblinCwlConfig 包含oss配置的bean
+     * @param keyValueOptionsService 键值对Service
      * @return 阿里云OSS实例
      * @date 2021-05-09 23:52:19
      * @author ☪wl
      */
     @Bean
-    public OSS ossBean(GoblinCwlConfig goblinCwlConfig) {
+    public OSS ossBean(KeyValueOptionsService keyValueOptionsService) {
         return new OSSClientBuilder().build(
-                goblinCwlConfig.getOssEndpoint(),
-                goblinCwlConfig.getOssAccessKeyId(),
-                goblinCwlConfig.getOssAccessKeySecret());
+                keyValueOptionsService.getById("ossEndpoint").getOptValue(),
+                keyValueOptionsService.getById("ossAccessKeyId").getOptValue(),
+                keyValueOptionsService.getById("ossAccessKeySecret").getOptValue());
     }
 
 }

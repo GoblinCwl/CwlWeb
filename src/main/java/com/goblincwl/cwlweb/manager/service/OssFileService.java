@@ -4,7 +4,6 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.goblincwl.cwlweb.common.entity.GoblinCwlConfig;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.manager.entity.OssFile;
 import com.goblincwl.cwlweb.manager.mapper.OssFileMapper;
@@ -21,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
@@ -37,10 +37,27 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
 
-    private final Logger logger = LoggerFactory.getLogger(OssFileService.class);
+    /**
+     * 阿里云OSS Bucket名称
+     */
+    private String ossBucket;
+
+    /**
+     * 阿里云OSS Bucket域名
+     */
+    private String ossDomain;
+
+    private final Logger LOG = LoggerFactory.getLogger(OssFileService.class);
     private final OSS oss;
     private final OssFileMapper ossFileMapper;
-    private final GoblinCwlConfig goblinCwlConfig;
+
+    private final KeyValueOptionsService keyValueOptionsService;
+
+    @PostConstruct
+    public void init() {
+        ossBucket = this.keyValueOptionsService.getById("ossBucket").getOptValue();
+        ossDomain = this.keyValueOptionsService.getById("ossDomain").getOptValue();
+    }
 
     /**
      * 上传文件
@@ -74,7 +91,7 @@ public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
 
         //最终URL
         ossFile.setFullUrl("https://"
-                + goblinCwlConfig.getOssDomain()
+                + this.ossDomain
                 + "/" + ossFileName);
 
         //先保存至数据库，如果名称重复（主键或者唯一键约束），即可抛出异常，阻止上传
@@ -82,7 +99,7 @@ public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
 
         //上传文件
         oss.putObject(
-                this.goblinCwlConfig.getOssBucket(),
+                this.ossBucket,
                 ossFileName,
                 inputStream,
                 objectMetadata);
@@ -129,7 +146,7 @@ public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
     public void removeById(String ossFileName) {
         //删除数据库数据
         this.ossFileMapper.deleteById(ossFileName);
-        this.oss.deleteObject(this.goblinCwlConfig.getOssBucket(), ossFileName);
+        this.oss.deleteObject(this.ossBucket, ossFileName);
     }
 
     /**
@@ -144,7 +161,7 @@ public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
         BufferedInputStream in = null;
         BufferedOutputStream out = null;
         try {
-            OSSObject ossObject = this.oss.getObject(this.goblinCwlConfig.getOssBucket(), ossFileName);
+            OSSObject ossObject = this.oss.getObject(this.ossBucket, ossFileName);
             // 读取文件内容。
             in = new BufferedInputStream(ossObject.getObjectContent());
             out = new BufferedOutputStream(outputStream);
@@ -154,7 +171,7 @@ public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
                 out.write(buffer, 0, lenght);
             }
         } catch (Exception e) {
-            logger.error("OSS文件下载失败", e);
+            LOG.error("OSS文件下载失败", e);
             throw new GoblinCwlException("OSS文件下载失败");
         } finally {
             if (out != null) {
