@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head th:replace="fragment/globalComponent::commonHead(~{::title},~{},~{::style})">
+    <title>GoblinCwl - 应用</title>
+    <style>
+        .top {
+            text-align: center;
+            font-size: 16px;
+            padding: 5px;
+            background-color: #ec6a6a;
+            color: white;
+            width: 100%;
+            float: left;
+            margin-top: 2rem;
+            border: 1px solid #000;
+        }
+
+        .appDiv {
+
+            padding: 0.7em;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .appA {
+            text-decoration: none!important;
+            cursor: no-drop;
+        }
+
+        .appDiv img {
+            width: 75px;
+            border-radius: 10%;
+            border: 2px solid #c77676;
+        }
+
+        .appDiv span {
+            font-size: 12px;
+            color: #b95454;
+        }
+
+    </style>
+</head>
+<body>
+<!-- 左侧侧边栏 -->
+<div th:replace="fragment/appComponent::leftSiderBar"></div>
+
+<!-- 页面内容 -->
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <div class="content">
+        <!-- 顶部导航 -->
+        <div th:replace="fragment/globalComponent::topHeader"></div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-11" style="margin-left: 0.5em">
+                    <div class="top">
+                        <span class="options">○ ○ ⦿</span>
+                        <span class="title">GoblinCwl - 回收站</span>
+                    </div>
+                    <div style="margin-top: 2em;border: 1px solid #000;height: 35em;background-color: #fff4f4">
+                        <table id="appTable">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <a class="appA" href="javascript:void(0)" title="激活你的Jrebel插件" disabled="disabled">
+                                        <div class="appDiv">
+                                            <img th:src="@{/images/flower/Gold.png}"/><br>
+                                            <span>JRebel激活</span>
+                                        </div>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<div th:replace="fragment/globalComponent::commonFoot(~{::script})">
+    <script>
+        $(function () {
+            //导航栏切换
+            $("#appCloseLi").addClass("active");
+        });
+    </script>
+</div>
+</html>

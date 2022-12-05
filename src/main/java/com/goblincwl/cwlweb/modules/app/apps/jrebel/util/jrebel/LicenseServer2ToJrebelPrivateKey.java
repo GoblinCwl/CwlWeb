@@ -1,4 +1,4 @@
-package com.goblincwl.cwlweb.modules.app.jrebel.util.jrebel;
+package com.goblincwl.cwlweb.modules.app.apps.jrebel.util.jrebel;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 

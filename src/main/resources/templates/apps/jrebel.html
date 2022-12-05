@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
 <head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
-    <title>GoblinCwl - 功能管理</title>
+    <title>GoblinCwl - Jrebel激活</title>
     <link th:href="@{/css/manager.css}" rel="stylesheet"/>
     <style></style>
 </head>
 <body>
 <!-- 左侧侧边栏 -->
-<div th:replace="fragment/manager/managerComponent::leftSiderBar"></div>
+<div th:replace="fragment/appComponent::leftSiderBar"></div>
 
 <!-- 页面内容 -->
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -15,14 +15,16 @@
         <!-- 顶部导航 -->
         <div th:replace="fragment/globalComponent::topHeader"></div>
 
-
+        这里是Jrebel激活页面
     </div>
 </div>
 </body>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
     <script>
         $(function () {
-            $("#managerServiceLi").addClass("active")
+            $("#appInUseLi").css("display","block")
+            $("#appInUseLi").addClass("active")
+            $("#appInUseSpan").text("Jrebel激活")
         })
     </script>
 </div>
