@@ -47,7 +47,7 @@ public class WebRedirectInterceptor implements HandlerInterceptor {
         } else {
             String requestUri = request.getRequestURI();
             if ("/favicon.ico".equals(requestUri)
-                    || "/extras/jrebel/agent/features".equals(requestUri)
+                    || "/app/jrebel/agent/features".equals(requestUri)
             ) {
                 return true;
             } else {
