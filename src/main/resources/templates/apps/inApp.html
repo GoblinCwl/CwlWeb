@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
+    <title id="inAppTitle">GoblinCwl - Jrebel激活</title>
+    <link th:href="@{/css/manager.css}" rel="stylesheet"/>
+    <style></style>
+</head>
+<body>
+<!-- 左侧侧边栏 -->
+<div th:replace="fragment/appComponent::leftSiderBar"></div>
+
+<!-- 页面内容 -->
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <div class="content">
+        <!-- 顶部导航 -->
+        <div th:replace="fragment/globalComponent::topHeader"></div>
+
+        <div class="container-fluid" style="overflow:hidden;">
+            <div class="row">
+                <div class="col-lg-11" style="margin-left: 0.5em">
+                    <div style="margin-top: 2em;border: 2px solid #6ecadc;height: 37em;">
+                        <iframe id="appHtmlIFrame" style="height: 100%;width: 100%;border: none">
+
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<div th:replace="fragment/globalComponent::commonFoot(~{::script})">
+    <script>
+        $(function () {
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/apps/app/" + getRequestParam().id,
+                success: function (res) {
+                    let data = res.data;
+                    if (data != null) {
+                        let $appInUseLi = $("#appInUseLi");
+                        $appInUseLi.css("display", "block")
+                        $appInUseLi.addClass("active")
+                        $("#appInUseSpan").text(data.name);
+                        $("#inAppTitle").text("GoblinCwl - " + data.name)
+
+                        let iframeDocument = $("iframe[id='appHtmlIFrame']")[0].contentWindow.document;
+                        let targetDom = $(iframeDocument).find('html');
+                        targetDom.html(data.html)
+                    } else {
+                        window.location = "/404";
+                    }
+                },
+            })
+
+
+        })
+    </script>
+</div>
+</html>

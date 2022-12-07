@@ -144,9 +144,11 @@ public class OssFileService extends ServiceImpl<OssFileMapper, OssFile> {
      * @author ☪wl
      */
     public void removeById(String ossFileName) {
-        //删除数据库数据
-        this.ossFileMapper.deleteById(ossFileName);
-        this.oss.deleteObject(this.ossBucket, ossFileName);
+        if (StringUtils.isNotEmpty(ossFileName)){
+            //删除数据库数据
+            this.ossFileMapper.deleteById(ossFileName);
+            this.oss.deleteObject(this.ossBucket, ossFileName);
+        }
     }
 
     /**

@@ -367,3 +367,15 @@ function convertMilliSecondToTimeStr(milliSecond) {
 function urlLinkJump(url) {
     openNewWindow(url);
 }
+
+//删除图片
+function removeOssFile(ids) {
+    ajaxHttp({
+        type: "DELETE",
+        url: ctx + "/manager/ossFile/remove",
+        data: {
+            ids: ids,
+        },
+        validateForm: $(".noValidateForm")
+    })
+}

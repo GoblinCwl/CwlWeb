@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OssFileController extends BaseController<OssFile> {
 
-    private final Logger logger = LoggerFactory.getLogger(OssFileController.class);
+    private final Logger LOG = LoggerFactory.getLogger(OssFileController.class);
     private final OssFileService ossFileService;
 
     /**
@@ -94,8 +95,7 @@ public class OssFileController extends BaseController<OssFile> {
     /**
      * editorMd 图片上传
      *
-     * @param file        文件
-     * @param storagePath 存储路径
+     * @param file 文件
      * @return 自定义的返回格式
      * {
      * success : 0 | 1,           // 0 表示上传失败，1 表示上传成功
@@ -106,7 +106,9 @@ public class OssFileController extends BaseController<OssFile> {
      * @author ☪wl
      */
     @RequestMapping("/editorMdUploadFile")
-    public Map<String, Object> editorMdUploadFile(@RequestParam("editormd-image-file") MultipartFile file, String storagePath) {
+    public Map<String, Object> editorMdUploadFile(@RequestParam("editormd-image-file") MultipartFile file) {
+        //博客图片上传
+        String storagePath = "blogs";
         Map<String, Object> resultMap = new HashMap<>(3);
         try {
             OssFile ossFile = this.ossFileService.uploadFile(file, OssFile.builder().path(storagePath).build());
@@ -114,10 +116,23 @@ public class OssFileController extends BaseController<OssFile> {
             resultMap.put("message", "上传成功");
             resultMap.put("url", ossFile.getFullUrl());
         } catch (IOException e) {
-            logger.error("文件上传失败", e);
+            LOG.error("文件上传失败", e);
             resultMap.put("success", 0);
             resultMap.put("message", "上传失败");
         }
         return resultMap;
+    }
+
+    @RequestMapping("/appIconUploadFile")
+    public Result<Object> test(@RequestParam("file_data") MultipartFile file) {
+        //应用图标上传
+        String storagePath = "appIcon";
+        OssFile ossFile = new OssFile();
+        try {
+            ossFile = this.ossFileService.uploadFile(file, OssFile.builder().path(storagePath).build());
+        } catch (IOException e) {
+            LOG.error("文件上传失败", e);
+        }
+        return Result.genSuccess(ossFile.getOssFileName(), "成功");
     }
 }

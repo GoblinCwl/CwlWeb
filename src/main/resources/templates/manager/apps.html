@@ -4,6 +4,7 @@
     <title>GoblinCwl - 应用管理</title>
     <link th:href="@{/css/manager.css}" rel="stylesheet"/>
     <link rel="stylesheet" th:href="@{/css/goblincwl/tablePage.css}">
+    <link th:href="@{/webjars/bootstrap-fileinput/4.5.3/css/fileinput.min.css}" rel='stylesheet' type='text/css'/>
     <style>
         /*颜色显示*/
         .color-div {
@@ -18,6 +19,10 @@
         .bootstrap-switch-lock, .label-lock {
             color: #fff;
             background: #EC6A6A;
+        }
+
+        .fileInput-text {
+            height: 31px;
         }
     </style>
 </head>
@@ -83,6 +88,8 @@
 </body>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
     <script th:src="@{/js/goblincwl/tablePage.js}" type="text/javascript"></script>
+    <script th:src="@{/webjars/bootstrap-fileinput/4.5.3/js/fileinput.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap-fileinput/4.5.3/js/locales/zh.js}"></script>
     <script>
         $(function () {
             $("#managerServiceLi").addClass("active")
@@ -144,7 +151,8 @@
                             title: '操作',
                             formatter: function (value, row, index) {//赋予的参数
                                 return genTableOptionA('#5bc0de', '编辑', 'glyphicon-pencil', 'appsEdit("' + tableId + '",' + JSON.stringify(row) + ')') +
-                                    genTableOptionA('#d9534f', '删除', 'glyphicon-remove', 'appsRemove("' + tableId + '","' + row.id + '")')
+                                    genTableOptionA('#d9534f', '删除', 'glyphicon-remove', 'appsRemove("' + tableId + '","' + row.id + '")') +
+                                    "<img src='" + row.iconUrl + "' data-xphoto='iconImgPreview' style='display: none'>"
                                     ;
 
                             }, //自定义方法，添加操作按钮,
@@ -176,19 +184,17 @@
                                 if (title.length > maxTitleLong) {
                                     title = title.substr(0, (maxTitleLong - 1)) + "...";
                                 }
-                                return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/apps/' + row.name) + '")');
+                                return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/apps/inApp?id=' + row.id) + '")');
                             },
-                        }, {
-                            field: 'path',
-                            title: '应用路径',
-                            align: 'center',
-                            width: 150,
                         },
                         {
                             field: 'iconUrl',
-                            title: '图标路径',
+                            title: '图标',
                             align: 'center',
                             width: 150,
+                            formatter: function (value, row, index) {
+                                return genTableOptionA('#6ecadc', '查看', 'glyphicon-eye-open', 'iconImgPreview(' + (index + 1) + ')');
+                            },
                         },
                         {
                             field: 'color',
@@ -204,7 +210,7 @@
                             field: 'description',
                             title: '应用描述',
                             align: 'center',
-                            width: 500,
+                            width: 600,
                         }, {
                             field: 'isLock',
                             title: '锁定状态',
@@ -216,7 +222,13 @@
                                 let state = value === 1;
                                 return '<input style="display: none" type="checkbox" name="appsOpen" ' + (state ? "checked" : "") + ' value="' + row.id + '"/>';
                             }
-                        }
+                        },
+                        // {
+                        //     field: 'html',
+                        //     title: '网页代码',
+                        //     align: 'center',
+                        //     width: 150,
+                        // },
                     ];
                     tableOptions.onLoadSuccess = function () {
                         $("[name='appsOpen']").bootstrapSwitch({
@@ -284,27 +296,33 @@
                     '           id="apps-add-name" placeholder="name" oninput="inputValidate($(this))">' +
                     '    </div>' +
                     '  </div>\n' +
-                    '  <div class="form-group">\n' +
-                    '    <label for="apps-add-path" class="col-sm-2 control-label xtip-label">应用路径</label>' +
-                    '    <div class="col-sm-10 xtip-input">' +
-                    '      <input type="text" class="form-control input-sm table-modal-input required " ' +
-                    '           id="apps-add-path" placeholder="/xxx" oninput="inputValidate($(this))">' +
-                    '    </div>' +
-                    '  </div>\n' +
-                    '  <div class="form-group">\n' +
+                    '  <div class="form-group">' +
                     '    <label for="apps-add-color" class="col-sm-2 control-label xtip-label">颜色</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
                     '      <input type="color" class="form-control input-sm table-modal-input" ' +
                     '           id="apps-add-color" placeholder="color">' +
                     '    </div>' +
-                    '  </div>\n' +
-                    '  <div class="form-group">\n' +
+                    '  </div>' +
+                    '<div class="form-group">' +
+                    '    <label for="apps-add-iconFile-input" class="col-sm-2 control-label xtip-label">应用图标</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <input id="apps-add-iconFile-input" type="file" class="file" data-min-file-count="1"/></div>' +
+                    '      <input id="apps-add-iconFile" type="hidden">' +
+                    ' </div>' +
+                    '  <div class="form-group">' +
                     '    <label for="apps-add-description" class="col-sm-2 control-label xtip-label">应用描述</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
                     '      <input type="text" class="form-control input-sm table-modal-input " ' +
                     '           id="apps-add-description" placeholder="是一个什么样的应用呢？...">' +
                     '    </div>' +
                     '  </div>\n' +
+                    '  <div class="form-group">\n' +
+                    '    <label for="apps-add-html" class="col-sm-2 control-label xtip-label">网页代码</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <textarea style="height: 230px" class="form-control input-sm table-modal-input " ' +
+                    '           id="apps-add-html" placeholder="HTML"></textarea>' +
+                    '    </div>' +
+                    '  </div>' +
                     '</form>'
                 ,
                 title: "新增应用",
@@ -316,8 +334,9 @@
                         url: ctx + "/apps/add",
                         data: {
                             name: $("#apps-add-name").val(),
-                            path: $("#apps-add-path").val(),
+                            html: $("#apps-add-html").val(),
                             color: $("#apps-add-color").val(),
+                            iconFile: $("#apps-add-iconFile").val(),
                             description: $("#apps-add-description").val(),
                         },
                         winId: winId,
@@ -328,6 +347,35 @@
                     })
                 }
             });
+            $("#apps-add-iconFile-input").fileinput({
+                uploadUrl: '/manager/ossFile/appIconUploadFile', // 这个是点击上传时候的上传接口
+                allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg'],//允许的文件类型
+                language: 'zh',
+                maxFileSize: 1500,//文件的最大大小 单位是k
+                uploadExtraData: {  //上传的时候，增加的附加参数
+                },
+                maxFilesNum: 1,//最多文件数量
+                previewSettings: {//设置预览图片时候的大小
+                    image: {width: "20px", height: "20px"},
+                },
+                showPreview: false,
+                captionClass: "form-control table-modal-input ",
+                browseClass: "btn btn-success",
+            }).on('fileuploaded', function (event, data) {//文件上传完成后触发
+                const response = data.response;
+                const $iconFile = $("#apps-add-iconFile");
+                if (response.code === 200) {
+                    //删除旧文件
+                    let oldOssFileId = $iconFile.val();
+                    if (notEmpty(oldOssFileId)) {
+                        removeOssFile(oldOssFileId);
+                    }
+                    $iconFile.val(response.data)
+                } else {
+                    xtip.msg("文件上传失败。" + response.data, {icon: 'e', type: 'w'});
+                }
+            })
+            ;
         }
 
         /*修改*/
@@ -364,19 +412,18 @@
                             '    </div>' +
                             '  </div>\n' +
                             '  <div class="form-group">\n' +
-                            '    <label for="apps-add-path" class="col-sm-2 control-label xtip-label">应用路径</label>' +
-                            '    <div class="col-sm-10 xtip-input">' +
-                            '      <input type="text" class="form-control input-sm table-modal-input required " ' +
-                            '           id="apps-add-path" placeholder="/xxx" value="' + res.data.path + '" oninput="inputValidate($(this))">' +
-                            '    </div>' +
-                            '  </div>\n' +
-                            '  <div class="form-group">\n' +
                             '    <label for="apps-add-color" class="col-sm-2 control-label xtip-label">颜色</label>' +
                             '    <div class="col-sm-10 xtip-input">' +
                             '      <input type="color" class="form-control input-sm table-modal-input" ' +
                             '           id="apps-add-color" placeholder="color" value="' + res.data.color + '">' +
                             '    </div>' +
-                            '  </div>\n' +
+                            '  </div>' +
+                            '<div class="form-group">' +
+                            '    <label for="apps-add-iconFile-input" class="col-sm-2 control-label xtip-label">应用图标</label>' +
+                            '    <div class="col-sm-10 xtip-input">' +
+                            '      <input id="apps-add-iconFile-input" type="file" class="file" data-min-file-count="1"/></div>' +
+                            '      <input id="apps-add-iconFile" type="hidden" value="' + res.data.iconFile + '">' +
+                            ' </div>' +
                             '  <div class="form-group">\n' +
                             '    <label for="apps-add-description" class="col-sm-2 control-label xtip-label">应用描述</label>' +
                             '    <div class="col-sm-10 xtip-input">' +
@@ -384,6 +431,13 @@
                             '           id="apps-add-description" placeholder="是一个什么样的应用呢？..." value="' + res.data.description + '">' +
                             '    </div>' +
                             '  </div>\n' +
+                            '  <div class="form-group">\n' +
+                            '    <label for="apps-add-html" class="col-sm-2 control-label xtip-label">网页代码</label>' +
+                            '    <div class="col-sm-10 xtip-input">' +
+                            '      <textarea style="height: 230px" class="form-control input-sm table-modal-input " ' +
+                            '           id="apps-add-html" placeholder="HTML"></textarea>' +
+                            '    </div>' +
+                            '  </div>' +
                             '</form>'
                         ,
                         title: "修改应用",
@@ -395,8 +449,9 @@
                                 data: {
                                     id: res.data.id,
                                     name: $("#apps-add-name").val(),
-                                    path: $("#apps-add-path").val(),
+                                    html: $("#apps-add-html").val(),
                                     color: $("#apps-add-color").val(),
+                                    iconFile: $("#apps-add-iconFile").val(),
                                     description: $("#apps-add-description").val(),
                                 },
                                 winId: winId,
@@ -408,8 +463,39 @@
                             })
                         }
                     });
+                    //回显HTML，避免被解析
+                    $("#apps-add-html").val(res.data.html)
                     inputValidate($("#apps-add-name"))
-                    inputValidate($("#apps-add-path"))
+                    $("#apps-add-iconFile-input").fileinput({
+                        uploadUrl: '/manager/ossFile/appIconUploadFile', // 这个是点击上传时候的上传接口
+                        allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg'],//允许的文件类型
+                        language: 'zh',
+                        maxFileSize: 1500,//文件的最大大小 单位是k
+                        uploadExtraData: {  //上传的时候，增加的附加参数
+                        },
+                        maxFilesNum: 1,//最多文件数量
+                        previewSettings: {//设置预览图片时候的大小
+                            image: {width: "20px", height: "20px"},
+                        },
+                        showPreview: false,
+                        captionClass: "form-control table-modal-input ",
+                        browseClass: "btn btn-success",
+                    }).on('fileuploaded', function (event, data) {//文件上传完成后触发
+                        const response = data.response;
+                        const $iconFile = $("#apps-add-iconFile");
+                        if (response.code === 200) {
+                            //删除旧文件
+                            let oldOssFileId = $iconFile.val();
+                            if (notEmpty(oldOssFileId)) {
+                                removeOssFile(oldOssFileId);
+                            }
+                            $iconFile.val(response.data)
+                        } else {
+                            xtip.msg("文件上传失败。" + response.data, {icon: 'e', type: 'w'});
+                        }
+                    })
+                    ;
+                    $("input.file-caption-name").val(res.data.iconFileName);
                 },
             })
         }
@@ -446,6 +532,11 @@
                     },
                 })
             }, {icon: ['', '#d9534f']});
+        }
+
+        //预览图标
+        function iconImgPreview(index) {
+            xtip.photo("iconImgPreview", {index: index, height: '150px', width: '200px'})
         }
     </script>
 </div>
