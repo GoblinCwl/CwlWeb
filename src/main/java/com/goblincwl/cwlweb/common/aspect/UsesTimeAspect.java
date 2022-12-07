@@ -1,7 +1,7 @@
 package com.goblincwl.cwlweb.common.aspect;
 
-import com.goblincwl.cwlweb.modules.blog.entity.Blog;
-import com.goblincwl.cwlweb.modules.blog.service.BlogService;
+import com.goblincwl.cwlweb.modules.app.entitiy.App;
+import com.goblincwl.cwlweb.modules.app.service.AppService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -22,15 +22,15 @@ import java.util.concurrent.TimeUnit;
 @Component
 @Order(2)
 @RequiredArgsConstructor
-public class BrowseTimeAspect {
+public class UsesTimeAspect {
     @Resource(name = "redisStringTemplate")
     private final RedisTemplate<String, Object> redisTemplate;
-    private final BlogService blogService;
+    private final AppService appService;
 
     /**
      * 切入点
      */
-    @Pointcut("@annotation(com.goblincwl.cwlweb.common.annotation.aop.BrowseTimes)")
+    @Pointcut("@annotation(com.goblincwl.cwlweb.common.annotation.aop.UsesTimes)")
     public void checkPoint() {
     }
 
@@ -43,28 +43,28 @@ public class BrowseTimeAspect {
     public void afterMethod(JoinPoint joinPoint) {
         //获取方法的参数
         Object[] args = joinPoint.getArgs();
-        //文章ID
+        //应用ID
         String id = (String) args[0];
-        this.recordBrowserTimesData(id);
+        this.recordUsesTimesData(id);
     }
 
     /**
      * 对redis进行操作
      *
-     * @param blogId 文章ID
+     * @param appId 应用ID
      * @date 2022/12/1 17:36
      * @author ☪wl
      */
-    private synchronized void recordBrowserTimesData(String blogId) {
+    private synchronized void recordUsesTimesData(String appId) {
         //redisKey
-        String redisKey = "blogBrowserTimes" + blogId;
-        String browserTimes = String.valueOf(this.redisTemplate.opsForValue().get(redisKey));
-        if (StringUtils.isEmpty(browserTimes) || "null".equals(browserTimes)) {
+        String redisKey = "appUsesTimes" + appId;
+        String usesTimes = String.valueOf(this.redisTemplate.opsForValue().get(redisKey));
+        if (StringUtils.isEmpty(usesTimes) || "null".equals(usesTimes)) {
             //获取数据库中的浏览次数
-            Blog blog = this.blogService.getById(blogId);
-            this.redisTemplate.opsForValue().setIfAbsent(redisKey, blog.getBrowserTimes() + 1);
+            App app = this.appService.getById(appId);
+            this.redisTemplate.opsForValue().setIfAbsent(redisKey, app.getUsesTimes() + 1);
         } else {
-            this.redisTemplate.opsForValue().setIfPresent(redisKey, Long.parseLong(browserTimes) + 1);
+            this.redisTemplate.opsForValue().setIfPresent(redisKey, Long.parseLong(usesTimes) + 1);
         }
         //1天有效期
         redisTemplate.expire(redisKey, 1, TimeUnit.DAYS);

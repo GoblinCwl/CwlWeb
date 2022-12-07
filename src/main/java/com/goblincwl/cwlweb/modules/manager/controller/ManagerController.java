@@ -3,6 +3,9 @@ package com.goblincwl.cwlweb.modules.manager.controller;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.github.yulichang.query.MPJQueryWrapper;
+import com.goblincwl.cwlweb.modules.app.entitiy.App;
+import com.goblincwl.cwlweb.modules.app.service.AppService;
 import com.goblincwl.cwlweb.modules.blog.entity.Blog;
 import com.goblincwl.cwlweb.modules.blog.entity.BlogTabs;
 import com.goblincwl.cwlweb.modules.blog.service.BlogService;
@@ -51,6 +54,8 @@ public class ManagerController {
     private final AccessLogService accessLogService;
     private final BlogService blogService;
     private final BlogTabsService blogTabsService;
+
+    private final AppService appService;
 
     /**
      * 管理员登陆，获取token
@@ -180,8 +185,16 @@ public class ManagerController {
                             .last("limit 5")
             );
             resultMap.put("hotBlogTabsList", hotBlogTabsList);
-            //TODO 最热门5个功能
-
+            //最热门5个功能
+            MPJQueryWrapper<App> queryWrapper = new MPJQueryWrapper<>();
+            queryWrapper.leftJoin("oss_file t1 on t.icon_file = t1.oss_file_name");
+            queryWrapper.select(App.class, info -> !"html".equals(info.getColumn()));
+            queryWrapper.select("t.id");
+            queryWrapper.select("t1.full_url iconUrl", "t1.origin_file_name iconFileName");
+            queryWrapper.orderBy(true, false, "t.uses_times");
+            queryWrapper.last("limit 5");
+            List<App> hotAppList = this.appService.list(queryWrapper);
+            resultMap.put("hotAppList", hotAppList);
 
             //存到Redis
             redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(resultMap));
