@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.yulichang.query.MPJQueryWrapper;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
+import com.goblincwl.cwlweb.common.annotation.aop.UsesTimes;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
@@ -83,6 +84,7 @@ public class AppController extends BaseController<App> {
      * @date 2022/12/5 16:59
      * @author ☪wl
      */
+    @UsesTimes
     @GetMapping("/app/{id}")
     public Result<App> one(@PathVariable("id") String id) {
         MPJQueryWrapper<App> queryWrapper = new MPJQueryWrapper<>();

@@ -2,20 +2,17 @@ package com.goblincwl.cwlweb.common.aspect;
 
 import com.goblincwl.cwlweb.modules.blog.entity.Blog;
 import com.goblincwl.cwlweb.modules.blog.service.BlogService;
-import com.goblincwl.cwlweb.common.annotation.aop.BrowseTimes;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -44,11 +41,6 @@ public class BrowseTimeAspect {
      */
     @After("checkPoint()")
     public void afterMethod(JoinPoint joinPoint) {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        //获取被代理的方法
-        Method method = signature.getMethod();
-        //获取方法上的注解
-        BrowseTimes browseTimes = method.getAnnotation(BrowseTimes.class);
         //获取方法的参数
         Object[] args = joinPoint.getArgs();
         //文章ID

@@ -124,6 +124,30 @@
             margin: auto;
             float: left;
         }
+
+        #appTopTbody > tr > td.imgTd > img {
+            width: 25px;
+            text-align: left;
+            border: 1px solid #000
+        }
+
+        #appTopTbody > tr > td.nameTd {
+            font-size: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #appTopTbody > tr > td.usageTd {
+            font-size: 1px;
+            color: gray;
+            text-align: right;
+            padding-right: 2em
+        }
+
+        #appTopTbody td {
+            padding-top: 0.13em;
+        }
     </style>
 </head>
 <body>
@@ -213,7 +237,15 @@
                             </div>
                             <div class="managerRightDiv col-lg-6" style="border-color: #b2a944">
                                 <div class="blackBorder" style="height: 8.65em;text-align: center">
-                                    <span style="font-size: 1px;">TODO - 功能热度</span>
+                                    <table id="appTopTable" style="width: 100%">
+                                        <tbody id="appTopTbody">
+                                        <tr>
+                                            <td class="imgTd"><img th:src="@{/images/profile.jpg}"></td>
+                                            <td class="nameTd"><a>Jrebel激活</a></td>
+                                            <td class="usageTd">点击:123</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -436,6 +468,18 @@
                             '               </tr>';
                     }
                     $("#blogTabsTopTbody").html(hotBlogTabsHtml);
+
+                    //应用热度top
+                    let hotAppHtml = "";
+                    let hotAppList = data.hotAppList;
+                    for (const hotApp of hotAppList) {
+                        hotAppHtml += '<tr>' +
+                            '              <td class="imgTd"><img style="border-color: ' + hotApp.color + '" src="' + hotApp.iconUrl + '"></td>' +
+                            '              <td class="nameTd"><a target="_blank" href="/apps/inApp?id=' + hotApp.id + '"style="color: ' + hotApp.color + '">' + hotApp.name + '</a></td>\n' +
+                            '              <td class="usageTd">点击:' + hotApp.usesTimes + '</td>' +
+                            '          </tr>';
+                    }
+                    $("#appTopTbody").html(hotAppHtml);
                 }
             })
         }

@@ -438,12 +438,14 @@
                             title: '所属博客',
                             align: 'left',
                             formatter: function (value, row, index) {
-                                let title = row.blog.title;
-                                const maxTitleLong = 8;
-                                if (title.length > maxTitleLong) {
-                                    title = title.substr(0, (maxTitleLong - 1)) + "...";
+                                if (row.blog != null) {
+                                    let title = row.blog.title;
+                                    const maxTitleLong = 8;
+                                    if (title.length > maxTitleLong) {
+                                        title = title.substr(0, (maxTitleLong - 1)) + "...";
+                                    }
+                                    return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/blog/content/' + row.blogId + '#C' + row.id) + '")');
                                 }
-                                return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/blog/content/' + row.blogId + '#C' + row.id) + '")');
                             },
                             width: 120,
                         },
@@ -576,12 +578,14 @@
                                         title: '所属博客',
                                         align: 'left',
                                         formatter: function (value, rowDetail, index) {
-                                            let title = row.blog.title;
-                                            const maxTitleLong = 8;
-                                            if (title.length > maxTitleLong) {
-                                                title = title.substr(0, (maxTitleLong - 1)) + "...";
+                                            if (row.blog != null) {
+                                                let title = row.blog.title;
+                                                const maxTitleLong = 8;
+                                                if (title.length > maxTitleLong) {
+                                                    title = title.substr(0, (maxTitleLong - 1)) + "...";
+                                                }
+                                                return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/blog/content/' + row.blogId + '#C' + rowDetail.id) + '")');
                                             }
-                                            return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/blog/content/' + row.blogId + '#C' + rowDetail.id) + '")');
                                         },
                                         width: 120,
                                     },
