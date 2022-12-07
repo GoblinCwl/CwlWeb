@@ -37,7 +37,7 @@ public class App implements Serializable {
     /**
      * 应用地址
      */
-    private String path;
+    private String html;
 
     /**
      * 应用描述
@@ -63,7 +63,19 @@ public class App implements Serializable {
     /**
      * 图标URL
      */
+    private String iconFile;
+
+    /**
+     * 图片地址
+     */
+    @TableField(exist = false)
     private String iconUrl;
+
+    /**
+     * 图片文件名
+     */
+    @TableField(exist = false)
+    private String iconFileName;
 
     /**
      * 边框/文字颜色

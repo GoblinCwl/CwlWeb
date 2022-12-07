@@ -3,11 +3,14 @@ package com.goblincwl.cwlweb.modules.app.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.yulichang.query.MPJQueryWrapper;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
 import com.goblincwl.cwlweb.common.entity.Result;
+import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.modules.app.entitiy.App;
 import com.goblincwl.cwlweb.modules.app.service.AppService;
+import com.goblincwl.cwlweb.modules.blog.entity.Blog;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -41,12 +44,27 @@ public class AppController extends BaseController<App> {
      */
     @GetMapping("/list")
     public Result<Page<App>> list(App app) {
-        QueryWrapper<App> queryWrapper = createQueryWrapper(app);
+        MPJQueryWrapper<App> queryWrapper = new MPJQueryWrapper<>();
+        queryWrapper.leftJoin("oss_file t1 on t.icon_file = t1.oss_file_name");
+        queryWrapper.select(App.class, info -> !"html".equals(info.getColumn()));
+        queryWrapper.select("t.id");
+        queryWrapper.select("t1.full_url iconUrl", "t1.origin_file_name iconFileName");
+        String sortName = ServletUtils.getParameter("sortName");
+        String sortOrder = ServletUtils.getParameter("sortOrder");
+        queryWrapper.orderBy(true, "asc".equals(sortOrder), sortName);
+        //名字查询
+        if (StringUtils.isNotEmpty(app.getName())) {
+            queryWrapper.like("t.name", app.getName());
+        }
+        //状态查询
+        if (app.getIsLock() != null) {
+            queryWrapper.eq("t.is_lock", app.getIsLock());
+        }
         //锁定查询条件查询
         if (StringUtils.isNotEmpty(app.getIsLockStr())) {
             queryWrapper.and(wrapper -> {
                 for (String isLock : app.getIsLockStr().split(",")) {
-                    wrapper.or(innerWrapper -> innerWrapper.eq("is_lock", isLock));
+                    wrapper.or(innerWrapper -> innerWrapper.eq("t.is_lock", isLock));
                 }
             });
         }
@@ -58,7 +76,7 @@ public class AppController extends BaseController<App> {
     }
 
     /**
-     * 根据主键哦查询
+     * 根据主键查询
      *
      * @param id 主键ID
      * @return 结果
@@ -67,7 +85,12 @@ public class AppController extends BaseController<App> {
      */
     @GetMapping("/app/{id}")
     public Result<App> one(@PathVariable("id") String id) {
-        return new Result<App>().success(this.appService.getById(id), "成功");
+        MPJQueryWrapper<App> queryWrapper = new MPJQueryWrapper<>();
+        queryWrapper.leftJoin("oss_file t1 on t.icon_file = t1.oss_file_name");
+        queryWrapper.selectAll(App.class);
+        queryWrapper.select("t1.full_url iconUrl", "t1.origin_file_name iconFileName");
+        queryWrapper.eq("t.id", id);
+        return new Result<App>().success(this.appService.getOne(queryWrapper), "成功");
     }
 
     /**

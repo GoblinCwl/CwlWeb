@@ -196,6 +196,13 @@
             <version>5.3.3</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.webjars.bower/bootstrap-fileinput -->
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>bootstrap-fileinput</artifactId>
+            <version>4.5.3</version>
+        </dependency>
+
 
         <!--文件上传-->
         <dependency>
