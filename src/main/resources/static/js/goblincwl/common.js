@@ -100,7 +100,7 @@ const ajaxHttp = function (options) {
             xtip.close(o.loadId);
         },
         error: function () {
-            xtip.msg("前端发生未知错误，请联系站长！", {icon: 'e', type: 'w'});
+            xtip.msg("发生未知错误，请联系站长！", {icon: 'e', type: 'w'});
         }
     };
     //合并

@@ -18,7 +18,7 @@
         <div class="container-fluid" style="overflow:hidden;">
             <div class="row">
                 <div class="col-lg-11" style="margin-left: 0.5em">
-                    <div style="margin-top: 2em;border: 2px solid #6ecadc;height: 37em;">
+                    <div id="outDiv" style="margin-top: 2em;border: 2px solid #6ecadc;height: 37em;">
                         <iframe id="appHtmlIFrame" style="height: 100%;width: 100%;border: none">
 
                         </iframe>
@@ -41,6 +41,8 @@
                         let $appInUseLi = $("#appInUseLi");
                         $appInUseLi.css("display", "block")
                         $appInUseLi.addClass("active")
+
+                        $("#outDiv").css("border-color",data.color)
                         $("#appInUseSpan").text(data.name);
                         $("#inAppTitle").text("GoblinCwl - " + data.name)
 

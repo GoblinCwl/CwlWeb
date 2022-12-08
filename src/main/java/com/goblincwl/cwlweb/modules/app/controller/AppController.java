@@ -11,12 +11,13 @@ import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.modules.app.entitiy.App;
 import com.goblincwl.cwlweb.modules.app.service.AppService;
-import com.goblincwl.cwlweb.modules.blog.entity.Blog;
+import com.goblincwl.cwlweb.modules.manager.service.OssFileService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 应用 Controller
@@ -34,6 +35,8 @@ public class AppController extends BaseController<App> {
     public final static String APP_PREFIX = "/app";
 
     private final AppService appService;
+
+    private final OssFileService ossFileService;
 
     /**
      * 分页主查询
@@ -137,7 +140,11 @@ public class AppController extends BaseController<App> {
     @DeleteMapping("/remove")
     public Result<Object> remove(String ids) {
         if (StringUtils.isNotEmpty(ids)) {
-            this.appService.removeByIds(Arrays.asList(ids.split(",")));
+            List<String> idList = Arrays.asList(ids.split(","));
+            //删除图片信息
+            List<String> iconFileList = this.appService.iconFileListByIds(idList);
+            iconFileList.forEach(this.ossFileService::removeById);
+            this.appService.removeByIds(idList);
         }
         return Result.genSuccess("删除成功");
     }
