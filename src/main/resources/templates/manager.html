@@ -54,7 +54,8 @@
         #consoleDiv {
             font-size: 1px;
             font-family: Hack, sans-serif;
-            color: black;
+            color: #fff;
+            background-color: #2f3032;
         }
 
         #consoleDiv p {
@@ -147,6 +148,17 @@
 
         #appTopTbody td {
             padding-top: 0.13em;
+        }
+
+        #consoleParentDiv {
+            width: 100%;
+            height: 12.37em;
+            border-color: grey
+        }
+
+        #consoleParentDiv:hover {
+            border-color: #3a3a3a;
+            cursor: help;
         }
     </style>
 </head>
@@ -330,9 +342,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="consoleParentDiv" class="managerRightDiv"
-                             style="width: 100%;height: 12.37em;border-color: grey">
-                            <div id="consoleDiv" class="blackBorder"></div>
+                        <div id="consoleParentDiv" class="managerRightDiv consoleParentDiv" onclick="maxConsole()">
+                            <div id="consoleDiv" class="blackBorder consoleDiv"></div>
                         </div>
                     </div>
                 </div>
@@ -348,32 +359,25 @@
         $(function () {
             $("#managerHomeLi").addClass("active")
 
-            //日志输出
-            const webSocket = new WebSocket(projectHomeWebSocketUrl + "/log");
-            //处理服务器返回的信息
-            webSocket.onmessage = function (event) {
-                let $consoleParentDiv = $("#consoleParentDiv");
-                $("#consoleDiv").append(formatConsoleLog(event.data));
-                $consoleParentDiv.scrollTop($consoleParentDiv.prop("scrollHeight"));
-            };
-
             //右侧面板初始化
             managerRightInit();
             //每分钟刷新一次
             setInterval(managerRightInit, 60000)
             //左侧面板初始化
             managerLeftInit();
+            //项目日志输出
+            logConsole()
         })
 
         //格式化控制台信息，上色
         function formatConsoleLog(logContent) {
-            let color = "#000";
+            let color = "#fff";
             if (logContent.indexOf("DEBUG") !== -1) {
                 color = "#54cb39";
             } else if (logContent.indexOf("ERROE") !== -1 || logContent.indexOf("Exception") !== -1 || /at [a-z]{1,6}/g.test(logContent)) {
                 color = "#c73c3c";
             } else if (logContent.indexOf("INFO") !== -1) {
-                color = "#000";
+                color = "#8B8B8B";
             }
             return "<p style='color: " + color + "'>" + logContent + "</p>";
         }
@@ -596,6 +600,42 @@
                     $("#socketOnlineCountSpan").text(data.socketOnlineCount)
                 }
             })
+        }
+
+        //项目日志输出
+        let webSocket;
+
+        function logConsole() {
+            //日志输出
+            webSocket = new WebSocket(projectHomeWebSocketUrl + "/log");
+            //处理服务器返回的信息
+            webSocket.onmessage = function (event) {
+                $(".consoleDiv").append(formatConsoleLog(event.data));
+                let $consoleParentDiv = $(".consoleParentDiv");
+                let $xtiperContent = $(".xtiper_content");
+                $consoleParentDiv.scrollTop($consoleParentDiv.prop("scrollHeight"));
+                $xtiperContent.scrollTop($xtiperContent.prop("scrollHeight"));
+            };
+        }
+
+        //全屏控制台
+        function maxConsole() {
+            xtip.open({
+                type: 'ready',
+                content: '#consoleDiv',
+                title: '项目日志',
+                width: '700px',
+                height: '400px',
+                maxWidth: '100%',
+                lock: true,
+                move: false,
+                max: true,
+                bgcolor: '#2f3032',
+            });
+            let $xtiperContent = $(".xtiper_content");
+            $(".xtiper_content>#consoleDiv").removeClass("blackBorder")
+            $xtiperContent.scrollTop($xtiperContent.prop("scrollHeight"));
+            $(".xtiper_tit").css("background-color", "#898a8c")
         }
     </script>
 </div>
