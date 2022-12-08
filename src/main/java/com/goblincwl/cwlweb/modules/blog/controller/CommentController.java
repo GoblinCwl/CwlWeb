@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.modules.blog.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -157,7 +158,11 @@ public class CommentController extends BaseController<Comment> {
     @DeleteMapping("/remove")
     public Result<Object> remove(String ids) {
         if (StringUtils.isNotEmpty(ids)) {
-            this.commentService.removeByIds(Arrays.asList(ids.split(",")));
+            List<String> idList = Arrays.asList(ids.split(","));
+            //删除评论
+            this.commentService.removeByIds(idList);
+            //删除子评论
+            this.commentService.remove(new LambdaQueryWrapper<Comment>().in(Comment::getParentId, idList));
         }
         return Result.genSuccess("删除成功");
     }
