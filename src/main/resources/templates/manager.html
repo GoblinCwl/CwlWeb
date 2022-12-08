@@ -475,7 +475,7 @@
                     for (const hotApp of hotAppList) {
                         hotAppHtml += '<tr>' +
                             '              <td class="imgTd"><img style="border-color: ' + hotApp.color + '" src="' + hotApp.iconUrl + '"></td>' +
-                            '              <td class="nameTd"><a target="_blank" href="/apps/inApp?id=' + hotApp.id + '"style="color: ' + hotApp.color + '">' + hotApp.name + '</a></td>\n' +
+                            '              <td class="nameTd"><a target="_blank" href="/apps/app/' + hotApp.id + '"style="color: ' + hotApp.color + '">' + hotApp.name + '</a></td>\n' +
                             '              <td class="usageTd">点击:' + hotApp.usesTimes + '</td>' +
                             '          </tr>';
                     }

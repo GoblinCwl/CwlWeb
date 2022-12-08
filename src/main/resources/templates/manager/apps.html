@@ -189,7 +189,7 @@
                                 if (title.length > maxTitleLong) {
                                     title = title.substr(0, (maxTitleLong - 1)) + "...";
                                 }
-                                return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/apps/inApp?id=' + row.id) + '")');
+                                return genTableOptionA('#c16edc', title, 'glyphicon-link', 'urlLinkJump("' + (ctx + '/apps/app/' + row.id) + '")');
                             },
                         },
                         {
@@ -400,7 +400,7 @@
             //回显
             ajaxHttp({
                 type: "GET",
-                url: ctx + "/apps/app/" + row.id,
+                url: ctx + "/apps/query/" + row.id,
                 success: function (res) {
                     const winId = xtip.win({
                         type: 'confirm', //alert 或 confirm

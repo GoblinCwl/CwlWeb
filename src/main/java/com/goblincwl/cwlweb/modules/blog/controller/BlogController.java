@@ -21,8 +21,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -161,7 +159,7 @@ public class BlogController extends BaseController<Blog> {
      */
     @BrowseTimes
     @GetMapping("/content/{id}")
-    public ModelAndView content(@PathVariable("id") String id) throws ServletException, IOException {
+    public ModelAndView content(@PathVariable("id") String id) {
         return new ModelAndView("blog/content", Collections.singletonMap("id", id));
     }
 
