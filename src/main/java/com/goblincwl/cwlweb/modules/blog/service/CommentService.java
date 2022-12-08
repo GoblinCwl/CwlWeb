@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -82,5 +83,17 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
         }
 
         return comment.getId();
+    }
+
+    /**
+     * 根据博客ID查询评论ID
+     *
+     * @param blogIdList 博客ID集合
+     * @return 评论ID集合
+     * @date 2022/12/8 14:00
+     * @author ☪wl
+     */
+    public List<Integer> idListByBlogIds(List<String> blogIdList) {
+        return this.baseMapper.selectIdListByBlogIds(blogIdList);
     }
 }
