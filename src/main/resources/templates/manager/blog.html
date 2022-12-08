@@ -20,7 +20,7 @@
             display: none;
         }
 
-        td.checkbox-custom:has(>.bootstrap-switch){
+        td.checkbox-custom:has(>.bootstrap-switch) {
             height: 62px;
             padding-top: 1.2em;
         }
@@ -477,7 +477,7 @@
                             title: '传送门',
                             align: 'center',
                             formatter: function (value, row, index) {
-                                if (row.website !== null && row.website !== '') {
+                                if (notEmpty(row.website)) {
                                     return genTableOptionA('#c16edc', '跳转', 'glyphicon-link', 'urlLinkJump("' + row.website + '")');
                                 } else {
                                     return '';
@@ -528,8 +528,11 @@
                             width: 110,
                             align: 'center',
                             formatter: function (value, row, index) {
-                                let websiteAudit = (value === 1);
-                                return '<input style="display: none" type="checkbox" name="websiteAudit" ' + (websiteAudit ? "checked" : "") + ' value="' + row.id + '"/>';
+                                if (notEmpty(row.website)) {
+                                    let websiteAudit = (value === 1);
+                                    return '<input style="display: none" type="checkbox" name="websiteAudit" ' + (websiteAudit ? "checked" : "") + ' value="' + row.id + '"/>';
+                                }
+                                return '';
                             }
                         }
                     ]
@@ -617,7 +620,7 @@
                                         title: '传送门',
                                         align: 'center',
                                         formatter: function (value, row, index) {
-                                            if (row.website !== null && row.website !== '') {
+                                            if (notEmpty(row.website)) {
                                                 return genTableOptionA('#c16edc', '跳转', 'glyphicon-link', 'urlLinkJump("' + row.website + '")');
                                             } else {
                                                 return '';
@@ -658,8 +661,11 @@
                                         width: 110,
                                         align: 'center',
                                         formatter: function (value, row, index) {
-                                            let websiteAudit = (value === 1);
-                                            return '<input style="display: none" type="checkbox" name="detailWebsiteAudit" ' + (websiteAudit ? "checked" : "") + ' value="' + row.id + '"/>';
+                                            if (notEmpty(row.website)) {
+                                                let websiteAudit = (value === 1);
+                                                return '<input style="display: none" type="checkbox" name="detailWebsiteAudit" ' + (websiteAudit ? "checked" : "") + ' value="' + row.id + '"/>';
+                                            }
+                                            return '';
                                         }
                                     }
                                 ],
