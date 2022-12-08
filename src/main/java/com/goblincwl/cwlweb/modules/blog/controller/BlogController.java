@@ -14,8 +14,10 @@ import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
+import com.goblincwl.cwlweb.modules.blog.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,6 +26,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -40,6 +43,7 @@ public class BlogController extends BaseController<Blog> {
     public final static String MODULE_PREFIX = "/blog";
     private final BlogService blogService;
     private final BlogTabsService blogTabsService;
+    private final CommentService commentService;
 
     /**
      * 主查询
@@ -204,9 +208,14 @@ public class BlogController extends BaseController<Blog> {
     @TokenCheck
     @DeleteMapping("/remove")
     public Result<Object> remove(String ids) {
-        //TODO 逻辑删除
         if (StringUtils.isNotEmpty(ids)) {
-            this.blogService.removeByIds(Arrays.asList(ids.split(",")));
+            List<String> idList = Arrays.asList(ids.split(","));
+            this.blogService.removeByIds(idList);
+            //删除评论
+            List<Integer> commentIdList = this.commentService.idListByBlogIds(idList);
+            if (!CollectionUtils.isEmpty(commentIdList)) {
+                this.commentService.removeByIds(commentIdList);
+            }
         }
         return Result.genSuccess("删除成功");
     }
