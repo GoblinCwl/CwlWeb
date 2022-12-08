@@ -36,10 +36,14 @@ public class RecordTimesSchedule {
                 Blog blog = blogService.getById(id);
                 Integer redisValue = (Integer) this.redisTemplate.opsForValue().get(key);
                 Long redisBrowserTimes = redisValue == null ? 0 : redisValue.longValue();
-                if (blog.getBrowserTimes() < redisBrowserTimes) {
-                    blogService.update(
-                            new LambdaUpdateWrapper<Blog>().eq(Blog::getId, id).set(Blog::getBrowserTimes, redisBrowserTimes)
-                    );
+                if (blog == null) {
+                    this.redisTemplate.delete(key);
+                }else {
+                    if (blog.getBrowserTimes() < redisBrowserTimes) {
+                        blogService.update(
+                                new LambdaUpdateWrapper<Blog>().eq(Blog::getId, id).set(Blog::getBrowserTimes, redisBrowserTimes)
+                        );
+                    }
                 }
             }
         }
@@ -50,10 +54,14 @@ public class RecordTimesSchedule {
                 App app = appService.getById(id);
                 Integer redisValue = (Integer) this.redisTemplate.opsForValue().get(key);
                 Long redisUsesTimes = redisValue == null ? 0 : redisValue.longValue();
-                if (app.getUsesTimes() < redisUsesTimes) {
-                    appService.update(
-                            new LambdaUpdateWrapper<App>().eq(App::getId, id).set(App::getUsesTimes, redisUsesTimes)
-                    );
+                if (app == null){
+                    this.redisTemplate.delete(key);
+                }else {
+                    if (app.getUsesTimes() < redisUsesTimes) {
+                        appService.update(
+                                new LambdaUpdateWrapper<App>().eq(App::getId, id).set(App::getUsesTimes, redisUsesTimes)
+                        );
+                    }
                 }
             }
         }
