@@ -432,9 +432,11 @@
 
                     //定位#的评论
                     let locCommentDiv = $('#commentLocDiv' + getRequestHash() + ':eq(0)');
+                    let commentDivHeight = $(".childrenComment:eq(0)").height();
+                    commentDivHeight = commentDivHeight === undefined || commentDivHeight == null ? $(".comment:eq(0)").height() : commentDivHeight;
                     if (locCommentDiv !== undefined && locCommentDiv.length > 0) {
                         $('html,body').animate({
-                            scrollTop: locCommentDiv.offset().top - $(".childrenComment:eq(0)").height()
+                            scrollTop: locCommentDiv.offset().top - commentDivHeight
                         }, 500);
                         locCommentDiv.addClass("locationComment")
                     }
@@ -847,7 +849,7 @@
                 scrollTop: $forId.offset().top - $(".childrenComment:eq(0)").height()
             }, 500);
             $forId.addClass("locationComment");
-            setTimeout(function (){
+            setTimeout(function () {
                 $forId.removeClass("locationComment")
             }, 2000)
         }
