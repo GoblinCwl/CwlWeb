@@ -179,12 +179,22 @@ public class CommentController extends BaseController<Comment> {
     @TokenCheck
     @PutMapping("/doWebsiteAudit/{id}/{auditFlg}")
     public Result<Object> doWebsiteAudit(@PathVariable Integer id, @PathVariable Integer auditFlg) {
-        boolean updateResult = this.commentService.update(
-                new UpdateWrapper<Comment>()
-                        .lambda().eq(Comment::getId, id)
-                        .set(id != null, Comment::getWebsiteAudit, auditFlg)
-        );
+        boolean updateResult = this.commentService.doWebsiteAudit(id, auditFlg);
         return updateResult ? Result.genSuccess("审核成功") : Result.genFail("审核失败");
+    }
+
+    /**
+     * 使用白名单内的网址对所有评论进行审核
+     *
+     * @return 反馈
+     * @date 2022/12/8 15:16
+     * @author ☪wl
+     */
+    @TokenCheck
+    @PutMapping("/whiteListReview")
+    public Result<Object> whiteListReview() {
+        this.commentService.whiteListReview();
+        return Result.genSuccess("白名单审核成功");
     }
 
 }

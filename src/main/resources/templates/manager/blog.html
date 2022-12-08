@@ -24,6 +24,14 @@
             height: 62px;
             padding-top: 1.2em;
         }
+
+        .glyphicon-ok-sign, .glyphicon-ok-sign:before {
+            color: #000 !important;
+        }
+
+        .btn-inverse:hover {
+            background-color: #d5d5d5;
+        }
     </style>
 </head>
 <body>
@@ -121,6 +129,10 @@
                 <div id="commentTab" class="tab-pane">
                     <div class="table-responsive">
                         <div id="comment-toolbar" class="btn-group">
+                            <button id="comment-toolbar-whitelistAudit" type="button"
+                                    class="btn btn-inverse btn-sm rightSize toolbarBtn">
+                                <i class="glyphicon  glyphicon-ok-sign toolbarIcon" aria-hidden="true"></i>白名单审核
+                            </button>
                             <button id="comment-toolbar-remove" type="button"
                                     class="btn btn-danger btn-sm rightSize toolbarBtn">
                                 <i class="glyphicon glyphicon-remove " aria-hidden="true"></i>删除
@@ -398,6 +410,9 @@
                     uniqueId = "id";
                     tableOptions.detailView = true;
                     //单选/多选按钮及事件
+                    $("#comment-toolbar-whitelistAudit").on('click', function () {
+                        commentWhitelistAudit(tableId)
+                    });
                     $multiBtnArray[0] = $("#comment-toolbar-remove");
                     $multiBtnArray[0].on('click', function () {
                         commentRemove(tableId)
@@ -1082,6 +1097,23 @@
                     $table.bootstrapTable('getOptions').onUncheckAll();
                 }
             })
+        }
+
+        /*白名单审核*/
+        function commentWhitelistAudit(tableId) {
+            const $table = getTable(tableId);
+            const winId = xtip.confirm('确认进行白名单审核？', function () {
+                ajaxHttp({
+                    type: "PUT",
+                    url: ctx + "/blog/comment/whiteListReview",
+                    winId: winId,
+                    success: function (res) {
+                        xtip.msg(res.msg, {icon: 's', type: 'w'})
+                        $table.bootstrapTable('refresh');
+                        $table.bootstrapTable('getOptions').onUncheckAll();
+                    },
+                })
+            }, {icon: ['', '#bebebe']});
         }
     </script>
 </div>
