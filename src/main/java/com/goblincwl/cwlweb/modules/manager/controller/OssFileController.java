@@ -123,8 +123,16 @@ public class OssFileController extends BaseController<OssFile> {
         return resultMap;
     }
 
+    /**
+     * 应用表单图片上传
+     *
+     * @param file 文件
+     * @return 文件主键
+     * @date 2022/12/8 14:08
+     * @author ☪wl
+     */
     @RequestMapping("/appIconUploadFile")
-    public Result<Object> test(@RequestParam("file_data") MultipartFile file) {
+    public Result<Object> appIconUploadFile(@RequestParam("file_data") MultipartFile file) {
         //应用图标上传
         String storagePath = "appIcon";
         OssFile ossFile = new OssFile();
