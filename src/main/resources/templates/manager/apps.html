@@ -24,6 +24,11 @@
         .fileInput-text {
             height: 31px;
         }
+
+        td.checkbox-custom:has(>.bootstrap-switch){
+            height: 62px;
+            padding-top: 1.2em;
+        }
     </style>
 </head>
 <body>
@@ -193,7 +198,7 @@
                             align: 'center',
                             width: 150,
                             formatter: function (value, row, index) {
-                                return genTableOptionA('#6ecadc', '查看', 'glyphicon-eye-open', 'iconImgPreview(' + (index + 1) + ')');
+                                return '<img src="' + row.iconUrl + '" style="width: 50px;border-radius: 10%;">';
                             },
                         },
                         {
