@@ -431,14 +431,16 @@
                     }
 
                     //定位#的评论
-                    let locCommentDiv = $('#commentLocDiv' + getRequestHash() + ':eq(0)');
-                    let commentDivHeight = $(".childrenComment:eq(0)").height();
-                    commentDivHeight = commentDivHeight === undefined || commentDivHeight == null ? $(".comment:eq(0)").height() : commentDivHeight;
-                    if (locCommentDiv !== undefined && locCommentDiv.length > 0) {
-                        $('html,body').animate({
-                            scrollTop: locCommentDiv.offset().top - commentDivHeight
-                        }, 500);
-                        locCommentDiv.addClass("locationComment")
+                    if (getRequestHash().startsWith("C")){
+                        let locCommentDiv = $('#commentLocDiv' + getRequestHash() + ':eq(0)');
+                        let commentDivHeight = $(".childrenComment:eq(0)").height();
+                        commentDivHeight = commentDivHeight === undefined || commentDivHeight == null ? $(".comment:eq(0)").height() : commentDivHeight;
+                        if (locCommentDiv !== undefined && locCommentDiv.length > 0) {
+                            $('html,body').animate({
+                                scrollTop: locCommentDiv.offset().top - commentDivHeight
+                            }, 500);
+                            locCommentDiv.addClass("locationComment")
+                        }
                     }
                 },
             });
