@@ -69,9 +69,8 @@ public class CommentController extends BaseController<Comment> {
         if (StringUtils.isNotEmpty(comment.getWebsiteAuditStr())) {
             mpjQueryWrapper.and(queryWrapper -> {
                 for (String websiteAudit : comment.getWebsiteAuditStr().split(",")) {
-                    queryWrapper.or(andWrapper -> {
-                        andWrapper.eq("t.website_audit", websiteAudit).or().eq("t2.website_audit", websiteAudit);
-                    });
+                    queryWrapper.or(andWrapper -> andWrapper.eq("t.website_audit", websiteAudit).or().eq("t2.website_audit", websiteAudit));
+                    queryWrapper.isNotNull("t.website").ne("t.website", "");
                 }
             });
         }
@@ -88,6 +87,7 @@ public class CommentController extends BaseController<Comment> {
                 childrenQueryMapper.and(queryWrapper -> {
                     for (String websiteAudit : comment.getWebsiteAuditStr().split(",")) {
                         queryWrapper.or().eq("website_audit", websiteAudit);
+                        queryWrapper.isNotNull("website").ne("website", "");
                     }
                 });
             }
