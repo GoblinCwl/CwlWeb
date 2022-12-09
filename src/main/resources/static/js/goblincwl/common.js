@@ -1,4 +1,17 @@
+<!--变量集-->
+let ctx;
+let isHttps;
+let projectHomeHttpUrl;
+let projectHomeWebSocketUrl;
+
 $(function () {
+    <!--变量集-->
+    isHttps = 'https:' === document.location.protocol;
+    projectHomeHttpUrl = window.location.protocol + "//" + window.location.host;
+    projectHomeWebSocketUrl = (window.location.protocol + "//" + window.location.host).replace("https", "wss").replace("http", "ws");
+    ctx = projectHomeHttpUrl;
+
+    /*移动端校验*/
     const a = getClientInfo();
     if (a !== "PC") {
         alert("移动端暂未开发，请使用电脑浏览！");
