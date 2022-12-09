@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.yulichang.query.MPJQueryWrapper;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.goblincwl.cwlweb.modules.blog.entity.Blog;
 import com.goblincwl.cwlweb.modules.blog.entity.BlogTabs;
+import com.goblincwl.cwlweb.modules.blog.entity.BlogTabsSubscribe;
 import com.goblincwl.cwlweb.modules.blog.service.BlogService;
 import com.goblincwl.cwlweb.modules.blog.service.BlogTabsService;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
@@ -14,17 +16,16 @@ import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
+import com.goblincwl.cwlweb.modules.blog.service.BlogTabsSubscribeService;
 import com.goblincwl.cwlweb.modules.blog.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -42,6 +43,10 @@ public class BlogController extends BaseController<Blog> {
     private final BlogService blogService;
     private final BlogTabsService blogTabsService;
     private final CommentService commentService;
+
+    private final BlogTabsSubscribeService blogTabsSubscribeService;
+
+    private final RabbitTemplate rabbitTemplate;
 
     /**
      * 主查询
@@ -174,8 +179,8 @@ public class BlogController extends BaseController<Blog> {
     @TokenCheck
     @PostMapping("/add")
     public Result<Object> add(Blog blog) {
-
         this.blogService.save(blog);
+        this.sendSubscribeEmail(blog);
         return Result.genSuccess("添加成功");
     }
 
@@ -192,7 +197,41 @@ public class BlogController extends BaseController<Blog> {
     public Result<Object> edit(Blog blog) {
         blog.setUpdateTime(new Date());
         this.blogService.updateById(blog);
+        this.sendSubscribeEmail(blog);
         return Result.genSuccess("修改成功");
+    }
+
+    /**
+     * 发送订阅通知
+     *
+     * @param blog 文章对象
+     * @date 2022/12/9 16:53
+     * @author ☪wl
+     */
+    private void sendSubscribeEmail(Blog blog) {
+        //发送订阅推送
+        Integer[] tabsArray = blog.getTabsArray();
+        if (tabsArray != null) {
+            List<String> alreadySendEmail = new ArrayList<>();
+            for (Integer tabsId : tabsArray) {
+                MPJLambdaWrapper<BlogTabsSubscribe> wrapper = new MPJLambdaWrapper<>();
+                wrapper.selectAll(BlogTabsSubscribe.class);
+                wrapper.eq(BlogTabsSubscribe::getBlogTabsId, tabsId);
+                wrapper.leftJoin(BlogTabs.class, BlogTabs::getId, BlogTabsSubscribe::getBlogTabsId);
+                wrapper.selectAs(BlogTabs::getName, BlogTabsSubscribe::getBlogTabsName);
+                List<BlogTabsSubscribe> subscribeList = this.blogTabsSubscribeService.list(wrapper);
+                subscribeList.forEach(sub -> {
+                    if (!alreadySendEmail.contains(sub.getEmail())) {
+                        Map<String, Object> dataMap = new HashMap<>(2);
+                        dataMap.put("subscribe", sub);
+                        dataMap.put("blogTitle", blog.getTitle());
+                        this.rabbitTemplate.convertAndSend("defaultExchange", "tabsSubscribeQueue", dataMap);
+                        alreadySendEmail.add(sub.getEmail());
+                    }
+                });
+
+            }
+        }
     }
 
     /**
