@@ -25,7 +25,7 @@
             height: 31px;
         }
 
-        td.checkbox-custom:has(>.bootstrap-switch){
+        td.checkbox-custom:has(>.bootstrap-switch) {
             height: 62px;
             padding-top: 1.2em;
         }
@@ -156,8 +156,7 @@
                             title: '操作',
                             formatter: function (value, row, index) {//赋予的参数
                                 return genTableOptionA('#5bc0de', '编辑', 'glyphicon-pencil', 'appsEdit("' + tableId + '",' + JSON.stringify(row) + ')') +
-                                    genTableOptionA('#d9534f', '删除', 'glyphicon-remove', 'appsRemove("' + tableId + '","' + row.id + '")') +
-                                    "<img src='" + row.iconUrl + "' data-xphoto='iconImgPreview' style='display: none'>"
+                                    genTableOptionA('#d9534f', '删除', 'glyphicon-remove', 'appsRemove("' + tableId + '","' + row.id + '")')
                                     ;
 
                             }, //自定义方法，添加操作按钮,
@@ -290,7 +289,7 @@
             const $table = getTable(tableId);
             const winId = xtip.win({
                 type: 'confirm',
-                btn: ['保存', '取消'],
+                btn: ['保存','预览', '取消'],
                 icon: ['', '#5cb85c'],
                 tip:
                     '<form class="form-horizontal validateForm">\n' +
@@ -350,7 +349,18 @@
                             $table.bootstrapTable('refresh');
                         },
                     })
-                }
+                }, btn2: function () {
+                    xtip.open({
+                        type: 'html',
+                        width: '80%',
+                        height: '80%',
+                        content: "<iframe id='innerIframe' style='height: 100%;width: 100%;border: 0'></iframe>",
+                        title: false,
+                        lock: true,
+                        max: true
+                    });
+                    $("#innerIframe").attr("srcdoc", $("#apps-add-html").val())
+                },
             });
             $("#apps-add-iconFile-input").fileinput({
                 uploadUrl: '/manager/ossFile/appIconUploadFile', // 这个是点击上传时候的上传接口
@@ -404,7 +414,7 @@
                 success: function (res) {
                     const winId = xtip.win({
                         type: 'confirm', //alert 或 confirm
-                        btn: ['保存', '取消'],
+                        btn: ['保存', '预览', '取消'],
                         icon: ['', '#5bc0de'],
                         width: '600px',
                         tip:
@@ -466,7 +476,19 @@
                                     $table.bootstrapTable('getOptions').onUncheckAll();
                                 },
                             })
-                        }
+                        },
+                        btn2: function () {
+                            xtip.open({
+                                type: 'html',
+                                width: '80%',
+                                height: '80%',
+                                content: "<iframe id='innerIframe' style='height: 100%;width: 100%;border: 0'></iframe>",
+                                title: false,
+                                lock: true,
+                                max: true
+                            });
+                            $("#innerIframe").attr("srcdoc", $("#apps-add-html").val())
+                        },
                     });
                     //回显HTML，避免被解析
                     $("#apps-add-html").val(res.data.html)
@@ -537,11 +559,6 @@
                     },
                 })
             }, {icon: ['', '#d9534f']});
-        }
-
-        //预览图标
-        function iconImgPreview(index) {
-            xtip.photo("iconImgPreview", {index: index, height: '150px', width: '200px'})
         }
     </script>
 </div>
