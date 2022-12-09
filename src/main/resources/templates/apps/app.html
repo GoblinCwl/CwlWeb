@@ -55,7 +55,7 @@
                 url: ctx + "/apps/query/" + appId,
                 success: function (res) {
                     let data = res.data;
-                    if (data != null) {
+                    if (data != null && data.isLock === 0) {
                         let $appInUseLi = $("#appInUseLi");
                         $appInUseLi.css("display", "block")
                         $appInUseLi.addClass("active")
@@ -66,7 +66,7 @@
 
                         $("#appHtmlIFrame").attr("srcdoc", data.html)
                     } else {
-                        window.location = "/404";
+                        window.location.replace("/404");
                     }
                 },
             })
