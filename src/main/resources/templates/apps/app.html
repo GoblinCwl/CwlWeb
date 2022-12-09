@@ -3,7 +3,19 @@
 <head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
     <title id="appTitle">GoblinCwl - Jrebel激活</title>
     <link th:href="@{/css/manager.css}" rel="stylesheet"/>
-    <style></style>
+    <style>
+        #outDiv {
+            margin-top: 2em;
+            border: 2px solid #fff;
+            height: 37em;
+        }
+
+        #appHtmlIFrame {
+            height: 100%;
+            width: 100%;
+            border: none;
+        }
+    </style>
 </head>
 <body>
 <!-- 左侧侧边栏 -->
@@ -20,9 +32,9 @@
         <div class="container-fluid" style="overflow:hidden;">
             <div class="row">
                 <div class="col-lg-11" style="margin-left: 0.5em">
-                    <div id="outDiv" style="margin-top: 2em;border: 2px solid #6ecadc;height: 37em;">
-                        <iframe id="appHtmlIFrame" style="height: 100%;width: 100%;border: none">
-
+                    <div id="outDiv">
+                        <iframe id="appHtmlIFrame">
+                            <!--动态HTML-->
                         </iframe>
                     </div>
                 </div>
@@ -48,13 +60,11 @@
                         $appInUseLi.css("display", "block")
                         $appInUseLi.addClass("active")
 
-                        $("#outDiv").css("border-color",data.color)
+                        $("#outDiv").css("border-color", data.color)
                         $("#appInUseSpan").text(data.name);
                         $("#appTitle").text("GoblinCwl - " + data.name)
 
-                        let iframeDocument = $("iframe[id='appHtmlIFrame']")[0].contentWindow.document;
-                        let targetDom = $(iframeDocument).find('html');
-                        targetDom.html(data.html)
+                        $("#appHtmlIFrame").attr("srcdoc", data.html)
                     } else {
                         window.location = "/404";
                     }
