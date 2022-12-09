@@ -2,7 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
 <head th:replace="fragment/globalComponent::commonHead(~{::title},~{::style},~{})">
     <title>GoblinCwl - 订阅</title>
-    <style></style>
+    <style>
+        .badge-search {
+            cursor: pointer;
+            margin-right: 0.25em;
+            border: 1px solid white;
+        }
+
+        .badge-search:hover {
+            border: 1px solid black;
+            transform: scale(1.2);
+        }
+    </style>
 </head>
 <body>
 <!-- 左侧侧边栏 -->
@@ -20,10 +31,54 @@
                     <h2 id="emailTitle"><a id="verifyMailboxA" href="#" onclick="verifyMailbox()"
                                            style="color: #f0ad4e;font-weight: bold">验证邮箱</a></h2>
                     <p id="emailSubtitle" style="color: #f0ad4e">在管理您的订阅之前，需要验证您的电子邮箱。</p>
-                    <p>在这里选择您要订阅的标签，</p>
+                    <p>在左边点击您要订阅的标签，将会被推送到订阅列表</p>
                     <p>我们将会发送您订阅的标签相关内容的博文到您的电子邮箱！</p>
                 </div>
+            </div>
+        </div>
 
+        <div class="col-lg-11">
+            <h5 class="page-header"></h5>
+        </div>
+
+        <div class="col-lg-11">
+            <div class="col-lg-5" style="height: 25em">
+                <div style="text-align: center;;padding-bottom: 1em">
+                    <span style="color: #a40000">未订阅</span>
+                </div>
+                <div id="tabsUnSelect">
+                    <!--未选标签-->
+                </div>
+            </div>
+            <div class="col-lg-1" style="color: #eee">
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+                >><br>
+            </div>
+            <div class="col-lg-5" style="height: 25em">
+                <div style="text-align: center;padding-bottom: 1em">
+                    <span style="color: green;">已订阅</span>
+                </div>
+                <div id="tabsSelected">
+                    <!--已选标签-->
+                </div>
             </div>
         </div>
     </div>
@@ -31,10 +86,17 @@
 </body>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
     <script>
+        let email;
+        let uuid;
         $(function () {
             //导航栏切换
             $("#subscribeLi").addClass("active");
+            //加载token
             loadToken();
+            //加载未订阅
+            initUnSubscribe();
+            //加载已订阅
+            initSubscribed();
         })
 
         let winId;
@@ -79,6 +141,7 @@
                 width: '500px',
                 height: '165px',
                 shade: true,
+                shadeClose: false
             });
         }
 
@@ -86,7 +149,7 @@
         function sendCode() {
             ajaxHttp({
                 type: "GET",
-                url: ctx + "/blog/blogTabs/sendVerificationEmail",
+                url: ctx + "/blog/blogTabsSubscribe/sendVerificationEmail",
                 data: {
                     email: $("#emailInput").val()
                 },
@@ -103,7 +166,7 @@
             let email = $("#emailInput").val();
             ajaxHttp({
                 type: "PUT",
-                url: ctx + "/blog/blogTabs/checkVerificationCode",
+                url: ctx + "/blog/blogTabsSubscribe/checkVerificationCode",
                 data: {
                     email: email,
                     code: $("#codeInput").val()
@@ -117,8 +180,9 @@
                         expire: new Date().getTime() + 1000 * 60 * 120
                     };
                     localStorage.setItem("subscribe", JSON.stringify(subscribe));
-                    xtip.msg(res.msg, {icon: 's', type: 'w'});
                     loadToken();
+                    initUnSubscribe();
+                    initSubscribed();
                 },
             });
         }
@@ -132,10 +196,90 @@
                 if (time < obj.expire) {
                     $("#emailTitle").html("<span style='color: #6ecadc;font-weight: bold'>" + obj.email + "，你好！" + "</span>");
                     $("#emailSubtitle").html("<span style='color: #6ecadc'>此处是标签订阅页面。</span>")
+                    email = obj.email;
+                    uuid = obj.token;
                 } else {
                     localStorage.removeItem(name);
                 }
             }
+            return {};
+        }
+
+        //生成标签span
+        function generateTabsSpan(id, name, color, isSubscribe) {
+            return ''
+                + '<span class="badge badge-search no-border-radio" ' +
+                '   onclick="submitSubscribe(' + isSubscribe + ',' + id + ')"' +
+                '   style=" background-color: ' + color + '">' + name
+                + '</span>';
+        }
+
+        //提交订阅
+        function submitSubscribe(isSubscribe, tabsId) {
+            if (!notEmpty(email) || !notEmpty(uuid)) {
+                verifyMailbox();
+                return;
+            }
+            //加载已订阅
+            ajaxHttp({
+                type: "PUT",
+                url: ctx + "/blog/blogTabsSubscribe/submitSubscribe",
+                data: {
+                    email: email,
+                    tabsId: tabsId,
+                    isSubscribe: isSubscribe,
+                    uuid: uuid
+                },
+                success: function () {
+                    initUnSubscribe();
+                    initSubscribed();
+                },
+            });
+        }
+
+        //加载未订阅
+        function initUnSubscribe() {
+            //加载未订阅
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/blog/blogTabs/listWithSubscribe",
+                data: {
+                    email: email,
+                    isSubscribe: false,
+                },
+                success: function (res) {
+                    let html = '';
+                    if (res.data != null) {
+                        for (let j = 0; j < res.data.length; j++) {
+                            const tabs = res.data[j];
+                            html += generateTabsSpan(tabs.id, tabs.name, tabs.color, true)
+                        }
+                    }
+                    $("#tabsUnSelect").html(html)
+                },
+            });
+        }
+
+        //加载已订阅
+        function initSubscribed() {
+            ajaxHttp({
+                type: "GET",
+                url: ctx + "/blog/blogTabs/listWithSubscribe",
+                data: {
+                    email: email,
+                    isSubscribe: true,
+                },
+                success: function (res) {
+                    let html = '';
+                    if (res.data != null) {
+                        for (let j = 0; j < res.data.length; j++) {
+                            const tabs = res.data[j];
+                            html += generateTabsSpan(tabs.id, tabs.name, tabs.color, false)
+                        }
+                    }
+                    $("#tabsSelected").html(html)
+                },
+            });
         }
     </script>
 </div>

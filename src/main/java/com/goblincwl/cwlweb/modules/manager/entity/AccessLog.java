@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 访问日志 Entitiy
+ * 访问日志 Entity
  *
  * @author ☪wl
  * @email goblincwl@qq.com
