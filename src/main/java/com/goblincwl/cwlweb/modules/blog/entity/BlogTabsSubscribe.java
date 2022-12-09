@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.modules.blog.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,12 @@ public class BlogTabsSubscribe implements Serializable {
      * 标签主键
      */
     private Integer blogTabsId;
+
+    /**
+     * 标签名称
+     */
+    @TableField(exist = false)
+    private String blogTabsName;
 
     /**
      * 订阅时间

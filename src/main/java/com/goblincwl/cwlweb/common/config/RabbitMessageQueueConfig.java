@@ -45,6 +45,11 @@ public class RabbitMessageQueueConfig {
         return new Queue("commentReplyEmailQueue", true);
     }
 
+    @Bean
+    public Queue tabsSubscribeQueue() {
+        return new Queue("tabsSubscribeQueue", true);
+    }
+
     /**
      * 绑定  将队列和交换机绑定, 并设置用于匹配键：testDirectRouting
      *
@@ -53,7 +58,12 @@ public class RabbitMessageQueueConfig {
      * @author ☪wl
      */
     @Bean
-    Binding bindingDirect() {
+    Binding commentReplyEmailQueueBinding() {
         return BindingBuilder.bind(commentReplyEmailQueue()).to(defaultExchange()).with("commentReplyEmailRoute");
+    }
+
+    @Bean
+    Binding tabsSubscribeQueueBinding() {
+        return BindingBuilder.bind(tabsSubscribeQueue()).to(defaultExchange()).with("tabsSubscribeQueue");
     }
 }
