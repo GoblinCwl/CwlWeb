@@ -49,7 +49,7 @@ public class ManagerLogWebSocketHandler {
 
         EXECUTOR_SERVICE.execute(() -> {
             String line;
-            BufferedReader reader = null;
+            BufferedReader reader;
             try {
                 reader = new BufferedReader(new InputStreamReader(inputStream));
                 while ((line = reader.readLine()) != null) {
