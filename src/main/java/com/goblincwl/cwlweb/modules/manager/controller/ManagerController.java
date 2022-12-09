@@ -4,16 +4,19 @@ import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.github.yulichang.query.MPJQueryWrapper;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.goblincwl.cwlweb.modules.app.entitiy.App;
 import com.goblincwl.cwlweb.modules.app.service.AppService;
 import com.goblincwl.cwlweb.modules.blog.entity.Blog;
 import com.goblincwl.cwlweb.modules.blog.entity.BlogTabs;
+import com.goblincwl.cwlweb.modules.blog.entity.BlogTabsSubscribe;
 import com.goblincwl.cwlweb.modules.blog.service.BlogService;
 import com.goblincwl.cwlweb.modules.blog.service.BlogTabsService;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.handler.IndexTerminalWebSocketHandler;
 import com.goblincwl.cwlweb.common.utils.IpUtils;
+import com.goblincwl.cwlweb.modules.blog.service.BlogTabsSubscribeService;
 import com.goblincwl.cwlweb.modules.manager.entity.KeyValueOptions;
 import com.goblincwl.cwlweb.modules.manager.service.AccessLogService;
 import com.goblincwl.cwlweb.modules.manager.service.KeyValueOptionsService;
@@ -52,9 +55,9 @@ public class ManagerController {
     private final MetricsEndpoint metricsEndpoint;
     private final HealthEndpoint healthEndpoint;
     private final AccessLogService accessLogService;
+    private final BlogTabsSubscribeService blogTabsSubscribeService;
     private final BlogService blogService;
     private final BlogTabsService blogTabsService;
-
     private final AppService appService;
 
     /**
@@ -140,8 +143,15 @@ public class ManagerController {
             Long todayAccessCount = this.accessLogService.countByDate(todayDateFormat);
             accessMap.put("today", todayAccessCount);
             resultMap.put("accessCount", accessMap);
-            //TODO 昨日订阅量
-            //TODO 今日订阅量
+            //订阅量
+            Map<String, Object> subscribeMap = new HashMap<>(2);
+            //总订阅量
+            Long allSubscribeCount = this.blogTabsSubscribeService.count();
+            subscribeMap.put("all", allSubscribeCount);
+            //今日订阅量
+            Long todayBlogTabsSubscribeCount = this.blogTabsSubscribeService.countByDate(todayDateFormat);
+            subscribeMap.put("today", todayBlogTabsSubscribeCount);
+            resultMap.put("subscribeCount", subscribeMap);
             //7天访问数据
             Long[] accessDataArray = new Long[7];
             String[] dateArray = new String[7];
@@ -163,13 +173,15 @@ public class ManagerController {
             resultMap.put("dateArray", dateArray);
             //TODO 7天订阅数据
             Long[] subscribeDataArray = new Long[7];
-            subscribeDataArray[0] = 0L;
-            subscribeDataArray[1] = 0L;
-            subscribeDataArray[2] = 0L;
-            subscribeDataArray[3] = 0L;
-            subscribeDataArray[4] = 0L;
-            subscribeDataArray[5] = 0L;
-            subscribeDataArray[6] = 0L;
+            //-- 今天
+            subscribeDataArray[6] = todayBlogTabsSubscribeCount;
+            //昨天起往前6天
+            for (int i = 5; i >= 0; i--) {
+                cal.add(Calendar.DATE, -1);
+                String nowFormat = sdf.format(cal.getTime());
+                Long nowCount = this.blogTabsSubscribeService.countByDate(nowFormat);
+                subscribeDataArray[i] = nowCount;
+            }
             resultMap.put("subscribeDataArray", subscribeDataArray);
             //最热门5篇文章
             List<Blog> hotBlogList = this.blogService.list(
@@ -179,11 +191,7 @@ public class ManagerController {
             );
             resultMap.put("hotBlogList", hotBlogList);
             //最热门5个标签
-            List<BlogTabs> hotBlogTabsList = this.blogTabsService.list(
-                    new LambdaUpdateWrapper<BlogTabs>()
-                            .orderBy(true, false, BlogTabs::getSubscribeCount)
-                            .last("limit 5")
-            );
+            List<BlogTabs> hotBlogTabsList = this.blogTabsService.hotBlogTabsList();
             resultMap.put("hotBlogTabsList", hotBlogTabsList);
             //最热门5个功能
             MPJQueryWrapper<App> queryWrapper = new MPJQueryWrapper<>();

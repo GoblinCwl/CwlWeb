@@ -51,5 +51,6 @@ public class BlogTabs implements Serializable {
     /**
      * 订阅数量
      */
+    @TableField(exist = false)
     private Long subscribeCount;
 }

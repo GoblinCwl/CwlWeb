@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.goblincwl.cwlweb.modules.blog.entity.BlogTabs;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 文章标签 Mapper
  *
@@ -12,4 +14,13 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface BlogTabsMapper extends BaseMapper<BlogTabs> {
+
+    /**
+     * 最热门5个标签
+     * @return 结果集
+     * @date 2022/12/9 17:22
+     * @author ☪wl
+     */
+    List<BlogTabs> hotBlogTabsList();
+
 }

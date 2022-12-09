@@ -147,7 +147,7 @@ public class BlogTabsController extends BaseController<BlogTabs> {
                 queryWrapper.having("locate('" + email + "',group_concat(t1.email)) = 0 or group_concat(t1.email) is null");
             }
         }
-        queryWrapper.groupBy("t.id,t.name,t.color,t.sort1,t.sort2,t.subscribe_count");
+        queryWrapper.groupBy("t.id,t.name,t.color,t.sort1,t.sort2");
         queryWrapper.orderByAsc("t.sort1,t.sort2");
         return new Result<List<BlogTabs>>().success(this.blogTabsService.list(queryWrapper), "成功");
     }

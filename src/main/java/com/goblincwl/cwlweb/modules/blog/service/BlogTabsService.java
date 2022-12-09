@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * 文章标签 Service
  *
@@ -18,6 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BlogTabsService extends ServiceImpl<BlogTabsMapper, BlogTabs> {
 
-    private final BlogTabsMapper blogTabsMapper;
 
+    /**
+     * 最热门5个标签
+     * @return 结果集
+     * @date 2022/12/9 17:21
+     * @author ☪wl
+     */
+    public List<BlogTabs> hotBlogTabsList() {
+        return this.baseMapper.hotBlogTabsList();
+    }
 }
