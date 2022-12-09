@@ -43,7 +43,7 @@ public class ManagerLogWebSocketHandler {
         if (params.containsKey("logPath")) {
             logPath = params.get("logPath").get(0);
         }
-        String cmd = "tail -100f " + logPath;
+        String cmd = "tail -f " + logPath;
         process = Runtime.getRuntime().exec(cmd);
         inputStream = process.getInputStream();
 
