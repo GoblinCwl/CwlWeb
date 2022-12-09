@@ -18,4 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
 public class BlogTabsSubscribeService extends ServiceImpl<BlogTabsSubscribeMapper, BlogTabsSubscribe> {
+
+    /**
+     * 根据日期查询合计
+     *
+     * @param date 日期
+     * @return 总数
+     * @date 2022/12/9 17:07
+     * @author ☪wl
+     */
+    public Long countByDate(String date) {
+        return this.baseMapper.countByDate(date);
+    }
 }

@@ -74,6 +74,11 @@
             width: 18%;
         }
 
+        .tabTopHeat{
+            padding-right: 3em!important;
+            text-align: right!important;
+        }
+
         .blogTopHeat, .tabTopHeat {
             font-size: 1px;
             text-align: right;
@@ -143,7 +148,7 @@
             font-size: 1px;
             color: gray;
             text-align: right;
-            padding-right: 2em
+            padding-right: 3em
         }
 
         #appTopTbody td {
@@ -204,10 +209,10 @@
                                 <div class="blackBorder">
                                     <div style="background-color: #d06b05;border-bottom: 1px solid #000">
                                         <span style="font-size: 6px;color: #fff;">总订阅</span>
-                                        <span style="font-size: 20px;color: #fff;">0</span>
+                                        <span id="subscribeAllCountSpan" style="font-size: 20px;color: #fff;">0</span>
                                     </div>
                                     <span style="font-size: 20px;color: #ea9e2c;font-weight: bold;">今</span>
-                                    <span style="font-size: 60px;color: #ea9e2c;font-weight: bold;">0</span>
+                                    <span id="subscribeTodayCountSpan" style="font-size: 60px;color: #ea9e2c;font-weight: bold;">0</span>
                                 </div>
                             </div>
                         </div>
@@ -252,11 +257,7 @@
                                 <div class="blackBorder" style="height: 8.65em;text-align: center">
                                     <table id="appTopTable" style="width: 100%">
                                         <tbody id="appTopTbody">
-                                        <tr>
-                                            <td class="imgTd"><img th:src="@{/images/profile.jpg}"></td>
-                                            <td class="nameTd"><a>Jrebel激活</a></td>
-                                            <td class="usageTd">点击:123</td>
-                                        </tr>
+                                        <!--应用热度top-->
                                         </tbody>
                                     </table>
                                 </div>
@@ -394,7 +395,9 @@
                     $("#accessAllCountSpan").text(data.accessCount.all);
                     $("#accessTodayCountSpan").text(data.accessCount.today);
 
-                    //TODO 订阅数
+                    //订阅数
+                    $("#subscribeAllCountSpan").text(data.subscribeCount.all);
+                    $("#subscribeTodayCountSpan").text(data.subscribeCount.today);
 
                     //图表
                     echarts.init(document.getElementById('statisticalTable')).setOption({

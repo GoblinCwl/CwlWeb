@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goblincwl.cwlweb.modules.blog.mapper.BlogTabsMapper">
+    <select id="hotBlogTabsList" resultType="com.goblincwl.cwlweb.modules.blog.entity.BlogTabs">
+        SELECT BT.ID    AS `id`,
+               BT.NAME  AS `name`,
+               BT.COLOR AS `color`,
+               BT.SORT1 AS `sort1`,
+               BT.SORT2 AS `sort2`,
+               COUNT(BTS.email) AS `subscribeCount`
+        FROM blog_tabs BT
+                 LEFT JOIN blog_tabs_subscribe bts on BT.id = bts.blog_tabs_id
+        GROUP BY BT.ID, BT.NAME, BT.COLOR, BT.SORT1, BT.SORT2
+        ORDER BY COUNT(BTS.email) DESC,BT.SORT1,BT.SORT2
+        LIMIT 5
+    </select>
+</mapper>
