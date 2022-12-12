@@ -681,7 +681,7 @@
         //插入表情到回复框
         function insertEmoji($span) {
             let $commentContent = $("#commentContent");
-            $commentContent.text($commentContent.text() + $span.text())
+            $commentContent.val($commentContent.val() + $span.text())
         }
 
         //校验用户信息
