@@ -354,7 +354,7 @@
                             for (let j = 0; j < data.blogTabsList.length; j++) {
                                 const tabs = data.blogTabsList[j];
                                 tabsHtml += '' +
-                                    '<a class="badge" href=' + ctx + '"/blog?query=%23' + tabs.name + '" style="background-color: ' + tabs.color + '">' + tabs.name + '</a>';
+                                    '<a target="_blank" class="badge" href=' + ctx + '/blog?query=%23' + tabs.name + ' style="background-color: ' + tabs.color + '">' + tabs.name + '</a>';
                             }
                             $("#tabsRow").html(tabsHtml);
                         }
