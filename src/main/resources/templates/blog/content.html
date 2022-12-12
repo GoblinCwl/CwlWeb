@@ -185,6 +185,19 @@
             }
         }
 
+        #emojiBtn:hover {
+            background-color: #cd6832 !important;;
+        }
+
+        .emojiSpan {
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .emojiSpanHover{
+            background-color: #6ecadc;
+        }
+
     </style>
 </head>
 <body>
@@ -230,10 +243,10 @@
                 <div id="commentDiv">
                     <!--评论区-->
                 </div>
-                <div class="comment col-lg-9" style="margin-bottom: 1rem">
+                <div class="comment col-lg-9" style="margin-bottom: 1rem;cursor: auto">
                     <form id="commentFormId" class="form commentForm">
                         <div class="row">
-                            <div class="form-group col-lg-1 width-7">
+                            <div class="form-group col-lg-1 width-7" style="cursor:pointer;">
                                 <img id="formProfileImg" alt="选择头像"
                                      src="https://ui-avatars.com/api/?font-size=0.33&length=2&background=ffffff&name=头像"
                                      class="commentProfileImg eventImg" onclick="chooseProfile()">
@@ -266,7 +279,10 @@
                                           style="resize: vertical"></textarea>
                             </div>
                         </div>
-                        <button class="btn btn-warning no-border-radio" type="button">😀</button>
+                        <button id="emojiBtn" class="btn no-border-radio"
+                                style="background-color: #e07134;border-color:darkorange;" type="button"
+                                onclick="selectEmoji()">😀
+                        </button>
                         <button class="btn btn-success pull-right no-border-radio" type="button"
                                 onclick="sendComment()">评论
                         </button>
@@ -431,7 +447,7 @@
                     }
 
                     //定位#的评论
-                    if (getRequestHash().startsWith("C")){
+                    if (getRequestHash().startsWith("C")) {
                         let locCommentDiv = $('#commentLocDiv' + getRequestHash() + ':eq(0)');
                         let commentDivHeight = $(".childrenComment:eq(0)").height();
                         commentDivHeight = commentDivHeight === undefined || commentDivHeight == null ? $(".comment:eq(0)").height() : commentDivHeight;
@@ -516,6 +532,156 @@
                     });
                 }, {icon: ['', '#5cb85c']});
             }
+        }
+
+        /*选择表情*/
+        let chooseEmojiWinId;
+
+        function selectEmoji() {
+            if (chooseEmojiWinId == null) {
+                chooseEmojiWinId = xtip.tips(
+                    '<span class="emojiSpan" onclick="insertEmoji($(this))">😀</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😁</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😂</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤣</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😃</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😄</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😅</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😆</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😉</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😊</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😋</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😎</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😍</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😘</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🥰</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😗</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😙</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😚</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🙂</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤗</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤩</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤔</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤨</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😐</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😑</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😶</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">‍🌫️</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🙄</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😏</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😣</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😥</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😮</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤐</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😯</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😪</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😫</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😴</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😌</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😛</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😜</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😝</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤤</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😒</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😓</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😔</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😕</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🙃</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤑</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😲</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🙁</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😖</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😞</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😟</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😤</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😢</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😭</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😦</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😧</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😨</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😩</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤯</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😬</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😮</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">💨</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😰</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😱</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🥵</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🥶</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😳</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤪</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😵</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">💫</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🥴</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😠</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😡</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤬</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😷</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤒</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤕</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤢</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤮</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤧</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😇</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🥳</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🥺</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤠</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤡</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤥</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤫</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤭</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🧐</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤓</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">😈</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">👿</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">👹</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">👺</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">💀</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">👻</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">👽</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">👾</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">🤖</span>' +
+                    '<span class="emojiSpan"onclick="insertEmoji($(this))">💩</span>'
+                    , 'emojiBtn', {
+                        bgcolor: 'rgb(255,255,255)',
+                        pos: 't',
+                        isAutoClose: false,
+                        width: '100px'
+                    });
+                $(".emojiSpan").hover(
+                    function () {
+                        $(this).addClass("emojiSpanHover")
+                        $("#emojiBtn").text($(this).text())
+                    },
+                    function () {
+                        $(this).removeClass("emojiSpanHover")
+                    })
+            } else {
+                xtip.close(chooseEmojiWinId)
+                chooseEmojiWinId = null;
+            }
+
+            //点击其他地方关闭tip
+            $(document).bind('click', function (e) {
+                if (e != null) {
+                    const ae = e || window.event; //浏览器兼容性
+                    let elem = ae.target || ae.srcElement;
+                    while (elem) { //循环判断至跟节点，防止点击的是div子元素
+                        if (elem.id && elem.id === 'emojiBtn') {
+                            return;
+                        }
+                        elem = elem.parentNode;
+                    }
+                }
+                xtip.close(chooseEmojiWinId);
+                chooseEmojiWinId = null;
+            });
+        }
+
+        //插入表情到回复框
+        function insertEmoji($span) {
+            let $commentContent = $("#commentContent");
+            $commentContent.text($commentContent.text() + $span.text())
         }
 
         //校验用户信息

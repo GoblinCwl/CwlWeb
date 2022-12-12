@@ -106,7 +106,7 @@
             winId = xtip.open({
                 type: 'html',
                 content: '' +
-                    '<form class="form-horizontal" style="padding: 1.2em">\n' +
+                    '<div class="form-horizontal" style="padding: 1.2em">\n' +
                     '    <div class="form-group">\n' +
                     '        <label for="emailInput" class="col-sm-2 control-label">邮箱</label>\n' +
                     '        <div class="col-sm-10">\n' +
@@ -126,7 +126,7 @@
                     '        <label for="codeInput" class="col-sm-2 control-label">验证码</label>\n' +
                     '        <div class="col-sm-10">\n' +
                     '           <div class="input-group">' +
-                    '               <input type="text" class="form-control no-border-radio" id="codeInput" placeholder="邮箱内的验证码...">\n' +
+                    '               <input type="text" class="form-control no-border-radio" id="codeInput" placeholder="验证码...">\n' +
                     '               <span class="input-group-btn">\n' +
                     '                <button id="verificationBtn" class="btn btn-info no-border-radio" onclick="confirmCode()" \n' +
                     '                        >\n' +
@@ -136,7 +136,7 @@
                     '           </div>' +
                     '        </div>\n' +
                     '    </div>\n' +
-                    '</form>',
+                    '</div>',
                 title: '验证邮箱',
                 width: '500px',
                 height: '165px',
