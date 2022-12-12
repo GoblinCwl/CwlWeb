@@ -425,6 +425,8 @@
                             websiteAuditStr: splitArrayToString($("#commentWebsiteAuditSelect").val())
                         });
                     }
+                    tableOptions.sortName = "send_time";
+                    tableOptions.sortOrder = "desc";
                     columns = [
                         {
                             checkbox: true,

@@ -226,13 +226,7 @@
                                 let state = value === 1;
                                 return '<input style="display: none" type="checkbox" name="appsOpen" ' + (state ? "checked" : "") + ' value="' + row.id + '"/>';
                             }
-                        },
-                        // {
-                        //     field: 'html',
-                        //     title: '网页代码',
-                        //     align: 'center',
-                        //     width: 150,
-                        // },
+                        }
                     ];
                     tableOptions.onLoadSuccess = function () {
                         $("[name='appsOpen']").bootstrapSwitch({
