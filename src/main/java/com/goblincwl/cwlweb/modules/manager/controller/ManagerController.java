@@ -171,11 +171,12 @@ public class ManagerController {
             resultMap.put("accessDataArray", accessDataArray);
             //统计日期字符串
             resultMap.put("dateArray", dateArray);
-            //TODO 7天订阅数据
+            // 7天订阅数据
             Long[] subscribeDataArray = new Long[7];
             //-- 今天
             subscribeDataArray[6] = todayBlogTabsSubscribeCount;
             //昨天起往前6天
+            cal = Calendar.getInstance();
             for (int i = 5; i >= 0; i--) {
                 cal.add(Calendar.DATE, -1);
                 String nowFormat = sdf.format(cal.getTime());
