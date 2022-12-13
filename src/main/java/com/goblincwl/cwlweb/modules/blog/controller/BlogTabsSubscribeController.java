@@ -36,8 +36,6 @@ public class BlogTabsSubscribeController extends BaseController<BlogTabsSubscrib
     @Resource(name = "redisStringTemplate")
     private RedisTemplate<String, Object> redisTemplate;
 
-    private final BlogTabsService blogTabsService;
-
     private final BlogTabsSubscribeService blogTabsSubscribeService;
 
     /**
