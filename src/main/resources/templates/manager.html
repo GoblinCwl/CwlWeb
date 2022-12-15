@@ -74,9 +74,9 @@
             width: 18%;
         }
 
-        .tabTopHeat{
-            padding-right: 3em!important;
-            text-align: right!important;
+        .tabTopHeat {
+            padding-right: 3em !important;
+            text-align: right !important;
         }
 
         .blogTopHeat, .tabTopHeat {
@@ -212,7 +212,8 @@
                                         <span id="subscribeAllCountSpan" style="font-size: 20px;color: #fff;">0</span>
                                     </div>
                                     <span style="font-size: 20px;color: #ea9e2c;font-weight: bold;">今</span>
-                                    <span id="subscribeTodayCountSpan" style="font-size: 60px;color: #ea9e2c;font-weight: bold;">0</span>
+                                    <span id="subscribeTodayCountSpan"
+                                          style="font-size: 60px;color: #ea9e2c;font-weight: bold;">0</span>
                                 </div>
                             </div>
                         </div>
@@ -481,8 +482,9 @@
                     let hotAppHtml = "";
                     let hotAppList = data.hotAppList;
                     for (const hotApp of hotAppList) {
+                        const thisSrc = hotApp.iconUrl === undefined ? '/images/white.png' : hotApp.iconUrl;
                         hotAppHtml += '<tr>' +
-                            '              <td class="imgTd"><img style="border-color: ' + hotApp.color + '" src="' + hotApp.iconUrl + '"></td>' +
+                            '              <td class="imgTd"><img style="border-color: ' + hotApp.color + '" src="' + thisSrc + '"></td>' +
                             '              <td class="nameTd"><a target="_blank" href="/apps/app/' + hotApp.id + '"style="color: ' + hotApp.color + '">' + hotApp.name + '</a></td>\n' +
                             '              <td class="usageTd">点击:' + hotApp.usesTimes + '</td>' +
                             '          </tr>';

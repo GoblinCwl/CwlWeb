@@ -143,8 +143,8 @@ public class CommentController extends BaseController<Comment> {
      * @author ☪wl
      */
     @PostMapping("/add")
-    public Result<Object> add(Comment comment) throws GeneralSecurityException, IOException {
-        Integer commentId = this.commentService.add(comment);
+    public Result<Object> add(HttpServletRequest request, Comment comment) throws GeneralSecurityException, IOException {
+        Integer commentId = this.commentService.add(request, comment);
         return new Result<>().success(commentId, "评论成功");
     }
 
