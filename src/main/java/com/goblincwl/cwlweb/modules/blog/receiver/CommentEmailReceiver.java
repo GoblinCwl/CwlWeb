@@ -27,12 +27,26 @@ public class CommentEmailReceiver {
 
         //构建HTML
         String html = EmailUtil.readHtmlToString("static/other/replyCommentEmailHtmlTemplate.html");
+        //收件人昵称
         html = html.replace("${name}", parentComment.getNickName());
+        //收件人头像
         html = html.replace("${imgSrc}", parentComment.getProfileUrl());
+        //新评论昵称
         html = html.replace("${replyName}", comment.getNickName());
+        //新评论跳转地址
         html = html.replace("${blogUrl}", "http://localhost:8500/blog/content/" + comment.getBlogId() + "#C" + comment.getId());
-        //todo
-        html = html.replace("${unsubscribeUrl}", "http://localhost:8500/blog/content/" + comment.getBlogId());
+        //取消订阅地址
+        html = html.replace("${unsubscribeUrl}", "http://localhost:8500/blog/comment/unsubscribe/" + parentComment.getId() + "?code=" + parentComment.getVerificationCode());
+        //被回复评论地址
+        html = html.replace("${commentLink}", "http://localhost:8500/blog/content/" + comment.getBlogId() + "#C" + parentComment.getId());
+        //被回复评论内容
+        html = html.replace("${commentContent}", parentComment.getContent());
+        //新评论地址
+        html = html.replace("${newCommentLink}", "http://localhost:8500/blog/content/" + comment.getBlogId() + "#C" + comment.getId());
+        //新评论内容
+        html = html.replace("${newCommentContent}", comment.getContent());
+        //项目地址
+        html = html.replace("${projectUrl}","http://localhost:8500");
 
         EmailUtil.sendMail(parentComment.getNickName(), parentComment.getEmail(), MAIL_TITLE, html);
     }

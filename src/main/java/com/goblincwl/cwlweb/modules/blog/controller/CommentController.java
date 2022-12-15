@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -195,6 +197,34 @@ public class CommentController extends BaseController<Comment> {
     public Result<Object> whiteListReview() {
         this.commentService.whiteListReview();
         return Result.genSuccess("白名单审核成功");
+    }
+
+
+    /**
+     * 取消评论被回复时邮件提醒
+     *
+     * @param id   评论ID
+     * @param code 验证code
+     * @return 反馈
+     * @date 2022/12/15 9:37
+     * @author ☪wl
+     */
+    @GetMapping("/unsubscribe/{id}")
+    public ModelAndView unsubscribe(HttpServletRequest request, @PathVariable("id") Integer id, String code) {
+        request.setAttribute("status", "取消订阅");
+        Comment comment = this.commentService.getById(id);
+        if (comment != null && code.equals(comment.getVerificationCode())) {
+            comment.setVerificationCode("Unsubscribe");
+            this.commentService.updateById(comment);
+            request.setAttribute("typeMessage", "取消订阅成功！");
+            request.setAttribute("content", "此评论收到回复时将不再通知您✔️");
+            request.setAttribute("message", "从此，关于它的事情不再传递。");
+            return new ModelAndView("/message");
+        }
+        request.setAttribute("typeMessage", "取消订阅失败！");
+        request.setAttribute("content", "可能是邮件中的地址错误，或者你已经取消过订阅❌");
+        request.setAttribute("message", "或许，我们需要通过正规途径！");
+        return new ModelAndView("/message");
     }
 
 }

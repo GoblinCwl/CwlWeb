@@ -3,6 +3,7 @@ package com.goblincwl.cwlweb.modules.blog.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.goblincwl.cwlweb.common.utils.EmailUtil;
 import com.goblincwl.cwlweb.modules.blog.entity.Comment;
 import com.goblincwl.cwlweb.modules.blog.mapper.CommentMapper;
 import com.goblincwl.cwlweb.common.entity.GoblinCwlException;
@@ -20,10 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,6 +67,10 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
             }
         }
 
+        //如果留有邮箱，生成UUID验证码，用于取消订阅操作
+        if (StringUtils.isNotEmpty(comment.getEmail())) {
+            comment.setVerificationCode(EmailUtil.creatCode(10));
+        }
 
         //保存评论
         this.baseMapper.insert(comment);
@@ -91,13 +93,17 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
         if (comment.getParentId() != null && comment.getForId() != null) {
             //获取父评论
             Comment parentComment = this.baseMapper.selectById(comment.getForId());
-            //父评论不是自己，父评论邮箱不为空
-            if (parentComment != null && !comment.getEmail().equals(parentComment.getEmail()) && StringUtils.isNotEmpty(parentComment.getEmail())) {
-                Map<String, Comment> commentMap = new HashMap<>(2);
-                commentMap.put("comment", comment);
-                commentMap.put("parentComment", parentComment);
-                //存入消息队列，待发送邮件
-                rabbitTemplate.convertAndSend("defaultExchange", "commentReplyEmailRoute", commentMap);
+            //父评论未取消订阅
+            String unsubscribeValue = "Unsubscribe";
+            if (parentComment != null && !unsubscribeValue.equals(parentComment.getVerificationCode())) {
+                //父评论不是自己，父评论邮箱不为空
+                if (!comment.getEmail().equals(parentComment.getEmail()) && StringUtils.isNotEmpty(parentComment.getEmail())) {
+                    Map<String, Comment> commentMap = new HashMap<>(2);
+                    commentMap.put("comment", comment);
+                    commentMap.put("parentComment", parentComment);
+                    //存入消息队列，待发送邮件
+                    rabbitTemplate.convertAndSend("defaultExchange", "commentReplyEmailRoute", commentMap);
+                }
             }
         }
 
