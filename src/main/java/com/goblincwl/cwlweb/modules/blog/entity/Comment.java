@@ -83,6 +83,12 @@ public class Comment implements Serializable {
     private Integer websiteAudit;
 
     /**
+     * 验证UUID
+     * 用于进行评论取消回复订阅操作
+     */
+    private String verificationCode;
+
+    /**
      * 网址审核(0.未审核,1.已审核) - 多选
      */
     @TableField(exist = false)

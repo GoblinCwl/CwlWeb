@@ -117,8 +117,9 @@ public class BaseErrorController extends AbstractErrorController {
 
         }
 
+        model.put("content", model.get("status") + " " + model.get("error") + " " + model.get("messageIcon"));
         ModelAndView modelAndView = resolveErrorView(request, response, status, model);
-        return (modelAndView != null) ? modelAndView : new ModelAndView("error", model);
+        return (modelAndView != null) ? modelAndView : new ModelAndView("message", model);
     }
 
     /**

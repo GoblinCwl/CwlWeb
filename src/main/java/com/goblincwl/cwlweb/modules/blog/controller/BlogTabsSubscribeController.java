@@ -49,7 +49,7 @@ public class BlogTabsSubscribeController extends BaseController<BlogTabsSubscrib
     @GetMapping("/sendVerificationEmail")
     public Result<Object> sendVerificationEmail(String email) throws Exception {
         if (StringUtils.isNotEmpty(email)) {
-            String verificationCode = creatCode(5);
+            String verificationCode = EmailUtil.creatCode(5);
             String redisKey = "verificationCode-" + email;
             //从Redis中获取，如果存在，不予发送
             Object oldValue = this.redisTemplate.opsForValue().get(redisKey);
@@ -66,40 +66,6 @@ public class BlogTabsSubscribeController extends BaseController<BlogTabsSubscrib
             return Result.genSuccess("发送成功");
         }
         return Result.genFail("发送失败");
-    }
-
-    /**
-     * 生成随机验证码
-     *
-     * @param n 位数
-     * @return 验证码
-     * @date 2022/12/9 14:04
-     * @author ☪wl
-     */
-    private String creatCode(int n) {
-        n = n - 1;
-        //定义一个字符串变量 记录生成的随机数
-        StringBuilder code = new StringBuilder();
-        Random r = new Random();
-        //2.在方法内部使用for循环生成指定位数的随机字符，并连接起来
-        for (int i = 0; i <= n; i++) {
-            //生成一个随机字符：大写 ，小写 ，数字（0  1  2）
-            int type = r.nextInt(2);
-            switch (type) {
-                //大写字母  65   ~   65+25
-                case 0:
-                    char ch = (char) (r.nextInt(26) + 65);
-                    code.append(ch);
-                    break;
-                //大写字母  65   ~   65+25
-                case 1:
-                    code.append(r.nextInt(10));
-                    break;
-                default:
-                    break;
-            }
-        }
-        return code.toString();
     }
 
     /**
