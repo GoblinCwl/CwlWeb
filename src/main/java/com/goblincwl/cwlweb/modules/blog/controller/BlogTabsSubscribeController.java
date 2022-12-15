@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +48,7 @@ public class BlogTabsSubscribeController extends BaseController<BlogTabsSubscrib
      * @author ☪wl
      */
     @GetMapping("/sendVerificationEmail")
-    public Result<Object> sendVerificationEmail(String email) throws Exception {
+    public Result<Object> sendVerificationEmail(String email, HttpServletRequest request) throws Exception {
         if (StringUtils.isNotEmpty(email)) {
             String verificationCode = EmailUtil.creatCode(5);
             String redisKey = "verificationCode-" + email;
@@ -69,6 +70,9 @@ public class BlogTabsSubscribeController extends BaseController<BlogTabsSubscrib
             html = html.replace("${email}", email);
             //显示验证码
             html = html.replace("${code}", verificationCode);
+            //主页
+            String projectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+            html = html.replace("${projectUrl}",projectUrl);
 
             //标题
             String title = "Cwl-Web 用于订阅操作的验证码";
@@ -103,7 +107,7 @@ public class BlogTabsSubscribeController extends BaseController<BlogTabsSubscrib
             this.redisTemplate.expire(uuidRedisKey, 2, TimeUnit.HOURS);
             return new Result<>().success(uuid, "验证成功");
         }
-        return Result.genSuccess("验证码错误");
+        return Result.genFail("验证码错误");
     }
 
     /**
