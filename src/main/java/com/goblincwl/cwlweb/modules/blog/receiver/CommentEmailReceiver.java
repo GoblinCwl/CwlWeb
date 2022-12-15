@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 @RabbitListener(queues = "commentReplyEmailQueue")
 public class CommentEmailReceiver {
 
-    private final static String MAIL_TITLE = "GoblinCwl-Blog 评论收到新回复";
-
     @RabbitHandler
     public void process(String jsonString) throws Exception {
         JSONObject commentJsonObj = JSONObject.parseObject(jsonString);
@@ -52,6 +50,8 @@ public class CommentEmailReceiver {
         //项目地址
         html = html.replace("${projectUrl}", projectUrl);
 
-        EmailUtil.sendMail(parentComment.getNickName(), parentComment.getEmail(), MAIL_TITLE, html);
+        //标题
+        String title = "Cwl-Web 评论收到新回复";
+        EmailUtil.sendMail(parentComment.getNickName(), parentComment.getEmail(), title, html);
     }
 }

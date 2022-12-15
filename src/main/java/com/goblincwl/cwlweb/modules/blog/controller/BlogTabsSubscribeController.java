@@ -62,7 +62,17 @@ public class BlogTabsSubscribeController extends BaseController<BlogTabsSubscrib
             //5分钟有效
             //设置有效期
             redisTemplate.expire(redisKey, 5, TimeUnit.MINUTES);
-            EmailUtil.sendMail(email, email, "Cwl-Web 用于订阅操作的验证码", "您的验证码是：" + verificationCode + "<br>验证码5分钟内有效。");
+
+            //发送邮件验证码
+            String html = EmailUtil.readHtmlToString("static/other/tagSubscriptionVerificationCodeHtmlTemplate.html");
+            //显示邮箱
+            html = html.replace("${email}", email);
+            //显示验证码
+            html = html.replace("${code}", verificationCode);
+
+            //标题
+            String title = "Cwl-Web 用于订阅操作的验证码";
+            EmailUtil.sendMail(email, email, title, html);
             return Result.genSuccess("发送成功");
         }
         return Result.genFail("发送失败");
