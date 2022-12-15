@@ -71,16 +71,9 @@
                     &nbsp;
                 </td>
             </tr>
-            <tr class="header">
-                <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 13px; line-height: 1.6; color: #5c5c5c; -webkit-text-size-adjust: 100%;
-                        -ms-text-size-adjust: 100%; mso-table-lspace: 0; mso-table-rspace: 0; padding: 25px 0;">
-                    <img src="${imgSrc}" width="100" height="100"
-                         style="-ms-interpolation-mode: bicubic;border-radius: 10px;border: 2px solid #4686be"
-                         alt="用户头像">
-                </td>
-            </tr>
             <tr>
                 <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0; mso-table-rspace: 0;">
+                    <br>
                     <table class="wrapper" style="width: 640px; border-collapse: separate; border-spacing: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;
                             mso-table-lspace: 0; mso-table-rspace: 0; margin: 0 auto;border: 1px solid #000">
                         <tbody>
@@ -95,34 +88,19 @@
                                                 -ms-text-size-adjust: 100%; mso-table-lspace: 0; mso-table-rspace: 0; padding: 15px 5px;text-align: center">
                                             <h1 style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; color: #333333; font-size: 18px; font-weight: 400; line-height: 1.4; margin: 0;
                                                     padding: 0;text-align: center">
-                                                你好，<span style="color: #6ECADC;font-weight: bold">${name}</span>
+                                                你好，<span style="color: #6ECADC;font-weight: bold">${email}</span>
                                             </h1>
-                                            <p>您的评论：</p>
-                                            <a href="${commentLink}" style="text-decoration: none;color: #468886">
-                                                <div style="border: 1px solid #000;background-color: rgba(110,202,220,0.4);text-align: left;padding: 1em">
-                                                <span>
-                                                    ${commentContent}
-                                                </span>
-                                                </div>
-                                            </a>
-
-                                            <p>收到了来自<span style="color: #19b05f">${replyName}</span>的新回复：</p>
-                                            <a href="${newCommentLink}" style="text-decoration: none;color: #0e723c">
-                                                <div style="border: 1px solid #000;background-color: rgba(25,176,95,0.38);text-align: left;padding: 1em">
-                                                <span>
-                                                    ${newCommentContent}
-                                                </span>
-                                                </div>
-                                            </a>
                                             <br>
-                                            <div id="cta">
-                                                <a href="${blogUrl}"
-                                                   style="-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;color: #0080ff">点击此处跳转至博文页面</a>
+                                            <div style="border: 1px solid #000;background-color: rgba(110,202,220,0.4);padding: 1em">
+                                                您的验证码是：
+                                                <span style="color: #e745b4;font-weight: bold;font-size: 36px">
+                                                    ${code}
+                                                </span>
+                                                <br>
+                                                <span style="font-size: 14px;color: gray">
+                                                    验证码5分钟内有效，请及时使用
+                                                </span>
                                             </div>
-                                            <p>
-                                                或复制此链接至浏览器打开：<span
-                                                    style="text-decoration: underline;color: #6eabdc">${blogUrl}</span>
-                                            </p>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -137,14 +115,9 @@
                 <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 13px; line-height: 1.6; color: #5c5c5c; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;
                         mso-table-lspace: 0; mso-table-rspace: 0; padding: 25px 0;">
                     <div>
-                        收到这封电子邮件是因为你在
+                        收到这封电子邮件是因为您正在
                         <a href="${projectUrl}" style="color: #3777b0;text-decoration: none;">Cwl-Web</a>
-                        中留下的评论被回复
-                        ·
-                        <a style="color: #3777b0; text-decoration: none; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;"
-                           href="${unsubscribeUrl}">
-                            不再接收此评论回复(无法撤销)
-                        </a>
+                        中操作标签订阅服务
                     </div>
                 </td>
             </tr>
