@@ -682,6 +682,7 @@
         function insertEmoji($span) {
             let $commentContent = $("#commentContent");
             $commentContent.val($commentContent.val() + $span.text())
+            $(".emojiSpan").unbind()
         }
 
         //校验用户信息
