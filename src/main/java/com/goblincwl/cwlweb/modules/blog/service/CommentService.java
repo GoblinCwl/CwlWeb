@@ -1,5 +1,7 @@
 package com.goblincwl.cwlweb.modules.blog.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +44,7 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
     private final AccessRecordService accessRecordService;
     private final KeyValueOptionsService keyValueOptionsService;
 
-    public Integer add(Comment comment) throws IOException {
+    public Integer add(HttpServletRequest request, Comment comment) throws IOException {
         //检查用户昵称违禁词
         String nickName = comment.getNickName();
         if (BadWordUtil.isContaintBadWord(nickName, 1)) {
@@ -98,11 +101,14 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
             if (parentComment != null && !unsubscribeValue.equals(parentComment.getVerificationCode())) {
                 //父评论不是自己，父评论邮箱不为空
                 if (!comment.getEmail().equals(parentComment.getEmail()) && StringUtils.isNotEmpty(parentComment.getEmail())) {
-                    Map<String, Comment> commentMap = new HashMap<>(2);
-                    commentMap.put("comment", comment);
-                    commentMap.put("parentComment", parentComment);
+                    JSONObject commentJsonObj = new JSONObject();
+                    commentJsonObj.put("comment", comment);
+                    commentJsonObj.put("parentComment", parentComment);
+                    commentJsonObj.put("serverScheme", request.getScheme());
+                    commentJsonObj.put("serverName", request.getServerName());
+                    commentJsonObj.put("serverPort", request.getServerPort());
                     //存入消息队列，待发送邮件
-                    rabbitTemplate.convertAndSend("defaultExchange", "commentReplyEmailRoute", commentMap);
+                    rabbitTemplate.convertAndSend("defaultExchange", "commentReplyEmailRoute", commentJsonObj.toJSONString());
                 }
             }
         }

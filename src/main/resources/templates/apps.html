@@ -194,10 +194,11 @@
                         if (i % rowSize === 0) {
                             html += "<tr>";
                         }
+                        const thisSrc = record.iconUrl === null ? '/images/white.png' : record.iconUrl;
                         html += '<td>' +
                             '        <a class="appA" href="/apps/app/' + record.id + '" title="' + record.description + '">' +
                             '            <div class="appDiv">' +
-                            '                <img style="border-color: ' + record.color + '" src="' + record.iconUrl + '"/><br>' +
+                            '                <img style="border-color: ' + record.color + '" src="' + thisSrc + '"/><br>' +
                             '                <span style="color: ' + record.color + '">' + record.name + '</span>' +
                             '            </div>' +
                             '        </a>' +
