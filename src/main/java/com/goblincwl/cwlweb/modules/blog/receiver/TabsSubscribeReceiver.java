@@ -44,7 +44,7 @@ public class TabsSubscribeReceiver {
 
         boolean isNew = blog.getReleaseTime() == blog.getUpdateTime();
         //前言
-        html = html.replace("${preface}", isNew ? "您订阅的标签新发布了一遍文章" : "有一篇包含您订阅标签的博文更新了");
+        html = html.replace("${preface}", isNew ? "您订阅的标签新发布了一遍博文" : "有一篇包含您订阅标签的博文更新了");
         //图标
         html = html.replace("${headerIcon}", isNew ? "\uD83C\uDF1F" : "\uD83D\uDD14");
 
