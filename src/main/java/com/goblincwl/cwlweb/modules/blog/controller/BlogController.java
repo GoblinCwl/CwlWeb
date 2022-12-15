@@ -25,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 
@@ -178,9 +179,9 @@ public class BlogController extends BaseController<Blog> {
      */
     @TokenCheck
     @PostMapping("/add")
-    public Result<Object> add(Blog blog) {
+    public Result<Object> add(Blog blog, HttpServletRequest request) {
         this.blogService.save(blog);
-        this.sendSubscribeEmail(blog);
+        this.sendSubscribeEmail(blog, request);
         return Result.genSuccess("添加成功");
     }
 
@@ -194,10 +195,10 @@ public class BlogController extends BaseController<Blog> {
      */
     @TokenCheck
     @PutMapping("/edit")
-    public Result<Object> edit(Blog blog) {
+    public Result<Object> edit(Blog blog, HttpServletRequest request) {
         blog.setUpdateTime(new Date());
         this.blogService.updateById(blog);
-        this.sendSubscribeEmail(blog);
+        this.sendSubscribeEmail(blog, request);
         return Result.genSuccess("修改成功");
     }
 
@@ -208,7 +209,7 @@ public class BlogController extends BaseController<Blog> {
      * @date 2022/12/9 16:53
      * @author ☪wl
      */
-    private void sendSubscribeEmail(Blog blog) {
+    private void sendSubscribeEmail(Blog blog,HttpServletRequest request) {
         //发送订阅推送
         Integer[] tabsArray = blog.getTabsArray();
         if (tabsArray != null) {
@@ -223,8 +224,22 @@ public class BlogController extends BaseController<Blog> {
                 subscribeList.forEach(sub -> {
                     if (!alreadySendEmail.contains(sub.getEmail())) {
                         Map<String, Object> dataMap = new HashMap<>(2);
+
+                        //标签赋值
+                        blog.setBlogTabsList(this.blogTabsService.list(
+                                new LambdaQueryWrapper<BlogTabs>()
+                                        .in(BlogTabs::getId, Arrays.asList(tabsArray))
+                                        .orderByAsc(true, BlogTabs::getSort1)
+                                        .orderByAsc(true, BlogTabs::getSort2)
+                        ));
+
                         dataMap.put("subscribe", sub);
-                        dataMap.put("blogTitle", blog.getTitle());
+                        dataMap.put("blog", blog);
+                        dataMap.put("serverScheme", request.getScheme());
+                        dataMap.put("serverName", request.getServerName());
+                        dataMap.put("serverPort", request.getServerPort());
+
+
                         this.rabbitTemplate.convertAndSend("defaultExchange", "tabsSubscribeQueue", dataMap);
                         alreadySendEmail.add(sub.getEmail());
                     }
