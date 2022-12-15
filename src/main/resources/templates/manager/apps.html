@@ -78,8 +78,8 @@
                                 <option value="0" data-content="<span class='label label-info'>开启</span>">
                                     开启
                                 </option>
-                                <option value="1" data-content="<span class='label label-lock'>关闭</span>">
-                                    关闭
+                                <option value="1" data-content="<span class='label label-lock'>锁定</span>">
+                                    锁定
                                 </option>
                             </select>
                         </div>
@@ -230,7 +230,7 @@
                     ];
                     tableOptions.onLoadSuccess = function () {
                         $("[name='appsOpen']").bootstrapSwitch({
-                            onText: "关闭",
+                            onText: "锁定",
                             offText: "开启",
                             size: "small",
                             inverse: true,
