@@ -62,7 +62,9 @@ public class BrowseTimeAspect {
         if (StringUtils.isEmpty(browserTimes) || "null".equals(browserTimes)) {
             //获取数据库中的浏览次数
             Blog blog = this.blogService.getById(blogId);
-            this.redisTemplate.opsForValue().setIfAbsent(redisKey, blog.getBrowserTimes() + 1);
+            if (blog != null) {
+                this.redisTemplate.opsForValue().setIfAbsent(redisKey, blog.getBrowserTimes() + 1);
+            }
         } else {
             this.redisTemplate.opsForValue().setIfPresent(redisKey, Long.parseLong(browserTimes) + 1);
         }

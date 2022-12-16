@@ -62,7 +62,9 @@ public class UsesTimeAspect {
         if (StringUtils.isEmpty(usesTimes) || "null".equals(usesTimes)) {
             //获取数据库中的浏览次数
             App app = this.appService.getById(appId);
-            this.redisTemplate.opsForValue().setIfAbsent(redisKey, app.getUsesTimes() + 1);
+            if (app != null) {
+                this.redisTemplate.opsForValue().setIfAbsent(redisKey, app.getUsesTimes() + 1);
+            }
         } else {
             this.redisTemplate.opsForValue().setIfPresent(redisKey, Long.parseLong(usesTimes) + 1);
         }
