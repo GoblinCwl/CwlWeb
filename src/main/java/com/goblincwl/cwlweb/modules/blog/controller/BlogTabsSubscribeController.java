@@ -55,7 +55,7 @@ public class BlogTabsSubscribeController extends BaseController<BlogTabsSubscrib
             //从Redis中获取，如果存在，不予发送
             Object oldValue = this.redisTemplate.opsForValue().get(redisKey);
             if (oldValue != null) {
-                throw new GoblinCwlException("同邮箱请等待至少5分钟后发送！");
+                throw new GoblinCwlException("同邮箱请等待至少5分钟后发送");
             }
 
             //存到redis
