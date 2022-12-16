@@ -1,5 +1,7 @@
 package com.goblincwl.cwlweb;
 
+import com.goblincwl.cwlweb.modules.manager.service.KeyValueOptionsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,13 +15,18 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2021-05-03 13:43
  */
 @Controller
+@RequiredArgsConstructor
 public class BaseRedirectController {
+
+    private final KeyValueOptionsService keyValueOptionsService;
 
     /**
      * 首页
      */
     @GetMapping(value = "/")
-    public String index() {
+    public String index(HttpServletRequest request) {
+        request.setAttribute("profileUrl", this.keyValueOptionsService.getById("profileUrl").getOptValue());
+        request.setAttribute("webMaster", this.keyValueOptionsService.getById("webMaster").getOptValue());
         return "index";
     }
 
@@ -33,6 +40,8 @@ public class BaseRedirectController {
      */
     @GetMapping(value = "/redirect/**", produces = MediaType.TEXT_HTML_VALUE)
     public String redirect(HttpServletRequest request) {
+        request.setAttribute("profileUrl", this.keyValueOptionsService.getById("profileUrl").getOptValue());
+        request.setAttribute("webMaster", this.keyValueOptionsService.getById("webMaster").getOptValue());
         String prefix = "/redirect/";
         return request.getRequestURI().substring(prefix.length());
     }

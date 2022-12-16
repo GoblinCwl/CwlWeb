@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
 <head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
-    <title>GoblinCwl - 应用管理</title>
+    <title>Cwl-Web - 应用管理</title>
     <link th:href="@{/css/manager.css}" rel="stylesheet"/>
     <link rel="stylesheet" th:href="@{/css/goblincwl/tablePage.css}">
     <link th:href="@{/webjars/bootstrap-fileinput/4.5.3/css/fileinput.min.css}" rel='stylesheet' type='text/css'/>
@@ -370,11 +370,12 @@
                 },
             });
             $("#apps-add-iconFile-input").fileinput({
-                uploadUrl: '/manager/ossFile/appIconUploadFile', // 这个是点击上传时候的上传接口
+                uploadUrl: '/manager/ossFile/formUploadFile', // 这个是点击上传时候的上传接口
                 allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg'],//允许的文件类型
                 language: 'zh',
                 maxFileSize: 1500,//文件的最大大小 单位是k
-                uploadExtraData: {  //上传的时候，增加的附加参数
+                uploadExtraData: {
+                    storagePath: "appIcon"
                 },
                 maxFilesNum: 1,//最多文件数量
                 previewSettings: {//设置预览图片时候的大小
@@ -392,13 +393,14 @@
                     if (notEmpty(oldOssFileId)) {
                         removeOssFile(oldOssFileId);
                     }
-                    $iconFile.val(response.data);
+                    $iconFile.val(response.data.ossFileName);
                     $(".file-caption").css("border-color", "green");
                 } else {
                     xtip.msg("文件上传失败。" + response.data, {icon: 'e', type: 'w'});
                 }
             })
             $(".file-caption").addClass("required");
+            $(".btn-file").addClass("no-border-radio")
             ;
         }
 
@@ -515,11 +517,12 @@
                     //回显HTML，避免被解析
                     $("#apps-add-html").val(res.data.html)
                     $("#apps-add-iconFile-input").fileinput({
-                        uploadUrl: '/manager/ossFile/appIconUploadFile', // 这个是点击上传时候的上传接口
+                        uploadUrl: '/manager/ossFile/formUploadFile', // 这个是点击上传时候的上传接口
                         allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg'],//允许的文件类型
                         language: 'zh',
                         maxFileSize: 1500,//文件的最大大小 单位是k
-                        uploadExtraData: {  //上传的时候，增加的附加参数
+                        uploadExtraData: {
+                            storagePath: "appIcon"
                         },
                         maxFilesNum: 1,//最多文件数量
                         previewSettings: {//设置预览图片时候的大小
@@ -537,7 +540,7 @@
                             if (notEmpty(oldOssFileId)) {
                                 removeOssFile(oldOssFileId);
                             }
-                            $iconFile.val(response.data);
+                            $iconFile.val(response.data.ossFileName);
                             $(".file-caption").css("border-color", "green");
                         } else {
                             xtip.msg("文件上传失败。" + response.data, {icon: 'e', type: 'w'});
@@ -545,6 +548,7 @@
                     })
                     $("input.file-caption-name").val(res.data.iconFileName);
                     $(".file-caption").addClass("required");
+                    $(".btn-file").addClass("no-border-radio")
                     //校验显示
                     inputValidate($("#apps-add-name"))
                     customInputValidate($("#apps-add-sort"));

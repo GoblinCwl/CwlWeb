@@ -1,5 +1,6 @@
 package com.goblincwl.cwlweb.modules.manager.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goblincwl.cwlweb.common.annotation.TokenCheck;
@@ -10,6 +11,8 @@ import com.goblincwl.cwlweb.modules.manager.service.KeyValueOptionsService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -50,6 +53,21 @@ public class KeyValueOptionsController extends BaseController<KeyValueOptions> {
                         createPage(),
                         queryWrapper),
                 "成功");
+    }
+
+    /**
+     * 所有数据dataJson
+     *
+     * @return 结果集
+     * @date 2022/12/16 14:27
+     * @author ☪wl
+     */
+    @GetMapping("/dataJson")
+    public Result<Object> dataJson() {
+        JSONObject resultJsonObject = new JSONObject();
+        List<KeyValueOptions> list = this.keyValueOptionsService.list();
+        list.forEach(opt -> resultJsonObject.put(opt.getOptKey(), opt.getOptValue()));
+        return Result.genSuccess(resultJsonObject, "成功");
     }
 
     /**
