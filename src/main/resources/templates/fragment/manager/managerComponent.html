@@ -4,8 +4,8 @@
 <!-- 左侧侧边栏 -->
 <div th:fragment="leftSiderBar()" class="col-sm-3 col-md-2 sidebar">
     <div class="sidebar_top">
-        <h1>网站管理</h1>
-        <img th:src="@{/images/profile.jpg}" alt=""/>
+        <h1>管理</h1>
+        <img id="profileImg" th:src="${profileUrl}" alt="头像"/>
     </div>
     <div class="details">
         <div class="container">

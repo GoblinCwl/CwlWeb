@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
 <head th:replace="fragment/globalComponent::commonHead(~{::title},~{::link},~{::style})">
-    <title id="appTitle">GoblinCwl - Jrebel激活</title>
+    <title id="appTitle">Cwl-Web - Jrebel激活</title>
     <link th:href="@{/css/manager.css}" rel="stylesheet"/>
     <style>
         #outDiv {
@@ -61,7 +61,7 @@
 
                         $("#outDiv").css("border-color", data.color)
                         $("#appInUseSpan").text(data.name);
-                        $("#appTitle").text("GoblinCwl - " + data.name)
+                        $("#appTitle").text("Cwl-Web - " + data.name)
 
                         $("#appHtmlIFrame").attr("srcdoc", data.html)
                     } else {

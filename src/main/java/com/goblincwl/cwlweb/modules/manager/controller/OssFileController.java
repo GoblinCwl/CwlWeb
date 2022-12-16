@@ -11,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -105,7 +105,7 @@ public class OssFileController extends BaseController<OssFile> {
      * @date 2021-05-10 00:20:54
      * @author ☪wl
      */
-    @RequestMapping("/editorMdUploadFile")
+    @RequestMapping(value = "/editorMdUploadFile", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> editorMdUploadFile(@RequestParam("editormd-image-file") MultipartFile file) {
         //博客图片上传
         String storagePath = "blogs";
@@ -131,16 +131,14 @@ public class OssFileController extends BaseController<OssFile> {
      * @date 2022/12/8 14:08
      * @author ☪wl
      */
-    @RequestMapping("/appIconUploadFile")
-    public Result<Object> appIconUploadFile(@RequestParam("file_data") MultipartFile file) {
-        //应用图标上传
-        String storagePath = "appIcon";
+    @RequestMapping("/formUploadFile")
+    public Result<Object> formUploadFile(@RequestParam("file_data") MultipartFile file, String storagePath) {
         OssFile ossFile = new OssFile();
         try {
             ossFile = this.ossFileService.uploadFile(file, OssFile.builder().path(storagePath).build());
         } catch (IOException e) {
             LOG.error("文件上传失败", e);
         }
-        return Result.genSuccess(ossFile.getOssFileName(), "成功");
+        return Result.genSuccess(ossFile, "成功");
     }
 }

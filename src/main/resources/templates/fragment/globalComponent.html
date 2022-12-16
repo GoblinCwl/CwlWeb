@@ -3,7 +3,7 @@
 
 <!--公共依赖头-->
 <head th:fragment="commonHead(title,links,styles)">
-    <title th:replace="${title}">GoblinCwl</title>
+    <title th:replace="${title}">Cwl-Web</title>
     <!--网站图标-->
     <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon"/>
     <!--BootStrap-->
@@ -136,8 +136,8 @@
 <!-- 左侧侧边栏 -->
 <div th:fragment="leftSiderBar()" class="col-sm-3 col-md-2 sidebar">
     <div class="sidebar_top">
-        <h1>GoblinCwl</h1>
-        <img th:src="@{/images/profile.jpg}" alt=""/>
+        <h1 th:text="${webMaster}">GoblinCwl</h1>
+        <img id="profileImg" th:src="${profileUrl}" alt="头像"/>
     </div>
     <div class="details">
         <h3>世事一场大梦，</h3>

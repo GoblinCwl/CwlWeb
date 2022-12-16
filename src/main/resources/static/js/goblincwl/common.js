@@ -392,3 +392,9 @@ function removeOssFile(ids) {
         validateForm: $(".noValidateForm")
     })
 }
+
+//通过url解析oss文件名
+function parseOssNameFromFullUrl(url) {
+    const prefix = ".com/";
+    return url.substring(url.indexOf(prefix), url.length).substring(prefix.length)
+}
