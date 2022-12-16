@@ -112,7 +112,7 @@
                     '        <div class="col-sm-10">\n' +
                     '            <div class="input-group">\n' +
                     '                <span class="input-group-addon no-border-radio" style="background-color: #cbeccb;">@</span>\n' +
-                    '                <input type="email" class="form-control no-border-radio" id="emailInput" placeholder="接收订阅的电子邮箱..">\n' +
+                    '                <input type="email" class="form-control no-border-radio" id="emailInput" placeholder="接收订阅的电子邮箱.." onblur="validateEmail($(this))">\n' +
                     '                <span class="input-group-btn">\n' +
                     '                 <button onclick="sendCode()" id="emailButton" class="btn btn-success no-border-radio"\n' +
                     '                         >\n' +
@@ -126,7 +126,7 @@
                     '        <label for="codeInput" class="col-sm-2 control-label">验证码</label>\n' +
                     '        <div class="col-sm-10">\n' +
                     '           <div class="input-group">' +
-                    '               <input type="text" class="form-control no-border-radio" id="codeInput" placeholder="验证码...">\n' +
+                    '               <input type="text" class="form-control no-border-radio" id="codeInput" placeholder="验证码..." oninput="validateCode($(this))">\n' +
                     '               <span class="input-group-btn">\n' +
                     '                <button id="verificationBtn" class="btn btn-info no-border-radio" onclick="confirmCode()" \n' +
                     '                        >\n' +
@@ -147,44 +147,88 @@
 
         //发送验证码
         function sendCode() {
-            ajaxHttp({
-                type: "GET",
-                url: ctx + "/blog/blogTabsSubscribe/sendVerificationEmail",
-                data: {
-                    email: $("#emailInput").val()
-                },
-                success: function (res) {
-                    $("#emailInput").attr("disabled", "disabled");
-                    $("#emailButton").attr("disabled", "disabled");
-                    xtip.msg(res.msg, {icon: 's', type: 'w'});
-                },
-            });
+            let $email = $("#emailInput");
+            if (validateEmail($email)) {
+                ajaxHttp({
+                    type: "GET",
+                    url: ctx + "/blog/blogTabsSubscribe/sendVerificationEmail",
+                    data: {
+                        email: $email.val()
+                    },
+                    success: function (res) {
+                        $("#emailInput").attr("disabled", "disabled");
+                        $("#emailButton").attr("disabled", "disabled");
+                        xtip.tips(res.msg, '#emailInput', {
+                            bgcolor: 'green',
+                            pos: 't'
+                        })
+                    },
+                    successFalse: function (res) {
+                        xtip.tips(res.msg, '#emailInput', {
+                            bgcolor: 'orange',
+                            pos: 't'
+                        })
+                    }
+                });
+            }
+        }
+
+        //校验邮箱
+        function validateEmail($email) {
+            const emailReg = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
+            if (!emailReg.test($email.val())) {
+                $email.attr('pos', 't');
+                checkFail($email, '请输入正确的邮箱');
+                return false;
+            } else {
+                $email.css("border-color", "green")
+            }
+            return true;
         }
 
         //验证验证码
         function confirmCode() {
             let email = $("#emailInput").val();
-            ajaxHttp({
-                type: "PUT",
-                url: ctx + "/blog/blogTabsSubscribe/checkVerificationCode",
-                data: {
-                    email: email,
-                    code: $("#codeInput").val()
-                },
-                winId: winId,
-                success: function (res) {
-                    //120分钟过期
-                    const subscribe = {
-                        token: res.data,
+            let $code = $("#codeInput");
+            if (validateCode($code)) {
+                ajaxHttp({
+                    type: "PUT",
+                    url: ctx + "/blog/blogTabsSubscribe/checkVerificationCode",
+                    data: {
                         email: email,
-                        expire: new Date().getTime() + 1000 * 60 * 120
-                    };
-                    localStorage.setItem("subscribe", JSON.stringify(subscribe));
-                    loadToken();
-                    initUnSubscribe();
-                    initSubscribed();
-                },
-            });
+                        code: $code.val()
+                    },
+                    winId: winId,
+                    success: function (res) {
+                        //120分钟过期
+                        const subscribe = {
+                            token: res.data,
+                            email: email,
+                            expire: new Date().getTime() + 1000 * 60 * 120
+                        };
+                        localStorage.setItem("subscribe", JSON.stringify(subscribe));
+                        loadToken();
+                        initUnSubscribe();
+                        initSubscribed();
+                    },
+                    successFalse: function () {
+                        $code.attr('pos', 'b');
+                        checkFail($code, '验证码错误');
+                    }
+                });
+            }
+        }
+
+        //校验验证码
+        function validateCode($code) {
+            if (!notEmpty($code.val())) {
+                $code.attr('pos', 'b');
+                checkFail($code, '请输入验证码');
+                return false;
+            } else {
+                $code.css("border-color", "green")
+            }
+            return true;
         }
 
         //加载用户已验证数据

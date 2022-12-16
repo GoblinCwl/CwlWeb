@@ -852,21 +852,21 @@
                     '    <label for="blogTabs-add-name" class="col-sm-2 control-label xtip-label">标签名称</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
                     '      <input type="text" class="form-control input-sm table-modal-input required" ' +
-                    '           id="blogTabs-add-name" placeholder="name" oninput="inputValidate($(this))">' +
+                    '           id="blogTabs-add-name" placeholder="name" onblur="inputValidate($(this))">' +
                     '    </div>' +
                     '  </div>\n' +
                     '  <div class="form-group">\n' +
                     '    <label for="blogTabs-add-sort2" class="col-sm-2 control-label xtip-label">1级排序</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
                     '      <input type="text" class="form-control input-sm table-modal-input required validate-blogTabs-sort1" ' +
-                    '           id="blogTabs-add-sort1" placeholder="A-Z" oninput="customInputValidate($(this))">' +
+                    '           id="blogTabs-add-sort1" placeholder="A-Z" onblur="customInputValidate($(this))">' +
                     '    </div>' +
                     '  </div>\n' +
                     '  <div class="form-group">\n' +
                     '    <label for="blogTabs-add-sort2" class="col-sm-2 control-label xtip-label">2级排序</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
                     '      <input type="text" class="form-control input-sm table-modal-input required validate-blogTabs-sort2" ' +
-                    '           id="blogTabs-add-sort2" placeholder="1~?" oninput="customInputValidate($(this))">' +
+                    '           id="blogTabs-add-sort2" placeholder="1~?" onblur="customInputValidate($(this))">' +
                     '    </div>' +
                     '  </div>\n' +
                     '  <div class="form-group">\n' +
@@ -943,14 +943,14 @@
                             '    <label for="blogTabs-add-sort1" class="col-sm-2 control-label xtip-label">1级排序</label>' +
                             '    <div class="col-sm-10 xtip-input">' +
                             '      <input type="text" class="form-control input-sm table-modal-input required validate-blogTabs-sort1" ' +
-                            '       id=blogTabs-add-sort1 placeholder="A-Z" value="' + res.data.sort1 + '" oninput="customInputValidate($(this))">' +
+                            '       id=blogTabs-add-sort1 placeholder="A-Z" value="' + res.data.sort1 + '" onblur="customInputValidate($(this))">' +
                             '    </div>' +
                             '  </div>' +
                             '  <div class="form-group">\n' +
                             '    <label for="blogTabs-add-sort2" class="col-sm-2 control-label xtip-label">2级排序</label>' +
                             '    <div class="col-sm-10 xtip-input">' +
                             '      <input type="text" class="form-control input-sm table-modal-input required validate-blogTabs-sort2" ' +
-                            '       id="blogTabs-add-sort2" placeholder="1~?" value="' + res.data.sort2 + '" oninput="customInputValidate($(this))">' +
+                            '       id="blogTabs-add-sort2" placeholder="1~?" value="' + res.data.sort2 + '" onblur="customInputValidate($(this))">' +
                             '    </div>' +
                             '  </div>\n' +
                             '  <div class="form-group">\n' +
