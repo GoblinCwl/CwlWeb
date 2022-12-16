@@ -89,6 +89,7 @@ public class IndexController {
      * @date 2021-04-25 11:05:06
      * @author ☪wl
      */
+    @SuppressWarnings({"unchecked"})
     @GetMapping("/findTerminalData")
     public Result<Object> findTerminalData(HttpServletRequest request) {
         Map<String, Object> resultMap = new HashMap<>();
