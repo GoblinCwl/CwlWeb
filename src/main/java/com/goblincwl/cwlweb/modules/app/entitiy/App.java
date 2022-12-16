@@ -82,4 +82,9 @@ public class App implements Serializable {
      */
     private String color;
 
+    /**
+     * 排序
+     */
+    private Integer sort;
+
 }

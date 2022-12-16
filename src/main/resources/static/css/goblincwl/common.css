@@ -64,7 +64,7 @@ input:focus {
     box-shadow: 0 0 0 #269abc;
 }
 
-input.required, textarea.required {
+input.required, textarea.required ,div.required{
     border-color: #c59090;
 }
 

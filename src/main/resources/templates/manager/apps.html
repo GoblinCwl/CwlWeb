@@ -147,7 +147,7 @@
                         });
                     }
                     //其他
-                    tableOptions.sortName = 'name';
+                    tableOptions.sortName = 'sort';
                     columns = [
                         {
                             checkbox: true,
@@ -283,7 +283,7 @@
             const $table = getTable(tableId);
             const winId = xtip.win({
                 type: 'confirm',
-                btn: ['保存','预览', '取消'],
+                btn: ['保存', '预览', '取消'],
                 icon: ['', '#5cb85c'],
                 tip:
                     '<form class="form-horizontal validateForm">\n' +
@@ -304,9 +304,16 @@
                     '<div class="form-group">' +
                     '    <label for="apps-add-iconFile-input" class="col-sm-2 control-label xtip-label">应用图标</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
-                    '      <input id="apps-add-iconFile-input" type="file" class="file" data-min-file-count="1"/></div>' +
+                    '      <input id="apps-add-iconFile-input" type="file" class="file fileValidate" data-min-file-count="1"></div>' +
                     '      <input id="apps-add-iconFile" type="hidden">' +
                     ' </div>' +
+                    '  <div class="form-group">' +
+                    '    <label for="apps-add-sort" class="col-sm-2 control-label xtip-label">排序</label>' +
+                    '    <div class="col-sm-10 xtip-input">' +
+                    '      <input type="text" class="form-control input-sm table-modal-input numberValidate required" ' +
+                    '           id="apps-add-sort" placeholder="应用排序"  oninput="customInputValidate($(this))">' +
+                    '    </div>' +
+                    '  </div>\n' +
                     '  <div class="form-group">' +
                     '    <label for="apps-add-description" class="col-sm-2 control-label xtip-label">应用描述</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
@@ -317,7 +324,7 @@
                     '  <div class="form-group">\n' +
                     '    <label for="apps-add-html" class="col-sm-2 control-label xtip-label">网页代码</label>' +
                     '    <div class="col-sm-10 xtip-input">' +
-                    '      <textarea style="height: 230px" class="form-control input-sm table-modal-input " ' +
+                    '      <textarea style="height: 200px" class="form-control input-sm table-modal-input " ' +
                     '           id="apps-add-html" placeholder="HTML"></textarea>' +
                     '    </div>' +
                     '  </div>' +
@@ -336,8 +343,14 @@
                             color: $("#apps-add-color").val(),
                             iconFile: $("#apps-add-iconFile").val(),
                             description: $("#apps-add-description").val(),
+                            sort: $("#apps-add-sort").val(),
                         },
                         winId: winId,
+                        validate: function () {
+                            let validate1 = customInputValidate($("#apps-add-sort"));
+                            let validate2 = customInputValidate($("#apps-add-iconFile-input"));
+                            return validate1 && validate2;
+                        },
                         success: function (res) {
                             xtip.msg(res.msg, {icon: 's', type: 'w'})
                             $table.bootstrapTable('refresh');
@@ -379,11 +392,13 @@
                     if (notEmpty(oldOssFileId)) {
                         removeOssFile(oldOssFileId);
                     }
-                    $iconFile.val(response.data)
+                    $iconFile.val(response.data);
+                    $(".file-caption").css("border-color", "green");
                 } else {
                     xtip.msg("文件上传失败。" + response.data, {icon: 'e', type: 'w'});
                 }
             })
+            $(".file-caption").addClass("required");
             ;
         }
 
@@ -430,9 +445,16 @@
                             '<div class="form-group">' +
                             '    <label for="apps-add-iconFile-input" class="col-sm-2 control-label xtip-label">应用图标</label>' +
                             '    <div class="col-sm-10 xtip-input">' +
-                            '      <input id="apps-add-iconFile-input" type="file" class="file" data-min-file-count="1"/></div>' +
+                            '      <input id="apps-add-iconFile-input" type="file" class="file fileValidate" data-min-file-count="1"></div>' +
                             '      <input id="apps-add-iconFile" type="hidden" value="' + res.data.iconFile + '">' +
                             ' </div>' +
+                            '  <div class="form-group">' +
+                            '    <label for="apps-add-sort" class="col-sm-2 control-label xtip-label">排序</label>' +
+                            '    <div class="col-sm-10 xtip-input">' +
+                            '      <input type="text" class="form-control input-sm table-modal-input numberValidate required" ' +
+                            '           id="apps-add-sort" placeholder="应用排序" value="' + res.data.sort + '" oninput="customInputValidate($(this))">' +
+                            '    </div>' +
+                            '  </div>\n' +
                             '  <div class="form-group">\n' +
                             '    <label for="apps-add-description" class="col-sm-2 control-label xtip-label">应用描述</label>' +
                             '    <div class="col-sm-10 xtip-input">' +
@@ -443,7 +465,7 @@
                             '  <div class="form-group">\n' +
                             '    <label for="apps-add-html" class="col-sm-2 control-label xtip-label">网页代码</label>' +
                             '    <div class="col-sm-10 xtip-input">' +
-                            '      <textarea style="height: 230px" class="form-control input-sm table-modal-input " ' +
+                            '      <textarea style="height: 200px" class="form-control input-sm table-modal-input " ' +
                             '           id="apps-add-html" placeholder="HTML"></textarea>' +
                             '    </div>' +
                             '  </div>' +
@@ -462,8 +484,14 @@
                                     color: $("#apps-add-color").val(),
                                     iconFile: $("#apps-add-iconFile").val(),
                                     description: $("#apps-add-description").val(),
+                                    sort: $("#apps-add-sort").val(),
                                 },
                                 winId: winId,
+                                validate: function () {
+                                    let validate1 = customInputValidate($("#apps-add-sort"));
+                                    let validate2 = customInputValidate($("#apps-add-iconFile-input"));
+                                    return validate1 && validate2;
+                                },
                                 success: function (res) {
                                     xtip.msg(res.msg, {icon: 's', type: 'w'})
                                     $table.bootstrapTable('refresh');
@@ -486,7 +514,6 @@
                     });
                     //回显HTML，避免被解析
                     $("#apps-add-html").val(res.data.html)
-                    inputValidate($("#apps-add-name"))
                     $("#apps-add-iconFile-input").fileinput({
                         uploadUrl: '/manager/ossFile/appIconUploadFile', // 这个是点击上传时候的上传接口
                         allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg'],//允许的文件类型
@@ -510,13 +537,18 @@
                             if (notEmpty(oldOssFileId)) {
                                 removeOssFile(oldOssFileId);
                             }
-                            $iconFile.val(response.data)
+                            $iconFile.val(response.data);
+                            $(".file-caption").css("border-color", "green");
                         } else {
                             xtip.msg("文件上传失败。" + response.data, {icon: 'e', type: 'w'});
                         }
                     })
-                    ;
                     $("input.file-caption-name").val(res.data.iconFileName);
+                    $(".file-caption").addClass("required");
+                    //校验显示
+                    inputValidate($("#apps-add-name"))
+                    customInputValidate($("#apps-add-sort"));
+                    customInputValidate($("#apps-add-iconFile-input"));
                 },
             })
         }
@@ -553,6 +585,32 @@
                     },
                 })
             }, {icon: ['', '#d9534f']});
+        }
+
+        //自定义校验
+        function customInputValidate($input) {
+            if ($input.hasClass("numberValidate")) {
+                if (!/^[1-9][0-9]*$/.test($input.val())) {
+                    checkFail($input, '请输入正整数');
+                    return false;
+                }
+            }
+            if ($input.hasClass("fileValidate")) {
+                let $fileCaption = $(".file-caption");
+                if (!notEmpty($("#apps-add-iconFile").val())) {
+                    $fileCaption.css("border-color", "red")
+                    let $iconFileInput = $("#apps-add-iconFile-input");
+                    if ($iconFileInput.attr('pos') == null) {
+                        $iconFileInput.attr('pos', 'r');
+                    }
+                    checkFail($iconFileInput, '请上传应用图标');
+                    return false;
+                }
+                $fileCaption.css("border-color", "green");
+            }
+
+            $input.css("border-color", "green")
+            return true;
         }
     </script>
 </div>
