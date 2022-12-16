@@ -696,7 +696,9 @@
 </body>
 <div th:replace="fragment/globalComponent::commonFoot(~{::script})">
     <script>
+        var loadId;
         $(function () {
+            loadId = xtip.load();
             //初始化终端
             terminalDataInit();
             //初始化最近更新博客
@@ -828,6 +830,8 @@
                     } else {
                         $("#flowerWateringPop").css("display", "none")
                     }
+
+                    xtip.close(loadId);
                 },
                 successFalse: function (res) {
                     insertMessage(res.msg, 50);
