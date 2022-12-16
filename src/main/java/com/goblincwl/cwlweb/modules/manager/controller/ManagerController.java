@@ -188,6 +188,7 @@ public class ManagerController {
             List<Blog> hotBlogList = this.blogService.list(
                     new LambdaUpdateWrapper<Blog>()
                             .orderBy(true, false, Blog::getBrowserTimes)
+                            .eq(Blog::getDoArchive, 0)
                             .last("limit 5")
             );
             resultMap.put("hotBlogList", hotBlogList);
@@ -200,6 +201,7 @@ public class ManagerController {
             queryWrapper.select(App.class, info -> !"html".equals(info.getColumn()));
             queryWrapper.select("t.id");
             queryWrapper.select("t1.full_url iconUrl", "t1.origin_file_name iconFileName");
+            queryWrapper.eq("t.is_lock", 0);
             queryWrapper.orderBy(true, false, "t.uses_times");
             queryWrapper.last("limit 5");
             List<App> hotAppList = this.appService.list(queryWrapper);
