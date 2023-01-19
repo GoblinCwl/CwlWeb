@@ -32,9 +32,11 @@ public class BadWordUtil {
         List<BadWords> badWordsList = this.badWordsService.list();
         //添加网站管理密码也作为违禁词，防止失误泄露
         KeyValueOptions loginPassword = keyValueOptionsService.getById("loginPassword");
-        BadWords loginPasswordWord = new BadWords();
-        loginPasswordWord.setWord(loginPassword.getOptValue());
-        badWordsList.add(loginPasswordWord);
+        if (loginPassword != null) {
+            BadWords loginPasswordWord = new BadWords();
+            loginPasswordWord.setWord(loginPassword.getOptValue());
+            badWordsList.add(loginPasswordWord);
+        }
         BadWordUtil.words = new HashSet<>();
         badWordsList.forEach(badWords -> BadWordUtil.words.add(badWords.getWord()));
         addBadWordToHashMap(BadWordUtil.words);
