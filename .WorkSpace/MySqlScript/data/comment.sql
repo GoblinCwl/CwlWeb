@@ -1,4 +1,4 @@
-insert into MY_TABLE (id, parent_id, for_id, blog_id, nick_name, profile_url, content, send_time, email, website, ip_address, website_audit, verification_code)
+insert into comment (id, parent_id, for_id, blog_id, nick_name, profile_url, content, send_time, email, website, ip_address, website_audit, verification_code)
 values  (204, null, null, 37, 'Zm', 'https://www.thiswaifudoesnotexist.net/v2/example-467.jpg', '搞几条评论', '2022-12-08 14:32:47', '', '', '127.0.0.1', 1, null),
         (205, null, null, 37, 'Zm', 'https://www.thiswaifudoesnotexist.net/v2/example-467.jpg', '哟呼', '2022-12-08 14:32:50', '', '', '127.0.0.1', 1, null),
         (206, null, null, 37, 'gggg', 'https://tva3.sinaimg.cn/large/9bd9b167ly1g1p9aciqizj20b40b4dg9.jpg', '是吧', '2022-12-08 14:32:59', '', '', '127.0.0.1', 1, null),

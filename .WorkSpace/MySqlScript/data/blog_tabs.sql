@@ -1,4 +1,4 @@
-insert into MY_TABLE (id, name, color, sort1, sort2)
+insert into blog_tabs (id, name, color, sort1, sort2)
 values  (182, '碎碎念', '#449617', 'A', 1),
         (183, 'A', '#b64343', 'A', 1),
         (184, 'B', '#c25ef7', 'B', 1),

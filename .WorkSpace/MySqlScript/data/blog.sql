@@ -1,4 +1,4 @@
-insert into MY_TABLE (id, title, content, release_time, update_time, tabs, short_content, do_archive, browser_times)
+insert into blog (id, title, content, release_time, update_time, tabs, short_content, do_archive, browser_times)
 values  (37, 'Guns V5.1', '# Guns V5.1
 
 ## 介绍

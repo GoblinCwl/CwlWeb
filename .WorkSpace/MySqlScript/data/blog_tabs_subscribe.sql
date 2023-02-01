@@ -1,4 +1,4 @@
-insert into MY_TABLE (id, email, blog_tabs_id, subscribe_time)
+insert into blog_tabs_subscribe (id, email, blog_tabs_id, subscribe_time)
 values  (6, '2395025802@qq.com', 187, '2022-12-09 15:58:26'),
         (8, '2395025802@qq.com', 196, '2022-12-09 15:58:27'),
         (9, '2395025802@qq.com', 199, '2022-12-09 15:58:28'),

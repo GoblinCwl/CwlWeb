@@ -1,4 +1,4 @@
-insert into MY_TABLE (id, access_record_id, access_date)
+insert into access_log (id, access_record_id, access_date)
 values  (1, 1, '2022-11-28 09:10:55'),
         (2, 1, '2022-11-28 09:47:28'),
         (3, 1, '2022-11-28 09:47:28'),

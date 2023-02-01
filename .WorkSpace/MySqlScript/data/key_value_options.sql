@@ -1,4 +1,4 @@
-insert into MY_TABLE (opt_key, opt_value, remark)
+insert into key_value_options (opt_key, opt_value, remark)
 values  ('addressAndStatus', '320200||出差中', '自身当前地址和状态'),
         ('aMapApiKey', '362f1a0d1672a740c6ec2444123a7477', '高德地图-APIKey'),
         ('commentWebsiteAuditWhitelist', ',http://www.mcbbs.com,http://www.baidu.com', '评论传送门审核白名单'),
