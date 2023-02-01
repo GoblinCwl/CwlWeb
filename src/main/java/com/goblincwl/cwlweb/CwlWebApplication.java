@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication
 public class CwlWebApplication {
-
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(CwlWebApplication.class);
         application.setBannerMode(Banner.Mode.OFF);
