@@ -1,3 +1,5 @@
+create database `cwl-web`;
+
 create table if not exists `cwl-web`.access_record
 (
     id                 int auto_increment
