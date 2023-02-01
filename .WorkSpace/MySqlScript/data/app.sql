@@ -1,4 +1,4 @@
-insert into MY_TABLE (id, name, html, description, is_lock, uses_times, icon_file, color, sort)
+insert into app (id, name, html, description, is_lock, uses_times, icon_file, color, sort)
 values  (99, 'JRebel激活', '<html lang="zh">
 <body>
 <h1>您好，这里是Jrebel许可证服务器！</h1>

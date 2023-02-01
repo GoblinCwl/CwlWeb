@@ -1,4 +1,4 @@
-insert into MY_TABLE (id, ip_address, nick_name, access_time, last_access_time, access_count, last_watering_time)
+insert into access_record (id, ip_address, nick_name, access_time, last_access_time, access_count, last_watering_time)
 values  (2, '192.168.2.45', '井救', '2022-11-16 10:00:31', null, 1, null),
         (3, '218.90.115.39', '卓诊', '2022-11-16 16:41:44', '2022-11-16 15:03:49', 2, null),
         (4, '180.113.247.27', '幸车', '2022-11-19 14:23:14', '2022-11-19 14:22:11', 6, null),

@@ -1,3 +1,3 @@
-insert into MY_TABLE (oss_file_name, origin_file_name, path, suffix, full_url)
+insert into oss_file (oss_file_name, origin_file_name, path, suffix, full_url)
 values  ('appIcon/13ff3bc7-7db7-4d13-bf6c-f7322a3ad2c5.png', 'JrebelXRebel_icon.png', 'appIcon', '.png', 'https://cwl-web.oss-cn-shanghai.aliyuncs.com/appIcon/13ff3bc7-7db7-4d13-bf6c-f7322a3ad2c5.png'),
         ('other/2fb488a4-971b-4753-a301-31be750d2f5a.PNG', 'GoblinCwl2.0.PNG', 'other', '.PNG', 'https://cwl-web.oss-cn-shanghai.aliyuncs.com/other/2fb488a4-971b-4753-a301-31be750d2f5a.PNG');

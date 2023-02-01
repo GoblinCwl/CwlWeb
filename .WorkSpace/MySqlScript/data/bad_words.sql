@@ -1,4 +1,4 @@
-insert into MY_TABLE (id, word, type)
+insert into bad_words (id, word, type)
 values  (1, '福音会', 'VIOLENCE_COULD'),
         (2, '中国教徒', 'VIOLENCE_COULD'),
         (3, '统一教', 'VIOLENCE_COULD'),
