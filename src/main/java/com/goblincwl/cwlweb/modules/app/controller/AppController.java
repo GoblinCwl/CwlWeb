@@ -10,12 +10,14 @@ import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.modules.app.entitiy.App;
 import com.goblincwl.cwlweb.modules.app.service.AppService;
+import com.goblincwl.cwlweb.modules.manager.service.KeyValueOptionsService;
 import com.goblincwl.cwlweb.modules.manager.service.OssFileService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +26,6 @@ import java.util.List;
  * 应用 Controller
  *
  * @author ☪wl
- * @email goblincwl@qq.com
  * @date 2022/12/05 16:51
  */
 @RestController
@@ -36,8 +37,8 @@ public class AppController extends BaseController<App> {
     public final static String APP_PREFIX = "/app";
 
     private final AppService appService;
-
     private final OssFileService ossFileService;
+    private final KeyValueOptionsService keyValueOptionsService;
 
     /**
      * 分页主查询
@@ -68,7 +69,8 @@ public class AppController extends BaseController<App> {
         //锁定查询条件查询
         if (StringUtils.isNotEmpty(app.getIsLockStr())) {
             queryWrapper.and(wrapper -> {
-                for (String isLock : app.getIsLockStr().split(",")) {
+                String splitChar = ",";
+                for (String isLock : app.getIsLockStr().split(splitChar)) {
                     wrapper.or(innerWrapper -> innerWrapper.eq("t.is_lock", isLock));
                 }
             });
@@ -107,7 +109,9 @@ public class AppController extends BaseController<App> {
      */
     @UsesTimes
     @GetMapping("/app/{id}")
-    public ModelAndView app(@PathVariable("id") String id) {
+    public ModelAndView app(@PathVariable("id") String id, HttpServletRequest request) {
+        request.setAttribute("profileUrl", this.keyValueOptionsService.getById("profileUrl").getOptValue());
+        request.setAttribute("webMaster", this.keyValueOptionsService.getById("webMaster").getOptValue());
         return new ModelAndView("apps/app", Collections.singletonMap("id", id));
     }
 

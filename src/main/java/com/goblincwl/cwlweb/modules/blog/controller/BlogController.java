@@ -18,6 +18,7 @@ import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
 import com.goblincwl.cwlweb.modules.blog.service.BlogTabsSubscribeService;
 import com.goblincwl.cwlweb.modules.blog.service.CommentService;
+import com.goblincwl.cwlweb.modules.manager.service.KeyValueOptionsService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -44,9 +45,8 @@ public class BlogController extends BaseController<Blog> {
     private final BlogService blogService;
     private final BlogTabsService blogTabsService;
     private final CommentService commentService;
-
     private final BlogTabsSubscribeService blogTabsSubscribeService;
-
+    private final KeyValueOptionsService keyValueOptionsService;
     private final RabbitTemplate rabbitTemplate;
 
     /**
@@ -75,7 +75,8 @@ public class BlogController extends BaseController<Blog> {
         //博客页面查询
         if (StringUtils.isNotEmpty(queryInput)) {
             queryWrapper.and(wrapper -> {
-                for (String str : queryInput.split(",")) {
+                String splitStr = ",";
+                for (String str : queryInput.split(splitStr)) {
                     //带#号查询标签
                     if (str.contains("#")) {
                         wrapper.or().like("t1.name", str.replaceAll("#", ""));
@@ -92,7 +93,8 @@ public class BlogController extends BaseController<Blog> {
         //归档查询条件查询
         if (StringUtils.isNotEmpty(blog.getDoArchiveStr())) {
             queryWrapper.and(wrapper -> {
-                for (String doArchive : blog.getDoArchiveStr().split(",")) {
+                String splitStr = ",";
+                for (String doArchive : blog.getDoArchiveStr().split(splitStr)) {
                     wrapper.or(innerWrapper -> innerWrapper.eq("t.do_archive", doArchive));
                 }
             });
@@ -165,7 +167,9 @@ public class BlogController extends BaseController<Blog> {
      */
     @BrowseTimes
     @GetMapping("/content/{id}")
-    public ModelAndView content(@PathVariable("id") String id) {
+    public ModelAndView content(@PathVariable("id") String id, HttpServletRequest request) {
+        request.setAttribute("profileUrl", this.keyValueOptionsService.getById("profileUrl").getOptValue());
+        request.setAttribute("webMaster", this.keyValueOptionsService.getById("webMaster").getOptValue());
         return new ModelAndView("blog/content", Collections.singletonMap("id", id));
     }
 
@@ -209,7 +213,7 @@ public class BlogController extends BaseController<Blog> {
      * @date 2022/12/9 16:53
      * @author ☪wl
      */
-    private void sendSubscribeEmail(Blog blog,HttpServletRequest request) {
+    private void sendSubscribeEmail(Blog blog, HttpServletRequest request) {
         //发送订阅推送
         Integer[] tabsArray = blog.getTabsArray();
         if (tabsArray != null) {
