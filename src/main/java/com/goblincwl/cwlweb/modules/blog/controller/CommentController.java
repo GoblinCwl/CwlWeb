@@ -11,6 +11,7 @@ import com.goblincwl.cwlweb.common.annotation.TokenCheck;
 import com.goblincwl.cwlweb.common.entity.Result;
 import com.goblincwl.cwlweb.common.utils.ServletUtils;
 import com.goblincwl.cwlweb.common.web.controller.BaseController;
+import com.goblincwl.cwlweb.modules.manager.service.KeyValueOptionsService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ import java.util.List;
 public class CommentController extends BaseController<Comment> {
 
     private final CommentService commentService;
+    private final KeyValueOptionsService keyValueOptionsService;
 
 
     /**
@@ -224,6 +226,9 @@ public class CommentController extends BaseController<Comment> {
         request.setAttribute("typeMessage", "取消订阅失败！");
         request.setAttribute("content", "可能是邮件中的地址错误，或者你已经取消过订阅❌");
         request.setAttribute("message", "或许，我们需要通过正规途径！");
+
+        request.setAttribute("profileUrl", this.keyValueOptionsService.getById("profileUrl").getOptValue());
+        request.setAttribute("webMaster", this.keyValueOptionsService.getById("webMaster").getOptValue());
         return new ModelAndView("/message");
     }
 
